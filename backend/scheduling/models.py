@@ -72,7 +72,7 @@ class Shift(models.Model):
     position = models.CharField(max_length=100, verbose_name=_('position'))
 
     def __str__(self):
-        return f"{self.position} for {self.contract_worker.email} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
+        return f"{self.position} for {self.contract_worker} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
 
     class Meta:
         verbose_name = _('Shift')
