@@ -1,3 +1,5 @@
 from django.contrib import admin
+from agencies.models import StaffingAgency
 
-# Register your models here.
+admin.site.register(StaffingAgency)
+
