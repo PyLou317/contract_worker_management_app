@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'scheduling',
     'workers',
     'users',
+    'ratings',
     
     # Third Party
     'allauth',
