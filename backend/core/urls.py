@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/', include('workers.urls')),
     path('api/', include('scheduling.urls')),
     path('api/', include('agencies.urls')),
+    path('api/', include('organizations.urls')),
+    path('api/', include('ratings.urls')),
     
     # DRF + dj_rest_auth authentication urls
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
