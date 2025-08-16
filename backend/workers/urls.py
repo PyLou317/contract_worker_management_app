@@ -4,7 +4,7 @@ from .views import *
 
 
 urlpatterns = [
-    path('contract_workers/', ContractWorkerListViewAPI.as_view()),
+    path('workers/', ContractWorkerListViewAPI.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
