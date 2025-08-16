@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
 ]
 
 # Set a site ID
@@ -67,6 +68,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -207,3 +209,11 @@ SIMPLE_JWT = {
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
     'JTI_CLAIM': 'jti',
 }
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
