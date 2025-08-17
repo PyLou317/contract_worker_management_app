@@ -3,7 +3,7 @@ import { useState } from 'react';
 export default function SideNavBar({ activeLink, onLinkClick }) {
     const menuItems = [
         { name: 'Dashboard' },
-        { name: 'Workers' },
+        { name: 'Employees' },
         { name: 'Scheduling' },
         { name: 'Settings' }
     ];

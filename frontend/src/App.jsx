@@ -14,7 +14,6 @@ function App() {
   const [isActive, setIsActive] = useState('Dashboard');
 
   const handleSideLinkClick = (name) => {
-    console.log(`Clicked: ${name}`);
     setIsActive(name);
   };
 
@@ -24,12 +23,12 @@ function App() {
         <TopNavBar />
         <div className="flex flex-1">
           <SideNavBar activeLink={isActive} onLinkClick={handleSideLinkClick} />
-          <div className="flex justify-center items-center h-screen w-screen">
+          <div className="m-4 flex-1 flex-col justify-start items-start h-screen w-screen">
             <div>
               {isActive === 'Dashboard' && <Dashboard />}
-              {isActive === 'Workers' && <Workers />}
-              {isActive === 'Scheduling' && <Scheduling />}
-              {isActive === 'Settings' && <Settings />}
+              {isActive === 'Employees' && <Workers />}
+              {/* {isActive === 'Scheduling' &&  <Scheduling />}
+              {isActive === 'Settings' && <Settings />} */}
             </div>
           </div>
         </div>
