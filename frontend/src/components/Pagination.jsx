@@ -12,7 +12,6 @@ export default function Pagination({ page, setPage, totalPages, nextUrl, prevUrl
         disabled={!prevUrl || isFetching}
         className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {/* Replaced MdKeyboardArrowLeft with inline SVG */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -32,7 +31,6 @@ export default function Pagination({ page, setPage, totalPages, nextUrl, prevUrl
         className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Next
-        {/* Replaced MdKeyboardArrowRight with inline SVG */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
