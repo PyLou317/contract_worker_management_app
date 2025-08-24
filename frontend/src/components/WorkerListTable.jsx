@@ -10,17 +10,15 @@ export default function WorkerListTable() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWorker, setEditingWorker] = useState(null);
-  const dialog = useRef();
 
   // Use URLSearchParams to get the initial page number from the URL
   const searchParams = new URLSearchParams(window.location.search);
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const [page, setPage] = useState(initialPage);
 
-  // TODO
   const handleSearch = (term) => {
     setSearchTerm(term);
-    // setPage(1);
+    setPage(1);
   };
 
   const handleOpenModal = () => {
@@ -55,10 +53,12 @@ export default function WorkerListTable() {
     // You can add your modal or API call here
   };
 
+  const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
+
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['workers', searchTerm, page],
     queryFn: async () => {
-      const url = `http://127.0.0.1:8000/api/workers/?search=${searchTerm}&page=${page}`;
+      const url = `${endpoint}?search=${searchTerm}&page=${page}`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Network response was not ok');
