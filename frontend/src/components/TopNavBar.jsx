@@ -1,6 +1,10 @@
 export default function TopNavBar() {
-    const handleLogout = () => {
-      
+  const handleLogout = () => {
+    // Remove the tokens from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    // Reload the page to reset the app state and show the login page
+    window.location.reload();
   };
 
   return (
@@ -12,7 +16,7 @@ export default function TopNavBar() {
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer"
             onClick={handleLogout}
           >
-            Login
+            Logout
           </button>
         </div>
       </div>
