@@ -6,19 +6,29 @@ export default function SearchBar({ onSearch }) {
   const handleChange = (event) => {
     const term = event.target.value;
     setSearchTerm(term);
-    onSearch(term)
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSearch(searchTerm);
   };
 
   return (
-    <div className="relative flex items-center">
+    <form onSubmit={handleSubmit} className="relative items-center align-middle flex gap-1 mb-2">
       <input
         id="search"
         type="text"
         placeholder="Search..."
-        className="w-100 mb-2 p-2 border border-gray-300 rounded-md focus:outline-none"
+        className="w-100 p-2 border border-gray-300 rounded-md focus:outline-none"
         value={searchTerm}
         onChange={handleChange}
       />
-    </div>
+      <button
+        type="submit"
+        className="px-4 p-2 bg-gray-600 text-white rounded-md shadow-md hover:bg-gray-700 transition-colors"
+      >
+        Search
+      </button>
+    </form>
   );
 }
