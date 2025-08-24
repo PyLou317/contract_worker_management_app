@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from .models import *
+from agencies.models import StaffingAgency as Agency
+from organizations.models import WarehouseBusiness as Contract
+
 
 class ContractWorkerSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
-    agency = serializers.StringRelatedField()
-    current_contract = serializers.StringRelatedField()
+    agency = serializers.CharField(write_only=True)
+    current_contract = serializers.CharField(write_only=True)
     comment = serializers.SerializerMethodField()
     
     class Meta:
@@ -23,3 +26,30 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
         if ratings:
             return ratings[0].comment
         return None
+    
+    def create(self, validated_data):
+        agency_name = validated_data.pop('agency')
+        contract_name = validated_data.pop('current_contract')
+       
+        try:
+            agency_obj = Agency.objects.get(name=agency_name)
+        except Agency.DoesNotExist:
+            raise serializers.ValidationError(
+                {"agency": "Agency with this name does not exist."}
+            )
+        
+        # 4. Look up the Contract object based on the name
+        try:
+            contract_obj = Contract.objects.get(name=contract_name)
+        except Contract.DoesNotExist:
+            raise serializers.ValidationError(
+                {"current_contract": "Contract with this name does not exist."}
+            )
+        
+        worker = ContractWorker.objects.create(
+            agency=agency_obj, 
+            current_contract=contract_obj, 
+            **validated_data
+            )
+        
+        return worker
