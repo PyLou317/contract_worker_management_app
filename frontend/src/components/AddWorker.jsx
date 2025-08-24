@@ -1,6 +1,34 @@
 import { useState, useRef } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export default function AddWorkerModal({ showModal, onClose, onAddWorker }) {
+const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
+
+const addWorker = async (formData) => {
+  const authToken = localStorage.getItem('authToken');
+
+  if (!authToken) {
+    throw new Error('Authentication token not found. Please log in.');
+  }
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${authToken}`,
+    },
+    body: JSON.stringify(formData),
+  });
+
+  if (!response.ok) {
+    console.log(formData);
+    throw new Error('Failed to add worker');
+  }
+
+  return await response.json();
+};
+
+export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -12,6 +40,26 @@ export default function AddWorkerModal({ showModal, onClose, onAddWorker }) {
 
   const dialogRef = useRef(null);
 
+  const addWorkerMutation = useMutation({
+    mutationFn: addWorker,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workers'] });
+      setFormData({
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone_name: '',
+        current_contract: '',
+        agency: '',
+      });
+      onClose();
+    },
+    onError: (error) => {
+      console.error('Error adding worker:', error);
+      alert('Failed to add worker. Please try again. ' + error.message);
+    },
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -22,23 +70,9 @@ export default function AddWorkerModal({ showModal, onClose, onAddWorker }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Call the parent component's onAddWorker function
-    onAddWorker(formData);
-    // Reset the form after submission
-    setFormData({
-      first_name: '',
-      last_name: '',
-      email: '',
-      phone_number: '',
-      current_contract: '',
-      agency: '',
-    });
-    // Close the modal
-    onClose();
+    addWorkerMutation.mutate(formData);
   };
 
-  // The 'show' property on the dialog element is controlled by the parent component,
-  // making it visible or hidden.
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300 ${
@@ -153,14 +187,16 @@ export default function AddWorkerModal({ showModal, onClose, onAddWorker }) {
               type="button"
               onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
+              disabled={addWorkerMutation.isPending}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              disabled={addWorkerMutation.isPending}
             >
-              Add Worker
+              {addWorkerMutation.isPending ? 'Adding...' : editingWorker ? 'Save Changes' : 'Add Worker'}
             </button>
           </div>
         </form>
