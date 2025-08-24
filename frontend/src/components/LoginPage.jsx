@@ -31,7 +31,8 @@ export default function Login() {
       const data = await response.json();
       // Store the access token in localStorage for later use
       localStorage.setItem('authToken', data.access);
-      console.log('Login successful! Token saved:', data.access);
+      localStorage.setItem('refreshToken', data.refresh);   
+      console.log('Login successful! Tokens saved:', data.access);
       // Handle navigation to the next page or a dashboard here
       window.location.href = '/dashboard';
     } catch (err) {
