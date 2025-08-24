@@ -3,28 +3,83 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
 
+const refreshToken = async () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  console.log('Refresh Token: ' + refreshToken);
+
+  if (!refreshToken) {
+    throw new Error('Refresh token not found. Please log in again.');
+  }
+
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/token/refresh/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ refresh: refreshToken }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to refresh token');
+  }
+
+  const data = await response.json();
+  localStorage.setItem('authToken', data.access);
+  return data.access;
+};
+
 const addWorker = async (formData) => {
-  const authToken = localStorage.getItem('authToken');
+  let authToken = localStorage.getItem('authToken');
+  console.log('Auth Token: ' + authToken);
 
   if (!authToken) {
     throw new Error('Authentication token not found. Please log in.');
   }
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify(formData),
-  });
+  const attemptFetch = async (token) => {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(formData),
+    });
 
-  if (!response.ok) {
-    console.log(formData);
-    throw new Error('Failed to add worker');
+    if (response.status === 401) {
+      // Token is unauthorized, try to refresh it
+      throw new Error('Unauthorized');
+    }
+
+    if (!response.ok) {
+      console.log(formData);
+      const errorData = await response.json();
+      console.error('Server error details:', errorData);
+      throw new Error('Failed to add worker');
+    }
+
+    return await response.json();
+  };
+
+  try {
+    return await attemptFetch(authToken);
+  } catch (error) {
+    if (error.message === 'Unauthorized') {
+      console.log('Token expired. Attempting to refresh...');
+      // If the first attempt failed due to an expired token, get a new one and retry
+      try {
+        const newAuthToken = await refreshToken();
+        return await attemptFetch(newAuthToken);
+      } catch (refreshError) {
+        // If refreshing the token fails, it means the refresh token is also invalid.
+        // We throw a final error that will be caught by the useMutation onError handler.
+        throw new Error('Session expired. Please log in again.');
+      }
+    } else {
+      // Re-throw any other errors
+      throw error;
+    }
   }
-
-  return await response.json();
 };
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
@@ -48,7 +103,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
         first_name: '',
         last_name: '',
         email: '',
-        phone_name: '',
+        phone_number: '',
         current_contract: '',
         agency: '',
       });
