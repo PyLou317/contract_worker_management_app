@@ -1,23 +1,45 @@
 import { useState } from 'react';
-import { useRef } from 'react';
+
+import './StarRatingStyles.css';
 
 import { useQuery } from '@tanstack/react-query';
 import SearchBar from './Search';
 import Pagination from './Pagination';
 import AddWorkerModal from './AddWorker';
+import { getWorkers } from '../api/getWorkersApi';
+import { Rating } from 'react-simple-star-rating';
+import RatingHover from './WorkerRatingHover';
 
 export default function WorkerListTable() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [ordering, setOrdering] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWorker, setEditingWorker] = useState(null);
+  const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
 
   // Use URLSearchParams to get the initial page number from the URL
   const searchParams = new URLSearchParams(window.location.search);
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const [page, setPage] = useState(initialPage);
 
+  const starRating = {
+    size: 24,
+    allowFraction: true,
+    readonly: true, // Use this for read-only mode
+    fillColor: '#ffd700', // Use this for the active color
+  };
+
   const handleSearch = (term) => {
     setSearchTerm(term);
+    setPage(1);
+  };
+
+  const handleRatingSort = () => {
+    if (ordering === 'avg_rating') {
+      setOrdering(`-avg_rating`);
+    } else {
+      setOrdering('avg_rating');
+    }
     setPage(1);
   };
 
@@ -31,9 +53,6 @@ export default function WorkerListTable() {
 
   const handleAddWorker = (newWorkerData) => {
     console.log('Adding new worker:', newWorkerData);
-    // You'll need to add your API call here to submit the data to your backend
-    // After a successful API call, you would likely refetch the data to update the table
-    // For example: queryClient.invalidateQueries(['workers']);
   };
 
   const updateUrl = (newPage) => {
@@ -46,38 +65,37 @@ export default function WorkerListTable() {
   const handleEditWorker = (worker, workerId) => {
     setEditingWorker(worker);
     console.log('Edit worker with ID:', workerId);
+    // TODO add modal or API call here
   };
 
   const handleDeleteWorker = (workerId) => {
     console.log('Delete worker with ID:', workerId);
-    // You can add your modal or API call here
+    // TODO add modal or API call here
   };
 
-  const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
-
   const { isPending, error, data, isFetching } = useQuery({
-    queryKey: ['workers', searchTerm, page],
-    queryFn: async () => {
-      const url = `${endpoint}?search=${searchTerm}&page=${page}`;
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return await response.json();
-    },
+    queryKey: ['workers', searchTerm, page, ordering],
+    queryFn: getWorkers,
     keepPreviousData: true,
   });
 
-  if (isPending) return <svg className="mr-3 size-5 animate-spin" viewBox="0 0 24 24"></svg>;
+  if (isPending || isFetching) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <svg className="mr-3 size-10 animate-spin text-blue-500" viewBox="0 0 24 24"></svg>
+      </div>
+    );
+  }
 
-  if (error)
+  if (error) {
     return (
       <div className="flex justify-center items-center h-screen bg-red-100 text-red-700 p-4 rounded-lg">
         An error has occurred: {error.message}
       </div>
     );
+  }
 
-  const workers = data.results || [];
+  const workers = data?.results || [];
   const nextUrl = data.next;
   const prevUrl = data.previous;
 
@@ -102,8 +120,31 @@ export default function WorkerListTable() {
                 <th className="py-3 px-6 text-left border-r border-gray-300">Id</th>
                 <th className="py-3 px-6 text-left border-r border-gray-300">Name</th>
                 <th className="py-3 px-6 text-left border-r border-gray-300">Agency</th>
-                <th className="py-3 px-6 text-left">Rating</th>
-                <th className="py-3 px-6 text-left">Notes</th>
+                <th className="py-3 px-6 text-left">
+                  <div className="flex justify-between items-center">
+                    Rating{' '}
+                    <button
+                      onClick={handleRatingSort}
+                      className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 cursor-pointer"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </th>
+                <th className="py-3 px-6 text-left">Comments</th>
                 <th className="py-3 px-6 text-left">Actions</th>
               </tr>
             </thead>
@@ -117,13 +158,18 @@ export default function WorkerListTable() {
                   <td className="py-3 px-6 text-left border-r border-gray-200">
                     {worker.first_name} {worker.last_name}
                   </td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency}</td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">
-                    <span className="text-yellow-400">
-                      {worker.average_rating
-                        ? worker.average_rating + ' - ' + '★'.repeat(worker.average_rating)
-                        : 'No Rating'}
-                    </span>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency_name}</td>
+                  <td
+                    className="py-3 px-6 text-left border-r border-gray-200 relative"
+                    onMouseEnter={() => setHoveredWorkerId(worker.id)}
+                    onMouseLeave={() => setHoveredWorkerId(null)}
+                  >
+                    {hoveredWorkerId === worker.id && (
+                      <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
+                        Rating: {worker.average_rating}
+                      </div>
+                    )}
+                    <Rating initialValue={worker.average_rating} {...starRating} />
                   </td>
                   <td className="py-3 px-6 text-left border-r border-gray-200">{worker.comment}</td>
                   <td className="py-3 px-6 text-left border-r border-gray-200">
@@ -181,7 +227,7 @@ export default function WorkerListTable() {
           totalPages={data.count}
           nextUrl={nextUrl}
           prevUrl={prevUrl}
-          isFetching={isFetching}
+          //   isFetching={isFetching}
           updateUrl={updateUrl}
         />
       </div>
