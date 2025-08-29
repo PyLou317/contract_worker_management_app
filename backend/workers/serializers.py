@@ -6,14 +6,16 @@ from organizations.models import WarehouseBusiness as Contract
 
 class ContractWorkerSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
-    agency_name = serializers.SerializerMethodField(read_only=True)
-    # agency = serializers.CharField(write_only=True)   
     current_contract = serializers.CharField(write_only=True)
     comment = serializers.SerializerMethodField()
+    agency = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=Agency.objects.all()
+    )
     
     class Meta:
         model = ContractWorker
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'current_contract', 'agency_name','agency', 'average_rating', 'comment')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'current_contract','agency', 'average_rating', 'comment')
         extra_kwargs = {
             'agency': {'write_only': True},
             'current_contract': {'write_only': True},
@@ -31,9 +33,6 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
         if ratings:
             return ratings[0].comment
         return None
-    
-    def get_agency_name(self, obj):
-        return obj.agency.name
     
     
     def create(self, validated_data):
