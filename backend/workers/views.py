@@ -13,7 +13,7 @@ class ContractWorkerListViewAPI(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['first_name', 'last_name', 'agency__name']
     ordering_fields = ['first_name', 'last_name', 'avg_rating']
-    ordering = ['first_name']
+    ordering = ['-avg_rating']
     
     def get_queryset(self):
         # Annotate the queryset with the average rating.
