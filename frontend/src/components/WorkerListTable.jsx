@@ -8,7 +8,6 @@ import Pagination from './Pagination';
 import AddWorkerModal from './AddWorker';
 import { getWorkers } from '../api/getWorkersApi';
 import { Rating } from 'react-simple-star-rating';
-import RatingHover from './WorkerRatingHover';
 
 export default function WorkerListTable() {
   const [searchTerm, setSearchTerm] = useState('');
