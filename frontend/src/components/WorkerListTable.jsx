@@ -24,8 +24,9 @@ export default function WorkerListTable() {
   const starRating = {
     size: 24,
     allowFraction: true,
-    readonly: true, // Use this for read-only mode
-    fillColor: '#ffd700', // Use this for the active color
+    readonly: true,
+    allowHover: false,
+    fillColor: '#ffd700',
   };
 
   const handleSearch = (term) => {
@@ -58,7 +59,6 @@ export default function WorkerListTable() {
     const params = new URLSearchParams(window.location.search);
     params.set('page', newPage);
     window.history.pushState(null, '', `?${params.toString()}`);
-    console.log(params.toString());
   };
 
   const handleEditWorker = (worker, workerId) => {
@@ -157,7 +157,7 @@ export default function WorkerListTable() {
                   <td className="py-3 px-6 text-left border-r border-gray-200">
                     {worker.first_name} {worker.last_name}
                   </td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency_name}</td>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency}</td>
                   <td
                     className="py-3 px-6 text-left border-r border-gray-200 relative"
                     onMouseEnter={() => setHoveredWorkerId(worker.id)}
@@ -165,7 +165,7 @@ export default function WorkerListTable() {
                   >
                     {hoveredWorkerId === worker.id && (
                       <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
-                        Rating: {worker.average_rating}
+                        {worker.average_rating} out of 5
                       </div>
                     )}
                     <Rating initialValue={worker.average_rating} {...starRating} />
