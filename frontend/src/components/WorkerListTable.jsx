@@ -5,7 +5,7 @@ import './StarRatingStyles.css';
 import { useQuery } from '@tanstack/react-query';
 import SearchBar from './Search';
 import Pagination from './Pagination';
-import AddWorkerModal from './AddWorker';
+import AddWorkerModal from './AddWorkerModal';
 import { getWorkers } from '../api/getWorkersApi';
 import { Rating } from 'react-simple-star-rating';
 
