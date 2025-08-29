@@ -76,8 +76,8 @@ const addWorker = async (formData) => {
 };
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
-    const agencies = ['Aerotek', 'Contracting Pros', 'Staffing Solutions'];
-    const contract = ['Hello Fresh'];
+  const agencies = ['Aerotek', 'Contracting Pros', 'Staffing Solutions'];
+  const contract = ['Hello Fresh'];
 
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
