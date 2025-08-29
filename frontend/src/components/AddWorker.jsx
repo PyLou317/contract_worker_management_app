@@ -30,7 +30,6 @@ const refreshToken = async () => {
 
 const addWorker = async (formData) => {
   let authToken = localStorage.getItem('authToken');
-  console.log('Auth Token: ' + authToken);
 
   if (!authToken) {
     throw new Error('Authentication token not found. Please log in.');
@@ -47,12 +46,10 @@ const addWorker = async (formData) => {
     });
 
     if (response.status === 401) {
-      // Token is unauthorized, try to refresh it
       throw new Error('Unauthorized');
     }
 
     if (!response.ok) {
-      console.log(formData);
       const errorData = await response.json();
       console.error('Server error details:', errorData);
       throw new Error('Failed to add worker');
@@ -66,31 +63,30 @@ const addWorker = async (formData) => {
   } catch (error) {
     if (error.message === 'Unauthorized') {
       console.log('Token expired. Attempting to refresh...');
-      // If the first attempt failed due to an expired token, get a new one and retry
       try {
         const newAuthToken = await refreshToken();
         return await attemptFetch(newAuthToken);
       } catch (refreshError) {
-        // If refreshing the token fails, it means the refresh token is also invalid.
-        // We throw a final error that will be caught by the useMutation onError handler.
         throw new Error('Session expired. Please log in again.');
       }
     } else {
-      // Re-throw any other errors
       throw error;
     }
   }
 };
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
+    const agencies = ['Aerotek', 'Contracting Pros', 'Staffing Solutions'];
+    const contract = ['Hello Fresh'];
+
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     phone_number: '',
-    current_contract: '',
-    agency: '',
+    current_contract: contract[0],
+    agency: agencies[0],
   });
 
   const dialogRef = useRef(null);
@@ -104,8 +100,8 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
         last_name: '',
         email: '',
         phone_number: '',
-        current_contract: '',
-        agency: '',
+        current_contract: contract[0],
+        agency: agency[0],
       });
       onClose();
     },
@@ -213,7 +209,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             <label htmlFor="current_contract" className="block text-sm font-medium text-gray-200">
               Current Contract
             </label>
-            <input
+            <select
               type="text"
               id="current_contract"
               name="current_contract"
@@ -221,21 +217,32 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
               onChange={handleInputChange}
               required
               className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
+            >
+              {contract.map((contract) => (
+                <option key={contract} value={contract}>
+                  {contract}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label htmlFor="agency" className="block text-sm font-medium text-gray-200">
               Agency
             </label>
-            <input
-              type="text"
+            <select
               id="agency"
               name="agency"
               value={formData.agency}
               onChange={handleInputChange}
               required
               className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
+            >
+              {agencies.map((agency) => (
+                <option key={agency} value={agency}>
+                  {agency}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mt-6 flex justify-end gap-3">
             <button
