@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import InputDiv from './Input';
 
 import refreshToken from '../api/refreshToken';
+import attemptFetch from '../api/attemptFetch';
 
 const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
 
@@ -12,37 +14,14 @@ const addWorker = async (formData) => {
     throw new Error('Authentication token not found. Please log in.');
   }
 
-  const attemptFetch = async (token) => {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (response.status === 401) {
-      throw new Error('Unauthorized');
-    }
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Server error details:', errorData);
-      throw new Error('Failed to add worker');
-    }
-
-    return await response.json();
-  };
-
   try {
-    return await attemptFetch(authToken);
+    return await attemptFetch(authToken, formData, endpoint);
   } catch (error) {
     if (error.message === 'Unauthorized') {
       console.log('Token expired. Attempting to refresh...');
       try {
         const newAuthToken = await refreshToken();
-        return await attemptFetch(newAuthToken);
+        return await attemptFetch(newAuthToken, formData, endpoint);
       } catch (refreshError) {
         throw new Error('Session expired. Please log in again.');
       }
@@ -125,63 +104,38 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="first_name" className="block text-sm font-medium text-gray-200">
-              First Name
-            </label>
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleInputChange}
-              required
-              autoFocus
-              className="mt-1 p-2 block w-full rounded-md border bg-gray-800 border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="last_name" className="block text-sm font-medium text-gray-200">
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleInputChange}
-              required
-              className="mt-1 p-2 block w-full rounded-md border bg-gray-800 border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-200">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="phone_number" className="block text-sm font-medium text-gray-200">
-              Phone Number
-            </label>
-            <input
-              type="text"
-              id="phone_number"
-              name="phone_number"
-              value={formData.phone_number}
-              onChange={handleInputChange}
-              required
-              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
+          <InputDiv
+            type="text"
+            id="first_name"
+            name="first_name"
+            label="First Name"
+            value={formData.first_name}
+            onChange={handleInputChange}
+          ></InputDiv>
+          <InputDiv
+            type="text"
+            id="last_name"
+            name="last_name"
+            label="Last Name"
+            value={formData.last_name}
+            onChange={handleInputChange}
+          ></InputDiv>
+          <InputDiv
+            type="email"
+            id="email"
+            name="email"
+            label="Email"
+            value={formData.email}
+            onChange={handleInputChange}
+          ></InputDiv>
+          <InputDiv
+            type="text"
+            id="phone_number"
+            name="phone_number"
+            label="Phone Number"
+            value={formData.phone_number}
+            onChange={handleInputChange}
+          ></InputDiv>
           <div>
             <label htmlFor="current_contract" className="block text-sm font-medium text-gray-200">
               Current Contract
