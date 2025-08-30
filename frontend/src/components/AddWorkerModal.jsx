@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import InputDiv from './StandardInput';
+import SelectInput from './SelectInput';
 
 import refreshToken from '../api/refreshToken';
 import attemptFetch from '../api/attemptFetch';
@@ -33,7 +34,7 @@ const addWorker = async (formData) => {
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
   const agencies = ['Aerotek', 'Contracting Pros', 'Staffing Solutions'];
-  const contract = ['Hello Fresh'];
+  const contracts = ['Hello Fresh'];
 
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
     last_name: '',
     email: '',
     phone_number: '',
-    current_contract: contract[0],
+    current_contract: contracts[0],
     agency: agencies[0],
   });
 
@@ -136,7 +137,31 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             value={formData.phone_number}
             onChange={handleInputChange}
           ></InputDiv>
-          <div>
+          {contracts && (
+            <SelectInput
+              label="Current Contract"
+              type="text"
+              id="current_contract"
+              name="current_contract"
+              value={formData.current_contract}
+              onChange={handleInputChange}
+              required
+              options={contracts}
+            ></SelectInput>
+          )}
+          {agencies && (
+            <SelectInput
+              label="Agency"
+              type="text"
+              id="agency"
+              name="agency"
+              value={formData.agency}
+              onChange={handleInputChange}
+              required
+              options={agencies}
+            ></SelectInput>
+          )}
+          {/* <div>
             <label htmlFor="current_contract" className="block text-sm font-medium text-gray-200">
               Current Contract
             </label>
@@ -155,8 +180,8 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
                 </option>
               ))}
             </select>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <label htmlFor="agency" className="block text-sm font-medium text-gray-200">
               Agency
             </label>
@@ -174,7 +199,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
           <div className="mt-6 flex justify-end gap-3">
             <button
               type="button"
