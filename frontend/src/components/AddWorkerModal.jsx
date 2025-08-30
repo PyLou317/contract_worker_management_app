@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import InputDiv from './Input';
+import InputDiv from './StandardInput';
 
 import refreshToken from '../api/refreshToken';
 import attemptFetch from '../api/attemptFetch';
