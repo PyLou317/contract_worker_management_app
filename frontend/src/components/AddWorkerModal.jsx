@@ -4,7 +4,7 @@ import InputDiv from './StandardInput';
 import SelectInput from './SelectInput';
 
 import refreshToken from '../api/refreshToken';
-import attemptFetch from '../api/attemptFetch';
+import attemptFetchPost from '../api/attemptFetch';
 
 const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
 
@@ -16,13 +16,13 @@ const addWorker = async (formData) => {
   }
 
   try {
-    return await attemptFetch(authToken, formData, endpoint);
+    return await attemptFetchPost(authToken, formData, endpoint);
   } catch (error) {
     if (error.message === 'Unauthorized') {
       console.log('Token expired. Attempting to refresh...');
       try {
         const newAuthToken = await refreshToken();
-        return await attemptFetch(newAuthToken, formData, endpoint);
+        return await attemptFetchPost(newAuthToken, formData, endpoint);
       } catch (refreshError) {
         throw new Error('Session expired. Please log in again.');
       }
@@ -161,45 +161,6 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
               options={agencies}
             ></SelectInput>
           )}
-          {/* <div>
-            <label htmlFor="current_contract" className="block text-sm font-medium text-gray-200">
-              Current Contract
-            </label>
-            <select
-              type="text"
-              id="current_contract"
-              name="current_contract"
-              value={formData.current_contract}
-              onChange={handleInputChange}
-              required
-              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              {contract.map((contract) => (
-                <option key={contract} value={contract}>
-                  {contract}
-                </option>
-              ))}
-            </select>
-          </div> */}
-          {/* <div>
-            <label htmlFor="agency" className="block text-sm font-medium text-gray-200">
-              Agency
-            </label>
-            <select
-              id="agency"
-              name="agency"
-              value={formData.agency}
-              onChange={handleInputChange}
-              required
-              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              {agencies.map((agency) => (
-                <option key={agency} value={agency}>
-                  {agency}
-                </option>
-              ))}
-            </select>
-          </div> */}
           <div className="mt-6 flex justify-end gap-3">
             <button
               type="button"
