@@ -3,11 +3,13 @@ import { useState } from 'react';
 import './StarRatingStyles.css';
 
 import { useQuery } from '@tanstack/react-query';
+import { getWorkers } from '../api/getWorkersApi';
+import { Rating } from 'react-simple-star-rating';
+
 import SearchBar from './Search';
 import Pagination from './Pagination';
 import AddWorkerModal from './AddWorkerModal';
-import { getWorkers } from '../api/getWorkersApi';
-import { Rating } from 'react-simple-star-rating';
+import EditWorkerModal from './EditWorkerModal';
 
 export default function WorkerListTable() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,11 +45,11 @@ export default function WorkerListTable() {
     setPage(1);
   };
 
-  const handleOpenModal = () => {
+  const handleOpenAddWorkerModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseAddWorkerModal = () => {
     setIsModalOpen(false);
   };
 
@@ -106,7 +108,7 @@ export default function WorkerListTable() {
           <div className="flex justify-between items-center gap-3">
             <SearchBar onSearch={handleSearch} />
             <button
-              onClick={handleOpenModal}
+              onClick={handleOpenAddWorkerModal}
               className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
               aria-label="Add worker"
             >
@@ -230,8 +232,8 @@ export default function WorkerListTable() {
           updateUrl={updateUrl}
         />
       </div>
-      {/* The Add Worker Modal component */}
-      <AddWorkerModal showModal={isModalOpen} onClose={handleCloseModal} onAddWorker={handleAddWorker} />
+      <AddWorkerModal showModal={isModalOpen} onClose={handleCloseAddWorkerModal} onAddWorker={handleAddWorker} />
+      {/* <EditWorkerModal /> */}
     </>
   );
 }
