@@ -1,4 +1,4 @@
-const attemptFetch = async (token, formData, endpoint) => {
+const attemptFetchPost = async (token, formData, endpoint) => {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -21,4 +21,4 @@ const attemptFetch = async (token, formData, endpoint) => {
   return await response.json();
 };
 
-export default attemptFetch;
+export default attemptFetchPost;
