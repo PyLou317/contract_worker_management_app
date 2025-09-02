@@ -1,5 +1,11 @@
 from django.db import models
 
+# AGENCY_NAME = [
+#     ('aerotek', 'Aerotek'),
+#     ('randstad', 'Randstad'),
+#     ('employment_express', 'Employment Express')
+# ]
+
 # Create your models here.
 class StaffingAgency(models.Model):
     name = models.CharField(max_length=255, unique=True)
