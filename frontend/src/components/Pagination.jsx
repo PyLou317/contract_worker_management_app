@@ -1,4 +1,6 @@
 export default function Pagination({ page, setPage, totalPages, nextUrl, prevUrl, isFetching, updateUrl }) {
+  let pageCount = Math.ceil(totalPages / 10);
+
   return (
     <div className="mt-8 flex gap-8 justify-center items-center">
       <button
@@ -10,7 +12,7 @@ export default function Pagination({ page, setPage, totalPages, nextUrl, prevUrl
           });
         }}
         disabled={!prevUrl || isFetching}
-        className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center px-4 py-2 text-gray-600 font-medium rounded-lg hover:text-gray-900 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -24,11 +26,13 @@ export default function Pagination({ page, setPage, totalPages, nextUrl, prevUrl
         </svg>
         Previous
       </button>
-      <span className="text-gray-600 font-semibold text-lg">Page {page}</span>
+      <span className="text-gray-600 font-semibold text-lg">
+        Page {page} of {pageCount}
+      </span>
       <button
         onClick={() => setPage((old) => old + 1)}
         disabled={!nextUrl || isFetching}
-        className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Next
         <svg
