@@ -4,22 +4,45 @@ from agencies.models import StaffingAgency as Agency
 from organizations.models import WarehouseBusiness as Contract
 
 
+class AgencyNameField(serializers.CharField):
+    def to_representation(self, value):
+        # This returns the name of the agency for display
+        return value.name
+    
 class ContractWorkerSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
     current_contract = serializers.CharField(write_only=True)
     comment = serializers.SerializerMethodField()
+    
+    # Read-only field for displaying the full agency details
+    agency_details = serializers.SerializerMethodField()
+    
     agency = serializers.SlugRelatedField(
         slug_field='name',
-        queryset=Agency.objects.all()
+        queryset=Agency.objects.all(),
+        write_only=True
     )
+    
+    # New field to display the human-readable position label
+    position_display = serializers.SerializerMethodField()
     
     class Meta:
         model = ContractWorker
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'current_contract','agency', 'average_rating', 'comment')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'current_contract','agency', 'agency_details', 'average_rating', 'comment', 'position_display')
         extra_kwargs = {
-            'agency': {'write_only': True},
             'current_contract': {'write_only': True},
+            'position': {'write_only': True}
             }
+        
+    def get_agency_details(self, obj):
+        # A custom method to return the agency's name for representation
+        return obj.agency.name
+    
+    
+    def get_position_display(self, obj):
+        # This method calls Django's built-in get_FOO_display method to get the human-readable label
+        return obj.get_position_display()
+    
         
     def get_average_rating(self, obj):
         ratings = obj.ratings.all()
