@@ -1,9 +1,11 @@
 import { useState, useRef } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import refreshToken from '../api/refreshToken';
 import attemptFetch from '../api/attemptFetch';
-
-const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
+import Input from './StandardInput';
+import { getAgencies } from '../api/getAgencyDataApi';
+import { getWorkerDetails } from '../api/getWorkerDetailApi';
 
 const editWorker = async (formData) => {
   let authToken = localStorage.getItem('authToken');
@@ -29,34 +31,72 @@ const editWorker = async (formData) => {
   }
 };
 
-export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
-//   const agencies = ['Aerotek', 'Contracting Pros', 'Staffing Solutions'];
+export default function EditWorkerModal({ showModal, onClose, editingWorker, id }) {
   const contract = ['Hello Fresh'];
 
+  const {
+    data: workerData,
+    isPending: workerIsPending,
+    error: workerError,
+  } = useQuery({
+    queryKey: ['worker', id],
+    queryFn: () => getWorkerDetails({ workerId: id }),
+    enabled: !!id, // Only run this query if an ID exists
+  });
+
+  const {
+    isPending: agenciesPending,
+    error: agenciesError,
+    data: agenciesData,
+  } = useQuery({
+    queryKey: ['agencies'],
+    queryFn: getAgencies,
+    keepPreviousData: true,
+  });
+
+  const agencies = agenciesData?.results || [];
+  const agencyNames = agencies.map((agency) => agency.name);
+
   const queryClient = useQueryClient();
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     phone_number: '',
-    current_contract: contract[0],
-    agency: agencies[0],
+    agency: '',
+    comment: '',
+    attendance_score: '',
+    performance_score: '',
+    communication_score: '',
+    skills_score: '',
   });
+
+
+  useEffect(() => {
+    // Check if workerData is not null or undefined
+    if (workerData) {
+      setFormData({
+        first_name: workerData.first_name || '',
+        last_name: workerData.last_name || '',
+        email: workerData.email || '',
+        phone_number: workerData.phone_number || '',
+        agency: workerData.agency_details || '',
+        comment: workerData.comment || '',
+        attendance_score: workerData.attendance_score || '',
+        performance_score: workerData.performance_score || '',
+        communication_score: workerData.communication_score || '',
+        skills_score: workerData.skills_score || '',
+      });
+    }
+  }, [workerData]);
 
   const dialogRef = useRef(null);
 
   const editWorkerMutation = useMutation({
-    mutationFn: addWorker,
+    mutationFn: editWorker,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workers'] });
-      setFormData({
-        first_name: '',
-        last_name: '',
-        email: '',
-        phone_number: '',
-        current_contract: contract[0],
-        agency: agency[0],
-      });
+      queryClient.invalidateQueries({ queryKey: ['worker'] });
       onClose();
     },
     onError: (error) => {
@@ -77,6 +117,20 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
     e.preventDefault();
     editWorkerMutation.mutate(formData);
   };
+
+  // Conditionally render based on loading/error states
+  if (workerIsPending) {
+    return <div>Loading worker data...</div>;
+  }
+  if (workerError) {
+    return <div>Error loading worker data: {workerError.message}</div>;
+  }
+  if (agenciesPending) {
+    return <div>Loading agencies...</div>;
+  }
+  if (agenciesError) {
+    return <div>Error loading agencies: {agenciesError.message}</div>;
+  }
 
   return (
     <div
@@ -102,21 +156,15 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="first_name" className="block text-sm font-medium text-gray-200">
-              First Name
-            </label>
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleInputChange}
-              required
-              autoFocus
-              className="mt-1 p-2 block w-full rounded-md border bg-gray-800 border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
+          <Input
+            label="First Name"
+            type="text"
+            id="first_name"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleInputChange}
+            required
+          />
           <div>
             <label htmlFor="last_name" className="block text-sm font-medium text-gray-200">
               Last Name
@@ -191,7 +239,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
               required
               className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             >
-              {agencies.map((agency) => (
+              {agencyNames.map((agency) => (
                 <option key={agency} value={agency}>
                   {agency}
                 </option>
@@ -203,16 +251,16 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
               type="button"
               onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
-              disabled={addWorkerMutation.isPending}
+              disabled={editWorkerMutation.isPending}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-              disabled={addWorkerMutation.isPending}
+              disabled={editWorkerMutation.isPending}
             >
-              {addWorkerMutation.isPending ? 'Adding...' : editingWorker ? 'Save Changes' : 'Add Worker'}
+              {editWorkerMutation.isPending ? 'Adding...' : editingWorker ? 'Save Changes' : 'Add Worker'}
             </button>
           </div>
         </form>

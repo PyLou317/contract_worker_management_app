@@ -11,8 +11,9 @@ import EditWorkerModal from './EditWorkerModal';
 
 export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen, setIsModalOpen }) {
   const [ordering, setOrdering] = useState('');
-  const [editingWorker, setEditingWorker] = useState(null);
+  const [editingWorker, setEditingWorker] = useState(false);
   const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
+  const [editingWorkerId, setEditingWorkerId] = useState(null);
 
   const starRating = {
     size: 24,
@@ -45,10 +46,9 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
     window.history.pushState(null, '', `?${params.toString()}`);
   };
 
-  const handleEditWorker = (worker, workerId) => {
-    setEditingWorker(worker);
-    console.log('Edit worker with ID:', workerId);
-    // TODO add modal or API call here
+  const handleOpenEditWorker = (workerId) => {
+    setEditingWorker(true);
+    setEditingWorkerId(workerId);
   };
 
   const handleDeleteWorker = (workerId) => {
@@ -147,7 +147,7 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
                 <td className="py-3 px-6 text-left border-r border-gray-200">
                   <div className="flex space-x-2">
                     <button
-                      onClick={() => handleEditWorker(worker, worker.id)}
+                      onClick={() => handleOpenEditWorker(worker.id)}
                       className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
                       aria-label="Edit worker"
                     >
@@ -204,7 +204,14 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
       />
 
       <AddWorkerModal showModal={isModalOpen} onClose={handleCloseAddWorkerModal} onAddWorker={handleAddWorker} />
-      {/* <EditWorkerModal /> */}
-    </>
+      {editingWorker && (
+        <EditWorkerModal
+          showModal={editingWorker}
+          onClose={() => setEditingWorker(false)}
+          editingWorker={editingWorker}
+          id={editingWorkerId}
+        />
+      )}
+    </> 
   );
 }
