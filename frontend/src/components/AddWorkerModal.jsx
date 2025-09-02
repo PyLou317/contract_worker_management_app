@@ -1,40 +1,22 @@
 import { useState, useRef } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import InputDiv from './StandardInput';
 import SelectInput from './SelectInput';
 
-import refreshToken from '../api/refreshToken';
-import attemptFetchPost from '../api/attemptFetch';
-
-const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
-
-const addWorker = async (formData) => {
-  let authToken = localStorage.getItem('authToken');
-
-  if (!authToken) {
-    throw new Error('Authentication token not found. Please log in.');
-  }
-
-  try {
-    return await attemptFetchPost(authToken, formData, endpoint);
-  } catch (error) {
-    if (error.message === 'Unauthorized') {
-      console.log('Token expired. Attempting to refresh...');
-      try {
-        const newAuthToken = await refreshToken();
-        return await attemptFetchPost(newAuthToken, formData, endpoint);
-      } catch (refreshError) {
-        throw new Error('Session expired. Please log in again.');
-      }
-    } else {
-      throw error;
-    }
-  }
-};
+import { getAgencies } from '../api/getAgencyDataApi';
+import addWorker from '../api/addWorker';
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
-  const agencies = ['Aerotek', 'Contracting Pros', 'Staffing Solutions'];
   const contracts = ['Hello Fresh'];
+
+  const { isPending, error, data, isFetching } = useQuery({
+    queryKey: ['agencies'],
+    queryFn: getAgencies,
+    keepPreviousData: true,
+  });
+
+  const agencies = data?.results || [];
+  const agencyNames = agencies.map((agency) => agency.name);
 
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
@@ -57,7 +39,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
         last_name: '',
         email: '',
         phone_number: '',
-        current_contract: contract[0],
+        current_contract: contracts[0],
         agency: agency[0],
       });
       onClose();
@@ -158,7 +140,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
               value={formData.agency}
               onChange={handleInputChange}
               required
-              options={agencies}
+              options={agencyNames}
             ></SelectInput>
           )}
           <div className="mt-6 flex justify-end gap-3">
