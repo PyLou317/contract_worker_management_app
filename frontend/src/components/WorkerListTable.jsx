@@ -1,27 +1,24 @@
 import { useState } from 'react';
 
-import './StarRatingStyles.css';
-
 import { useQuery } from '@tanstack/react-query';
 import { getWorkers } from '../api/getWorkersApi';
 import { Rating } from 'react-simple-star-rating';
 
-import SearchBar from './Search';
+import './StarRatingStyles.css';
 import Pagination from './Pagination';
 import AddWorkerModal from './AddWorkerModal';
 import EditWorkerModal from './EditWorkerModal';
 
-export default function WorkerListTable() {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function WorkerListTable({ searchTerm, page, setPage }) {
   const [ordering, setOrdering] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWorker, setEditingWorker] = useState(null);
   const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
 
   // Use URLSearchParams to get the initial page number from the URL
-  const searchParams = new URLSearchParams(window.location.search);
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const [page, setPage] = useState(initialPage);
+  
+  
+  
 
   const starRating = {
     size: 24,
@@ -31,11 +28,6 @@ export default function WorkerListTable() {
     fillColor: '#ffd700',
   };
 
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    setPage(1);
-  };
-
   const handleRatingSort = () => {
     if (ordering === 'avg_rating') {
       setOrdering(`-avg_rating`);
@@ -43,10 +35,6 @@ export default function WorkerListTable() {
       setOrdering('avg_rating');
     }
     setPage(1);
-  };
-
-  const handleOpenAddWorkerModal = () => {
-    setIsModalOpen(true);
   };
 
   const handleCloseAddWorkerModal = () => {
@@ -90,8 +78,10 @@ export default function WorkerListTable() {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen bg-red-100 text-red-700 p-4 rounded-lg">
-        An error has occurred: {error.message}
+      <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center h-auto w-1/3 mx-auto bg-red-100 text-red-700 p-4 rounded-lg">
+          An error has occurred: {error.message}
+        </div>
       </div>
     );
   }
@@ -102,31 +92,70 @@ export default function WorkerListTable() {
 
   return (
     <>
-      <div className="container mx-auto p-8 bg-white shadow-xl rounded-2xl">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Employee Roster</h2>
-        <div className="overflow-x-auto">
-          <div className="flex justify-between items-center gap-3">
-            <SearchBar onSearch={handleSearch} />
-            <button
-              onClick={handleOpenAddWorkerModal}
-              className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
-              aria-label="Add worker"
-            >
-              Add Worker
-            </button>
-          </div>
-          <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
-            <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
-              <tr>
-                <th className="py-3 px-6 text-left border-r border-gray-300">Id</th>
-                <th className="py-3 px-6 text-left border-r border-gray-300">Name</th>
-                <th className="py-3 px-6 text-left border-r border-gray-300">Agency</th>
-                <th className="py-3 px-6 text-left">
-                  <div className="flex justify-between items-center">
-                    Rating{' '}
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
+          <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
+            <tr>
+              <th className="py-3 px-6 text-left border-r border-gray-300">Id</th>
+              <th className="py-3 px-6 text-left border-r border-gray-300">Name</th>
+              <th className="py-3 px-6 text-left border-r border-gray-300">Position</th>
+              <th className="py-3 px-6 text-left border-r border-gray-300">Agency</th>
+              <th className="py-3 px-6 text-left">
+                <div className="flex justify-between items-center">
+                  Rating{' '}
+                  <button
+                    onClick={handleRatingSort}
+                    className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6 cursor-pointer"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </th>
+              <th className="py-3 px-6 text-left">Comments</th>
+              <th className="py-3 px-6 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-600 text-sm font-light">
+            {workers.map((worker) => (
+              <tr key={worker.id} className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200">
+                <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">{worker.id}</td>
+                <td className="py-3 px-6 text-left border-r border-gray-200">
+                  {worker.first_name} {worker.last_name}
+                </td>
+                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.position_display}</td>
+                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency_details}</td>
+                <td
+                  className="py-3 px-6 text-left border-r border-gray-200 relative"
+                  onMouseEnter={() => setHoveredWorkerId(worker.id)}
+                  onMouseLeave={() => setHoveredWorkerId(null)}
+                >
+                  {hoveredWorkerId === worker.id && (
+                    <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
+                      {worker.average_rating} out of 5
+                    </div>
+                  )}
+                  <Rating initialValue={worker.average_rating} {...starRating} />
+                </td>
+                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.comment}</td>
+                <td className="py-3 px-6 text-left border-r border-gray-200">
+                  <div className="flex space-x-2">
                     <button
-                      onClick={handleRatingSort}
-                      className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                      onClick={() => handleEditWorker(worker, worker.id)}
+                      className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
+                      aria-label="Edit worker"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -134,104 +163,52 @@ export default function WorkerListTable() {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-6 cursor-pointer"
+                        className="size-5"
                       >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteWorker(worker.id)}
+                      className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
+                      aria-label="Delete worker"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.115H6.28a2.25 2.25 0 0 1-2.244-2.115L3.75 6.75m16.5 0H3.75m16.5 0v-1.5a1.5 1.5 0 0 0-1.5-1.5h-10.5a1.5 1.5 0 0 0-1.5 1.5v1.5m6-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3"
                         />
                       </svg>
                     </button>
                   </div>
-                </th>
-                <th className="py-3 px-6 text-left">Comments</th>
-                <th className="py-3 px-6 text-left">Actions</th>
+                </td>
               </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm font-light">
-              {workers.map((worker) => (
-                <tr
-                  key={worker.id}
-                  className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200"
-                >
-                  <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">{worker.id}</td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">
-                    {worker.first_name} {worker.last_name}
-                  </td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency}</td>
-                  <td
-                    className="py-3 px-6 text-left border-r border-gray-200 relative"
-                    onMouseEnter={() => setHoveredWorkerId(worker.id)}
-                    onMouseLeave={() => setHoveredWorkerId(null)}
-                  >
-                    {hoveredWorkerId === worker.id && (
-                      <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
-                        {worker.average_rating} out of 5
-                      </div>
-                    )}
-                    <Rating initialValue={worker.average_rating} {...starRating} />
-                  </td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.comment}</td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleEditWorker(worker, worker.id)}
-                        className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
-                        aria-label="Edit worker"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-5"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteWorker(worker.id)}
-                        className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
-                        aria-label="Delete worker"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-5"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.115H6.28a2.25 2.25 0 0 1-2.244-2.115L3.75 6.75m16.5 0H3.75m16.5 0v-1.5a1.5 1.5 0 0 0-1.5-1.5h-10.5a1.5 1.5 0 0 0-1.5 1.5v1.5m6-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Pagination
-          page={page}
-          setPage={setPage}
-          totalPages={data.count}
-          nextUrl={nextUrl}
-          prevUrl={prevUrl}
-          //   isFetching={isFetching}
-          updateUrl={updateUrl}
-        />
+            ))}
+          </tbody>
+        </table>
       </div>
+      <Pagination
+        page={page}
+        setPage={setPage}
+        totalPages={data.count}
+        nextUrl={nextUrl}
+        prevUrl={prevUrl}
+        //   isFetching={isFetching}
+        updateUrl={updateUrl}
+      />
+
       <AddWorkerModal showModal={isModalOpen} onClose={handleCloseAddWorkerModal} onAddWorker={handleAddWorker} />
       {/* <EditWorkerModal /> */}
     </>
