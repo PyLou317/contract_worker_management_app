@@ -27,7 +27,6 @@ export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
 
   const mainItems = menuItems.slice(0, 3);
   const settingsItem = menuItems.slice(3, 5);
-  console.log(settingsItem);
 
   return (
     <>
