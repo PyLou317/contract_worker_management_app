@@ -45,7 +45,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
 
   const dialogRef = useRef(null);
 
-  const addWorkerMutation = useMutation({
+  const editWorkerMutation = useMutation({
     mutationFn: addWorker,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
@@ -75,7 +75,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addWorkerMutation.mutate(formData);
+    editWorkerMutation.mutate(formData);
   };
 
   return (
@@ -94,7 +94,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker }) {
         onClose={onClose}
       >
         <div className="flex justify-between items-center pb-3">
-          <h3 className="text-2xl font-semibold text-white">Add New Worker</h3>
+          <h3 className="text-2xl font-semibold text-white">Edit Worker</h3>
           <button onClick={onClose} className="text-gray-200 hover:text-gray-700">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
