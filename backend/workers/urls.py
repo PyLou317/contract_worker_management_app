@@ -5,6 +5,7 @@ from .views import *
 
 urlpatterns = [
     path('workers/', ContractWorkerListViewAPI.as_view()),
+    path('workers/<int:pk>/', WorkerDetailUpdateViewAPI.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

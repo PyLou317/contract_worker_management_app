@@ -21,3 +21,9 @@ class ContractWorkerListViewAPI(generics.ListCreateAPIView):
         return queryset.annotate(
             avg_rating=Avg('ratings__performance_score')
         )
+        
+        
+class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateAPIView):
+    queryset = ContractWorker.objects.all()
+    serializer_class = ContractWorkerSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
