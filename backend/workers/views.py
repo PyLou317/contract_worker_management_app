@@ -11,7 +11,7 @@ class ContractWorkerListViewAPI(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['first_name', 'last_name', 'agency__name']
+    search_fields = ['first_name', 'last_name', 'agency__name', 'position']
     ordering_fields = ['first_name', 'last_name', 'avg_rating']
     ordering = ['-avg_rating']
     
