@@ -1,6 +1,6 @@
 import SearchBar from '../components/Search';
 
-export default function WorkerTableHeader({ handleSearch, handleOpenAddWorkerModal, searchTerm }) {
+export default function WorkerTableHeader({ handleSearch, handleOpenAddWorkerModal }) {
   return (
     <div className="flex justify-between items-center gap-3">
       <SearchBar onSearch={handleSearch} />
@@ -14,4 +14,3 @@ export default function WorkerTableHeader({ handleSearch, handleOpenAddWorkerMod
     </div>
   );
 }
-

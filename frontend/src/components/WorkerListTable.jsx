@@ -9,16 +9,10 @@ import Pagination from './Pagination';
 import AddWorkerModal from './AddWorkerModal';
 import EditWorkerModal from './EditWorkerModal';
 
-export default function WorkerListTable({ searchTerm, page, setPage }) {
+export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen, setIsModalOpen }) {
   const [ordering, setOrdering] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWorker, setEditingWorker] = useState(null);
   const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
-
-  // Use URLSearchParams to get the initial page number from the URL
-  
-  
-  
 
   const starRating = {
     size: 24,
