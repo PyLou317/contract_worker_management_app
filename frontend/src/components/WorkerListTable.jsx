@@ -129,7 +129,7 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
                 <td className="py-3 px-6 text-left border-r border-gray-200">
                   {worker.first_name} {worker.last_name}
                 </td>
-                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.position_display}</td>
+                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.position}</td>
                 <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency_details}</td>
                 <td
                   className="py-3 px-6 text-left border-r border-gray-200 relative"
@@ -141,9 +141,9 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
                       {worker.average_rating} out of 5
                     </div>
                   )}
-                  <Rating initialValue={worker.average_rating} {...starRating} />
+                  <Rating initialValue={worker.ratings?.[0]?.average_rating} {...starRating} />
                 </td>
-                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.comment}</td>
+                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.ratings?.[0]?.comment}</td>
                 <td className="py-3 px-6 text-left border-r border-gray-200">
                   <div className="flex space-x-2">
                     <button
@@ -212,6 +212,6 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
           id={editingWorkerId}
         />
       )}
-    </> 
+    </>
   );
 }
