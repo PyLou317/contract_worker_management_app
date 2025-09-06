@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import skillColorClasses from '../WorkerListPage/SkillClasses';
+import skillColorClasses from './SkillColorClasses';
 
 const colors = Object.keys(skillColorClasses);
 
@@ -10,6 +10,13 @@ export default function ColorSelector({ onColorChange }) {
     setSelectedColor(e.target.value);
     onColorChange(e.target.value);
   };
+
+  function capitalizeFirstLetter(word) {
+    if (typeof word !== 'string' || word.length === 0) {
+      return '';
+    }
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }
 
   return (
     <div className="flex flex-row space-y-4 gap-4">
@@ -27,7 +34,7 @@ export default function ColorSelector({ onColorChange }) {
         >
           {colors.map((color) => (
             <option key={color} value={color}>
-              {color}
+              {capitalizeFirstLetter(color)}
             </option>
           ))}
         </select>
