@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import TopNavBar from './components/TopNavBar';
-import SideNavBar from './components/SideNavBar';
+import TopNavBar from './components/NavBars/TopNavBar';
+import SideNavBar from './components/NavBars/SideNavBar';
 import Dashboard from './pages/DashboardPage';
-import Workers from './pages/WorkersPage';
-import Login from './components/LoginPage';
-import WarningModal from './components/WarningModal';
+import Workers from './components/WorkerListPage/WorkersPage';
+import Skills from './components/SkillsPage/SkillsPage';
+
+import Login from './components/Authentication/LoginPage';
+import WarningModal from './components/WorkerListPage/WarningModal';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -49,6 +51,7 @@ function App() {
             <main className="m-4 flex-1">
               {isActive === 'Dashboard' && <Dashboard />}
               {isActive === 'Employees' && <Workers />}
+              {isActive === 'Skills' && <Skills />}
               {/* {isActive === 'Scheduling' &&  <Scheduling />}
               {isActive === 'Settings' && <Settings />} */}
             </main>
