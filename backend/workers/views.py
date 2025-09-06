@@ -5,7 +5,7 @@ from django.db.models import Avg
 from .models import *
 from .serializers import *
 
-class ContractWorkerListViewAPI(generics.ListCreateAPIView):
+class WorkerListViewAPI(generics.ListCreateAPIView):
     queryset = ContractWorker.objects.all()
     serializer_class = ContractWorkerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -26,4 +26,10 @@ class ContractWorkerListViewAPI(generics.ListCreateAPIView):
 class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateAPIView):
     queryset = ContractWorker.objects.all()
     serializer_class = ContractWorkerSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+
+class SkillsListViewAPI(generics.ListCreateAPIView):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

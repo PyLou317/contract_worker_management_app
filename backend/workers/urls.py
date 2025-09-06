@@ -4,7 +4,8 @@ from .views import *
 
 
 urlpatterns = [
-    path('workers/', ContractWorkerListViewAPI.as_view()),
+    path('workers/', WorkerListViewAPI.as_view()),
+    path('skills/', SkillsListViewAPI.as_view()),
     path('workers/<int:pk>/', WorkerDetailUpdateViewAPI.as_view()),
 ]
 

@@ -7,14 +7,24 @@ from ratings.serializers import RatingSerializer
 
 class AgencyNameField(serializers.CharField):
     def to_representation(self, value):
-        # This returns the name of the agency for display
         return value.name
+    
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ('id',
+                  'skill_name',
+                  'abreviation',
+                  'base_color',
+                  'description',
+                  )
+        read_only_fields = ['id']
+        
     
 class ContractWorkerSerializer(serializers.ModelSerializer):
     current_contract = serializers.CharField(write_only=True)
     ratings = RatingSerializer(many=True, read_only=True)
-
-    # Read-only field for displaying the full agency details
+    skills = SkillSerializer(many=True, read_only=True)
     agency_details = serializers.SerializerMethodField()
     
     agency = serializers.SlugRelatedField(
@@ -38,7 +48,8 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             'agency', 
             'agency_details',
             'position', 
-            'ratings'
+            'ratings',
+            'skills'
             )
         extra_kwargs = {
             'current_contract': {'write_only': True},
