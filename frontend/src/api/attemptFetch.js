@@ -15,7 +15,7 @@ const attemptFetchPost = async (token, formData, endpoint) => {
   if (!response.ok) {
     const errorData = await response.json();
     console.error('Server error details:', errorData);
-    throw new Error('Failed to add worker');
+    throw new Error('Failed to send data to the server.');
   }
 
   return await response.json();
