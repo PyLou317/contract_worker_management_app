@@ -27,7 +27,7 @@ class SkillAdmin(admin.ModelAdmin):
 
 @admin.register(WorkerSkill)
 class WorkerSkillAdmin(admin.ModelAdmin):
-    list_display = ('worker', 'skill', 'certification_date', 'expiration_date', 'is_active', 'level')
+    list_display = ('worker', 'level', 'skill', 'certification_date', 'expiration_date', 'is_active')
     list_display_links = ('worker', 'skill')
     search_fields = ('worker__first_name', 'worker__last_name', 'skill__skill_name')
     list_filter = ('is_active', 'level')
