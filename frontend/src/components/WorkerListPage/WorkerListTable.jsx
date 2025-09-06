@@ -8,7 +8,7 @@ import '../StarRatingStyles.css';
 import Pagination from '../Pagination';
 import AddWorkerModal from './AddWorkerModal';
 import EditWorkerModal from './EditWorkerModal';
-import skillColorClasses from './SkillClasses';
+import skillColorClasses from '../SkillsPage/SkillColorClasses';
 
 export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen, setIsModalOpen }) {
   const [ordering, setOrdering] = useState('');
@@ -171,17 +171,17 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
                 </td>
                 <td className="text-white py-3 px-6 text-left border-r border-gray-200">
                   <div className="flex flex-wrap gap-2">
-                    {worker.skills !== null &&
-                      worker.skills?.map((skill, index) => (
+                    {worker.worker_skills !== null &&
+                      worker.worker_skills?.map((skill, index) => (
                         <span
                           className={`text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-md transition-colors duration-200 tooltip ${
-                            skillColorClasses[skill.base_color]?.[skill.level] || 'bg-gray-400 hover:bg-gray-500'
+                            skillColorClasses[skill.skill.base_color]?.[skill.level] || 'bg-gray-400 hover:bg-gray-500'
                           }`}
                           key={index}
                         >
-                          {skill.abreviation}-{skill.level}
+                          {skill.skill.abreviation}LV{skill.level}
                           <div className="tooltip-content cursor-pointer">
-                            {skill.skill_name} level {skill.level}
+                            {skill.skill.skill_name} level {skill.level}
                           </div>
                         </span>
                       ))}
