@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import WorkerListTable from '../components/WorkerListTable';
-import Header from '../components/WorkerTableHeader';
+import WorkerListTable from './WorkerListTable';
+import Header from './WorkerTableHeader';
 
 // We can assume by this point that `isSuccess === true`
 export default function Workers() {
