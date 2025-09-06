@@ -20,11 +20,26 @@ class SkillSerializer(serializers.ModelSerializer):
                   )
         read_only_fields = ['id']
         
+
+class WorkerSkillSerializer(serializers.ModelSerializer):
+    skill = SkillSerializer()
+    
+    class Meta:
+        model = WorkerSkill
+        fields = ('id',
+                  'skill',
+                  'certification_date',
+                  'expiration_date',
+                  'is_active',
+                  'level',
+                  )
+        read_only_fields = ['id']
+        
     
 class ContractWorkerSerializer(serializers.ModelSerializer):
     current_contract = serializers.CharField(write_only=True)
     ratings = RatingSerializer(many=True, read_only=True)
-    skills = SkillSerializer(many=True, read_only=True)
+    worker_skills = WorkerSkillSerializer(many=True, read_only=True)
     agency_details = serializers.SerializerMethodField()
     
     agency = serializers.SlugRelatedField(
@@ -49,7 +64,7 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             'agency_details',
             'position', 
             'ratings',
-            'skills'
+            'worker_skills'
             )
         extra_kwargs = {
             'current_contract': {'write_only': True},
