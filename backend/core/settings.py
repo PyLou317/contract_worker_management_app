@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'workers',
     'users',
     'ratings',
+    'timekeep',
     
     # Third Party
     'allauth',
