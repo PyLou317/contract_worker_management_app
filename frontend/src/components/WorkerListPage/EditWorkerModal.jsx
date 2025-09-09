@@ -1,59 +1,40 @@
-import { useState, useRef } from 'react';
-import { useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import refreshToken from '../../api/refreshToken';
 import attemptFetch from '../../api/attemptFetch';
-import Input from '../Inputs/StandardInput';
-import SelectInput from '../Inputs/SelectInput';
+import Input from '../Inputs/LabeledInput';
+import SelectInput from '../Inputs/LabeledSelectInput';
 
 import { getAgencies } from '../../api/getAgencyDataApi';
 import { getWorkerDetails } from '../../api/getWorkerDetailApi';
-
-const editWorker = async (formData) => {
-  let authToken = localStorage.getItem('authToken');
-
-  if (!authToken) {
-    throw new Error('Authentication token not found. Please log in.');
-  }
-
-  try {
-    const response = await attemptFetch(authToken);
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      try {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'An unknown error occurred.');
-      } catch (error) {
-        throw new Error(`Server returned an error: ${response.status} ${response.statusText}`);
-      }
-    }
-
-    return await response.json();
-  } catch (error) {
-    if (error.message === 'Unauthorized') {
-      console.log('Token expired. Attempting to refresh...');
-      try {
-        const newAuthToken = await refreshToken();
-        const newResponse = await attemptFetch(newAuthToken);
-        if (!newResponse.ok) {
-          throw new Error('Failed to refresh token');
-        }
-        return await newResponse.json();
-      } catch (refreshError) {
-        throw new Error('Session expired. Please log in again.');
-      }
-    } else {
-      throw error;
-    }
-  }
-};
+import { fetchData } from '../../api/fetchData';
+import { editWorker } from '../../api/editWorker';
 
 export default function EditWorkerModal({ showModal, onClose, editingWorker, id }) {
   const contract = ['Hello Fresh'];
+  const [addSkillIsVisible, setAddSkillIsVisible] = useState(false);
+  const [originalData, setOriginalData] = useState(null);
+  const [newSkill, setNewSkill] = useState([]);
+  const [newSkillFormData, setNewSkillFormData] = useState({
+    skill_name: '',
+    level: '',
+    certification_date: '',
+    expiration_date: '',
+  });
+
+  const {
+    data: skillData,
+    isPending: skillsIsPending,
+    error: skillsError,
+  } = useQuery({
+    queryKey: ['skill'],
+    queryFn: () => fetchData({ api: 'skills' }),
+    keepPreviousData: true,
+  });
+
+  const skills = skillData?.results || [];
+  const skillNames = skills.map((skill) => skill.skill_name);
 
   const {
     data: workerData,
@@ -66,9 +47,9 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
   });
 
   const {
+    data: agenciesData,
     isPending: agenciesPending,
     error: agenciesError,
-    data: agenciesData,
   } = useQuery({
     queryKey: ['agencies'],
     queryFn: getAgencies,
@@ -77,7 +58,6 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
 
   const agencies = agenciesData?.results || [];
   const agencyNames = agencies.map((agency) => agency.name);
-
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
@@ -92,26 +72,31 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
     performance_score: '',
     communication_score: '',
     skills_score: '',
+    skills: [],
   });
 
   useEffect(() => {
     // Check if workerData is not null or undefined
     if (workerData) {
-      const ratings = workerData.ratings?.[0] || [];
+      const ratings = workerData.ratings?.[0] || {};
+      const skills = workerData.worker_skills || [];
 
-      setFormData({
+      const currentData = {
         first_name: workerData.first_name || '',
         last_name: workerData.last_name || '',
         email: workerData.email || '',
         phone_number: workerData.phone_number || '',
         agency: workerData.agency_details || '',
-        manager_first_name: ratings.manager?.first_name || '',
+        manager: ratings.manager ? `${ratings.manager.first_name || ''} ${ratings.manager.last_name || ''}`.trim() : '',
         comment: ratings.comment || '',
         attendance_score: ratings.attendance_score || '',
         performance_score: ratings.performance_score || '',
         communication_score: ratings.communication_score || '',
         skills_score: ratings.skills_score || '',
-      });
+        skills: skills,
+      };
+      setFormData(currentData);
+      setOriginalData(JSON.parse(JSON.stringify(currentData))); // Deep copy for comparison
     }
   }, [workerData]);
 
@@ -120,7 +105,10 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
   const editWorkerMutation = useMutation({
     mutationFn: editWorker,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['worker'] });
+      // Invalidate queries for both the worker list and the specific worker's details
+      // to ensure the UI reflects the changes after a successful edit.
+      queryClient.invalidateQueries({ queryKey: ['workers'] });
+      queryClient.invalidateQueries({ queryKey: ['worker', id] });
       onClose();
     },
     onError: (error) => {
@@ -137,13 +125,137 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
     }));
   };
 
+  const handleWorkerSkillChange = (index, field, value) => {
+    setFormData((prevData) => {
+      const newSkills = [...prevData.skills];
+      newSkills[index] = {
+        ...newSkills[index],
+        [field]: value,
+      };
+      return { ...prevData, skills: newSkills };
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    editWorkerMutation.mutate(formData);
+
+    if (!originalData) {
+      console.error('Original data not available for comparison.');
+      onClose();
+      return;
+    }
+
+    const payload = {};
+
+    // Basic worker fields
+    const changedFields = ['first_name', 'last_name', 'email', 'phone_number'];
+    changedFields.forEach((key) => {
+      if (formData[key] !== originalData[key]) {
+        payload[key] = formData[key];
+      }
+    });
+
+    // Handle agency change - it likely needs to be an ID
+    if (formData.agency !== originalData.agency) {
+      const selectedAgency = agencies.find((a) => a.name === formData.agency);
+      if (selectedAgency) {
+        // The backend likely expects the agency's primary key (ID).
+        payload.agency = selectedAgency.id;
+      } else {
+        // This case should ideally not happen if the dropdown is populated correctly.
+        console.warn(`Could not find agency with name: ${formData.agency}. The update for the agency might fail.`);
+        payload.agency = formData.agency;
+      }
+    }
+
+    // NOTE: The backend serializer `ContractWorkerSerializer` has `worker_skills` as `read_only=True`.
+    // This means the backend, as-is, will likely ignore this part of the payload.
+    // A backend change is required to allow adding/updating skills via this endpoint.
+    if (JSON.stringify(formData.skills) !== JSON.stringify(originalData.skills)) {
+      payload.worker_skills = formData.skills.map((ws) => ({
+        ...(ws.id && { id: ws.id }),
+        skill_id: ws.skill.id, // Pass skill ID with the key 'skill_id'
+        level: ws.level,
+        certification_date: ws.certification_date,
+        expiration_date: ws.expiration_date,
+      }));
+    }
+
+    // NOTE: Ratings are also read-only and likely need a separate endpoint to be updated.
+    // Sending them here will probably have no effect.
+    const ratingChanged = [
+      'attendance_score',
+      'performance_score',
+      'communication_score',
+      'skills_score',
+      'comment',
+    ].some((key) => String(formData[key]) !== String(originalData[key]));
+
+    if (ratingChanged) {
+      alert('Note: Changes to ratings are not saved. This functionality is not yet supported.');
+    }
+
+    if (Object.keys(payload).length > 0) {
+      console.log('Submitting payload:', payload);
+      editWorkerMutation.mutate({ formData: payload, id });
+    } else {
+      console.log('No changes to save.');
+      onClose();
+    }
+  };
+
+  const toggleAddSkillVisibility = () => {
+    setAddSkillIsVisible(!addSkillIsVisible);
+    console.log('Form Data:', formData);
+    console.log('Skills');
+  };
+
+  const handleAddSkillInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewSkillFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    console.log(newSkillFormData);
+  };
+
+  const handleAddSkill = (e) => {
+    const selectedSkill = skills.find((skill) => skill.skill_name === newSkillFormData.skill_name);
+
+    if (
+      selectedSkill &&
+      newSkillFormData.level &&
+      newSkillFormData.certification_date &&
+      newSkillFormData.expiration_date
+    ) {
+      setFormData((prevData) => ({
+        ...prevData,
+        skills: [
+          ...prevData.skills,
+          {
+            skill: selectedSkill, // Use the full skill object
+            level: newSkillFormData.level,
+            certification_date: newSkillFormData.certification_date,
+            expiration_date: newSkillFormData.expiration_date,
+          },
+        ],
+      }));
+
+      // Reset the new skill form and hide it
+      setNewSkillFormData({
+        skill_name: '',
+        level: '',
+        certification_date: '',
+        expiration_date: '',
+      });
+      setAddSkillIsVisible(false);
+    } else {
+      alert('Please fill in all fields for the new skill.');
+    }
   };
 
   // Conditionally render based on loading/error states
-  if (workerIsPending) {
+  if (workerIsPending || agenciesPending || skillsIsPending) {
     return <div>Loading worker data...</div>;
   }
   if (workerError) {
@@ -155,6 +267,13 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
   if (agenciesError) {
     return <div>Error loading agencies: {agenciesError.message}</div>;
   }
+  if (skillsError) {
+    return <div>Error loading skills data: {skillsError.message}</div>;
+  }
+
+  const inputLabelClasses = 'block text-sm font-medium text-gray-700';
+  const addSkillInputClasses = 'bg-white text-gray-900 border border-gray-400 text-gray-200';
+  const selectInputClasses = 'bg-gray-800 text-gray-200 border border-gray-400 text-gray-200';
 
   return (
     <div
@@ -190,6 +309,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               value={formData.first_name}
               onChange={handleInputChange}
               required
+              className="bg-gray-800 border border-gray-400"
             />
             <Input
               label="Last Name"
@@ -199,6 +319,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               value={formData.last_name}
               onChange={handleInputChange}
               required
+              className="bg-gray-800 border border-gray-400"
             />
             <Input
               label="Email"
@@ -208,6 +329,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               value={formData.email}
               onChange={handleInputChange}
               required
+              className="bg-gray-800 border border-gray-400"
             />
             <Input
               label="Phone Number"
@@ -217,49 +339,8 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               value={formData.phone_number}
               onChange={handleInputChange}
               required
+              className="bg-gray-800 border border-gray-400"
             />
-            {/* <div>
-              <label htmlFor="last_name" className="block text-sm font-medium text-gray-200">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="last_name"
-                name="last_name"
-                value={formData.last_name}
-                onChange={handleInputChange}
-                required
-                className="mt-1 p-2 block w-full rounded-md border bg-gray-800 border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div> */}
-            {/* <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-200">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div> */}
-            {/* <div>
-              <label htmlFor="phone_number" className="block text-sm font-medium text-gray-200">
-                Phone Number
-              </label>
-              <input
-                type="text"
-                id="phone_number"
-                name="phone_number"
-                value={formData.phone_number}
-                onChange={handleInputChange}
-                required
-                className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div> */}
           </div>
 
           <div className="border-b border-gray-700 mt-4"></div>
@@ -271,10 +352,11 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
                 label="Agency"
                 type="text"
                 id="agency"
-                name="agenct"
+                name="agency"
                 value={formData.agency}
                 onChange={handleInputChange}
                 options={agencyNames}
+                className={selectInputClasses}
               />
               <Input
                 label="Manager"
@@ -283,41 +365,8 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
                 name="manager"
                 value={formData.manager}
                 onChange={handleInputChange}
-                required
+                className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
-              {/* <div>
-                <label htmlFor="agency" className="block text-sm font-medium text-gray-200">
-                  Agency
-                </label>
-                <select
-                  id="agency"
-                  name="agency"
-                  value={formData.agency}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                  {agencyNames.map((agency) => (
-                    <option key={agency} value={agency}>
-                      {agency}
-                    </option>
-                  ))}
-                </select>
-              </div> */}
-              {/* <div>
-                <label htmlFor="manager" className="block text-sm font-medium text-gray-200">
-                  Manager
-                </label>
-                <input
-                  type="text"
-                  id="mananger"
-                  name="manager_first_name"
-                  value={formData.manager_first_name ? formData.manager_first_name : ''}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div> */}
             </div>
           </div>
 
@@ -333,7 +382,6 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               {workerData.ratings?.[0]?.average_rating ? workerData.ratings?.[0]?.average_rating : 'N/A'}
             </p>
           </div>
-
           <div className="grid grid-cols-4 gap-4 mt-4">
             <Input
               step="0.25"
@@ -345,7 +393,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               name="attendance_score"
               value={formData.attendance_score}
               onChange={handleInputChange}
-              required
+              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
             <Input
               step="0.25"
@@ -357,7 +405,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               name="communication_score"
               value={formData.communication_score}
               onChange={handleInputChange}
-              required
+              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
             <Input
               step="0.25"
@@ -369,7 +417,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               name="performance_score"
               value={formData.performance_score}
               onChange={handleInputChange}
-              required
+              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
             <Input
               step="0.25"
@@ -381,76 +429,125 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
               name="skills_score"
               value={formData.skills_score}
               onChange={handleInputChange}
-              required
+              className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
-            {/* <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-200 text-center">
-                Attendance
-              </label>
-              <input
-                type="number"
-                step="0.25"
-                min="0"
-                max="5"
-                id="attendance"
-                name="attendance_score"
-                value={formData.attendance_score}
-                onChange={handleInputChange}
-                required
-                className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-center"
-              />
-            </div> */}
-            {/* <div>
-              <label htmlFor="communication_score" className="block text-sm font-medium text-gray-200 text-center">
-                Communication
-              </label>
-              <input
-                type="number"
-                step="0.25"
-                min="0"
-                max="5"
-                id="communication"
-                name="communication_score"
-                value={formData.communication_score}
-                onChange={handleInputChange}
-                required
-                className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-center"
-              />
-            </div> */}
-            {/* <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-200 text-center">
-                Performance
-              </label>
-              <input
-                type="number"
-                step="0.25"
-                min="0"
-                max="5"
-                id="performance"
-                name="performance_score"
-                value={formData.performance_score}
-                onChange={handleInputChange}
-                required
-                className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-center"
-              />
-            </div> */}
-            {/* <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-200 text-center">
-                Skills
-              </label>
-              <input
-                type="number"
-                step="0.25"
-                min="0"
-                max="5"
-                id="skills"
-                name="skills_score"
-                value={formData.skills_score}
-                onChange={handleInputChange}
-                required
-                className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-center"
-              />
-            </div> */}
+          </div>
+          <div className="border-b border-gray-700 mt-4"></div>
+
+          <div className="flex justify-between items-center align-baseline mt-12">
+            <div>
+              <h2 className="text-2xl font-semibold text-white">Skills</h2>
+            </div>
+            <button type="button" onClick={toggleAddSkillVisibility} className="font-semibold cursor-pointer">
+              {addSkillIsVisible ? 'Cancel' : '+ Add Skill'}
+            </button>
+          </div>
+          <div
+            className={`overflow-hidden transition-all duration-500 ease-in-out ${
+              addSkillIsVisible ? 'max-h-[400px]' : 'max-h-0'
+            }`}
+          >
+            <div className={`p-4 rounded-xl shadow-sm border border-gray-700 bg-gray-200 `}>
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold text-gray-700">New Skill</h3>
+                <button
+                  className="font-semibold px-4 py-2 text-gray-900 bg-yellow-200 rounded-md hover:bg-yellow-300 hover:text-gray-700"
+                  onClick={handleAddSkill}
+                >
+                  Add
+                </button>
+              </div>
+              <div className="grid grid-cols-4 gap-4 mt-4">
+                <SelectInput
+                  label="Skill"
+                  type="text"
+                  id="skill_name"
+                  name="skill_name"
+                  value={newSkillFormData.skill_name}
+                  onChange={handleAddSkillInputChange}
+                  options={skillNames}
+                  className={addSkillInputClasses}
+                  inputClasses={inputLabelClasses}
+                  required
+                />
+                <Input
+                  label="Level"
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="5"
+                  id="level"
+                  name="level"
+                  value={newSkillFormData.level}
+                  onChange={handleAddSkillInputChange}
+                  required
+                  className={addSkillInputClasses}
+                  inputClasses={inputLabelClasses}
+                />
+                <Input
+                  label="Certification Date"
+                  type="date"
+                  id="certification_date"
+                  name="certification_date"
+                  value={newSkillFormData.certification_date}
+                  onChange={handleAddSkillInputChange}
+                  required
+                  className={addSkillInputClasses}
+                  inputClasses={inputLabelClasses}
+                />
+                <Input
+                  label="Expiration Date"
+                  type="date"
+                  id="expiration_date"
+                  name="expiration_date"
+                  value={newSkillFormData.expiration_date}
+                  onChange={handleAddSkillInputChange}
+                  required
+                  className={addSkillInputClasses}
+                  inputClasses={inputLabelClasses}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 mt-4">
+            {formData.skills &&
+              formData.skills.map((workerSkill, index) => (
+                <div key={index} className="p-4 rounded-xl shadow-sm border border-gray-700 bg-gray-800">
+                  <h3 className="font-semibold text-white mb-4">Skill Name: {workerSkill.skill.skill_name}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <Input
+                      label="Certification Date"
+                      type="date"
+                      id={`cert-date-${index}`}
+                      name={`certification_date-${index}`}
+                      value={workerSkill.certification_date || ''}
+                      onChange={(e) => handleWorkerSkillChange(index, 'certification_date', e.target.value)}
+                      className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <Input
+                      label="Expiration Date"
+                      type="date"
+                      id={`exp-date-${index}`}
+                      name={`expiration_date-${index}`}
+                      value={workerSkill.expiration_date || ''}
+                      onChange={(e) => handleWorkerSkillChange(index, 'expiration_date', e.target.value)}
+                      className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <Input
+                      label="Level"
+                      type="number"
+                      step="1"
+                      min="1"
+                      max="10"
+                      id={`level-${index}`}
+                      name={`level-${index}`}
+                      value={workerSkill.level || ''}
+                      onChange={(e) => handleWorkerSkillChange(index, 'level', e.target.value)}
+                      className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              ))}
           </div>
           <div className="border-b border-gray-700 mt-4"></div>
           <div>
@@ -462,7 +559,6 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
                 rows={3}
                 value={formData.comment}
                 onChange={handleInputChange}
-                required
                 className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               ></textarea>
             </div>
