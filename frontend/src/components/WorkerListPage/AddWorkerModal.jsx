@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import InputDiv from '../Inputs/StandardInput';
-import SelectInput from '../Inputs/SelectInput';
+import Input from '../Inputs/LabeledInput';
+import SelectInput from '../Inputs/LabeledSelectInput';
+import CancelBtn from '../Buttons/CancelBtn';
+import SubmitBtn from '../Buttons/SubmitBtn';
 
 import { getAgencies } from '../../api/getAgencyDataApi';
 import addWorker from '../../api/addWorker';
@@ -63,6 +65,10 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
     addWorkerMutation.mutate(formData);
   };
 
+  const inputFieldClasses =
+    'mt-1 p-2 block w-full rounded-md border bg-gray-800 border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500';
+  const inputLabelClasses = 'block text-sm font-medium text-gray-200';
+
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300 ${
@@ -87,38 +93,44 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <InputDiv
+          <Input
             type="text"
             id="first_name"
             name="first_name"
             label="First Name"
             value={formData.first_name}
             onChange={handleInputChange}
-          ></InputDiv>
-          <InputDiv
+            className={inputFieldClasses}
+            labelClasses={inputLabelClasses}
+          />
+          <Input
             type="text"
             id="last_name"
             name="last_name"
             label="Last Name"
             value={formData.last_name}
             onChange={handleInputChange}
-          ></InputDiv>
-          <InputDiv
+            className={inputFieldClasses}
+            labelClasses={inputLabelClasses}
+          />
+          <Input
             type="email"
             id="email"
             name="email"
             label="Email"
             value={formData.email}
             onChange={handleInputChange}
-          ></InputDiv>
-          <InputDiv
+            className={inputFieldClasses}
+          />
+          <Input
             type="text"
             id="phone_number"
             name="phone_number"
             label="Phone Number"
             value={formData.phone_number}
             onChange={handleInputChange}
-          ></InputDiv>
+            className={inputFieldClasses}
+          />
           {contracts && (
             <SelectInput
               label="Current Contract"
@@ -129,6 +141,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
               onChange={handleInputChange}
               required
               options={contracts}
+              className={inputFieldClasses}
             ></SelectInput>
           )}
           {agencies && (
@@ -141,24 +154,30 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
               onChange={handleInputChange}
               required
               options={agencyNames}
+              className={inputFieldClasses} 
             ></SelectInput>
           )}
           <div className="mt-6 flex justify-end gap-3">
-            <button
+            <CancelBtn onClick={onClose} disabled={addWorkerMutation.isPending} label="Cancel" />
+            {/* <button
               type="button"
               onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
               disabled={addWorkerMutation.isPending}
             >
               Cancel
-            </button>
-            <button
+            </button> */}
+            <SubmitBtn
+              label={addWorkerMutation.isPending ? 'Adding...' : editingWorker ? 'Save Changes' : 'Add Worker'}
+              disabled={addWorkerMutation.isPending}
+            />
+            {/* <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
               disabled={addWorkerMutation.isPending}
             >
               {addWorkerMutation.isPending ? 'Adding...' : editingWorker ? 'Save Changes' : 'Add Worker'}
-            </button>
+            </button> */}
           </div>
         </form>
       </dialog>
