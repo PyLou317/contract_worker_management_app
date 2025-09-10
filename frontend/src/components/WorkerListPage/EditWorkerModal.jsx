@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import refreshToken from '../../api/refreshToken';
@@ -14,7 +15,6 @@ import { editWorker } from '../../api/editWorker';
 export default function EditWorkerModal({ showModal, onClose, editingWorker, id }) {
   const contract = ['Hello Fresh'];
   const [addSkillIsVisible, setAddSkillIsVisible] = useState(false);
-  const [originalData, setOriginalData] = useState(null);
   const [newSkill, setNewSkill] = useState([]);
   const [newSkillFormData, setNewSkillFormData] = useState({
     skill_name: '',
@@ -78,10 +78,10 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
   useEffect(() => {
     // Check if workerData is not null or undefined
     if (workerData) {
-      const ratings = workerData.ratings?.[0] || {};
+      const ratings = workerData.ratings?.[0] || [];
       const skills = workerData.worker_skills || [];
 
-      const currentData = {
+      setFormData({
         first_name: workerData.first_name || '',
         last_name: workerData.last_name || '',
         email: workerData.email || '',
@@ -94,9 +94,8 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
         communication_score: ratings.communication_score || '',
         skills_score: ratings.skills_score || '',
         skills: skills,
-      };
-      setFormData(currentData);
-      setOriginalData(JSON.parse(JSON.stringify(currentData))); // Deep copy for comparison
+      });
+      console.log(skills);
     }
   }, [workerData]);
 
@@ -105,11 +104,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
   const editWorkerMutation = useMutation({
     mutationFn: editWorker,
     onSuccess: () => {
-      // Invalidate queries for both the worker list and the specific worker's details
-      // to ensure the UI reflects the changes after a successful edit.
-      queryClient.invalidateQueries({ queryKey: ['workers'] });
-      queryClient.invalidateQueries({ queryKey: ['worker', id] });
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['worker'] });
     },
     onError: (error) => {
       console.error('Error editing worker:', error);
@@ -138,70 +133,9 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!originalData) {
-      console.error('Original data not available for comparison.');
-      onClose();
-      return;
-    }
-
-    const payload = {};
-
-    // Basic worker fields
-    const changedFields = ['first_name', 'last_name', 'email', 'phone_number'];
-    changedFields.forEach((key) => {
-      if (formData[key] !== originalData[key]) {
-        payload[key] = formData[key];
-      }
-    });
-
-    // Handle agency change - it likely needs to be an ID
-    if (formData.agency !== originalData.agency) {
-      const selectedAgency = agencies.find((a) => a.name === formData.agency);
-      if (selectedAgency) {
-        // The backend likely expects the agency's primary key (ID).
-        payload.agency = selectedAgency.id;
-      } else {
-        // This case should ideally not happen if the dropdown is populated correctly.
-        console.warn(`Could not find agency with name: ${formData.agency}. The update for the agency might fail.`);
-        payload.agency = formData.agency;
-      }
-    }
-
-    // NOTE: The backend serializer `ContractWorkerSerializer` has `worker_skills` as `read_only=True`.
-    // This means the backend, as-is, will likely ignore this part of the payload.
-    // A backend change is required to allow adding/updating skills via this endpoint.
-    if (JSON.stringify(formData.skills) !== JSON.stringify(originalData.skills)) {
-      payload.worker_skills = formData.skills.map((ws) => ({
-        ...(ws.id && { id: ws.id }),
-        skill_id: ws.skill.id, // Pass skill ID with the key 'skill_id'
-        level: ws.level,
-        certification_date: ws.certification_date,
-        expiration_date: ws.expiration_date,
-      }));
-    }
-
-    // NOTE: Ratings are also read-only and likely need a separate endpoint to be updated.
-    // Sending them here will probably have no effect.
-    const ratingChanged = [
-      'attendance_score',
-      'performance_score',
-      'communication_score',
-      'skills_score',
-      'comment',
-    ].some((key) => String(formData[key]) !== String(originalData[key]));
-
-    if (ratingChanged) {
-      alert('Note: Changes to ratings are not saved. This functionality is not yet supported.');
-    }
-
-    if (Object.keys(payload).length > 0) {
-      console.log('Submitting payload:', payload);
-      editWorkerMutation.mutate({ formData: payload, id });
-    } else {
-      console.log('No changes to save.');
-      onClose();
-    }
+    console.log('Submit button clicked', formData, id);
+    console.log(formData);
+    editWorkerMutation.mutate({ formData, id });
   };
 
   const toggleAddSkillVisibility = () => {
