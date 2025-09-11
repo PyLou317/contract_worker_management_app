@@ -1,5 +1,5 @@
 import refreshToken from './refreshToken';
-import attemptFetchPost from './attemptFetch';
+import attemptFetchPost from './addWorkerAttemptFetch';
 
 const endpoint = `${import.meta.env.VITE_API_URL}/skills/`;
 
