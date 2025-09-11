@@ -6,8 +6,8 @@ import { Rating } from 'react-simple-star-rating';
 
 import '../StarRatingStyles.css';
 import Pagination from '../Pagination';
-import AddWorkerModal from './AddWorkerModal';
-import EditWorkerModal from './EditWorkerModal';
+import AddWorkerModal from './AddWorkerModal/AddWorkerModal';
+import EditWorkerModal from './EditWorkerModal/EditWorkerModal';
 import skillColorClasses from '../SkillsPage/SkillColorClasses';
 
 export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen, setIsModalOpen }) {
