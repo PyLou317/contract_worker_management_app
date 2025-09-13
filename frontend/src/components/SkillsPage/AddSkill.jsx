@@ -82,7 +82,7 @@ export default function AddSkillForm() {
               Skill Name
             </label>
             <input
-              className="border rounded-lg p-2 w-[320px] h-[40px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-lg p-2 w-[320px] h-[40px] bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="skill_name"
               name="skill_name"
@@ -97,7 +97,7 @@ export default function AddSkillForm() {
               Abreviation
             </label>
             <input
-              className="border rounded-lg p-2 w-[80px] h-[40px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-lg p-2 w-[80px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="abreviation"
               name="abreviation"
@@ -107,57 +107,12 @@ export default function AddSkillForm() {
               required
             />
           </div>
-          {/* <div>
-            <label className="block text-gray-700 text-xs font-bold mb-2" htmlFor="level">
-              Level
-            </label>
-            <select
-              className="border rounded-lg p-2 w-fullh-[40px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              id="level"
-              name="level"
-              onChange={handleInputChange}
-              value={formData.level}
-              required
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="4">5</option>
-            </select>
-          </div> */}
-          {/* <div>
-            <label className="block text-gray-700 text-xs font-bold mb-2" htmlFor="skill_name">
-              Certification Date
-            </label>
-            <input
-              className="border rounded-lg p-2 h-[40px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-              type="date"
-              id="certification_date"
-              name="certification_date"
-              onChange={handleInputChange}
-              value={formData.certification_date}
-            />
-          </div> */}
-          {/* <div>
-            <label className="block text-gray-700 text-xs font-bold mb-2" htmlFor="skill_name">
-              Expiration Date
-            </label>
-            <input
-              className="border rounded-lg p-2 h-[40px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-              type="date"
-              id="expiration_date"
-              name="expiration_date"
-              onChange={handleInputChange}
-              value={formData.expiration_date}
-            />
-          </div> */}
           <div>
             <label className="block text-gray-700 text-xs font-bold mb-2" htmlFor="description">
               Description
             </label>
             <input
-              className="border rounded-lg p-2 w-[455px] h-[40px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-lg p-2 md:w-[250px] lg:w-[455px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="description"
               name="description"
