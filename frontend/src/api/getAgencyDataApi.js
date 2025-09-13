@@ -1,9 +1,6 @@
 const endpoint = `${import.meta.env.VITE_API_URL}/agencies/`;
 
-export async function getAgencies({ queryKey }) {
-  const [, searchTerm, page, ordering] = queryKey;
-//   const url = `${endpoint}?search=${searchTerm}&page=${page}&ordering=${ordering}`;
-
+export async function getAgencies() {
   try {
     const response = await fetch(endpoint);
 
