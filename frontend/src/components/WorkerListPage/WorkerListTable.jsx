@@ -164,10 +164,10 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
                 >
                   {hoveredWorkerId === worker.id && (
                     <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
-                      {worker.average_rating} out of 5
+                      {worker.rating ? worker.rating.average_rating : 'N/A'} out of 5
                     </div>
                   )}
-                  <Rating initialValue={worker.ratings?.[0]?.average_rating} {...starRating} />
+                  <Rating initialValue={worker.rating !== null && worker.rating.average_rating ? worker.rating.average_rating : 0} {...starRating} />
                 </td>
                 <td className="text-white py-3 px-6 text-left border-r border-gray-200">
                   <div className="flex flex-wrap gap-2">
