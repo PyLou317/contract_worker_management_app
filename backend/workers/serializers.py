@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from agencies.models import StaffingAgency as Agency
 from organizations.models import WarehouseBusiness as Contract
+from ratings.models import Rating
 from ratings.serializers import RatingSerializer
 
 
@@ -33,22 +34,13 @@ class WorkerSkillSerializer(serializers.ModelSerializer):
                   'is_active',
                   'level',
                   )
-        read_only_fields = ['id']
         
     
 class ContractWorkerSerializer(serializers.ModelSerializer):
     current_contract = serializers.CharField(write_only=True)
-    ratings = RatingSerializer(many=True, read_only=True)
-    worker_skills = WorkerSkillSerializer(many=True, read_only=True)
+    rating = RatingSerializer()
+    worker_skills = WorkerSkillSerializer(many=True)
     agency_details = serializers.SerializerMethodField()
-    
-    agency = serializers.SlugRelatedField(
-        slug_field='name',
-        queryset=Agency.objects.all(),
-        write_only=True
-    )
-    
-    # New field to display the human-readable position label
     position = serializers.SerializerMethodField()
     
     class Meta:
@@ -60,26 +52,22 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             'email', 
             'phone_number', 
             'current_contract',
-            'agency', 
             'agency_details',
             'position', 
-            'ratings',
+            'rating',
             'worker_skills'
             )
+        # Makes these fields write only
         extra_kwargs = {
             'current_contract': {'write_only': True},
             'position': {'write_only': True}
             }
     
-    # def get_rating(self, obj):
-    #     return obj.rating
         
     def get_agency_details(self, obj):
-        # A custom method to return the agency's name for representation
         return obj.agency.name
     
     def get_position(self, obj):
-        # This method calls Django's built-in get_FOO_display method to get the human-readable label
         return obj.get_position_display()
         
     def get_average_rating(self, obj):
@@ -88,6 +76,7 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             total_score = sum(rating.get_average_score() for rating in ratings)
             return total_score / ratings.count()
         return 0
+    
     
     def create(self, validated_data):
         agency_name = validated_data.pop('agency')
@@ -100,7 +89,6 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
                 {"agency": "Agency with this name does not exist."}
             )
         
-        # 4. Look up the Contract object based on the name
         try:
             contract_obj = Contract.objects.get(name=contract_name)
         except Contract.DoesNotExist:
@@ -115,3 +103,94 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             )
         
         return worker
+
+
+    def update(self, instance, validated_data):
+        rating_data = validated_data.pop('rating', None)
+        worker_skills_data = validated_data.pop('worker_skills', None)
+        
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+
+        if rating_data:
+            if hasattr(instance, 'rating'):
+                rating_instance = instance.rating
+                
+                # Update existing rating
+                for attr, value in rating_data.items():
+                    setattr(rating_instance, attr, value)
+                rating_instance.save()
+               
+            else:
+                # If rating doesn't exist, create a new on
+                Rating.objects.create(worker=instance, **rating_data)
+                
+            
+        # Step 3: Handle nested updates or creations if data exists
+        if worker_skills_data is not None:
+            # Create a set of existing skill IDs for comparison
+            existing_skills = {skill.id for skill in instance.worker_skills.all()}
+            
+            # Keep track of updated or created skill IDs
+            updated_skill_ids = set()
+
+            for skill_data in worker_skills_data:
+                worker_skill_id = skill_data.get('id')
+                
+                # Extract the nested skill data and find the Skill instance
+                nested_skill_data = skill_data.pop('skill', None)
+                
+                # We must get the Skill object to link the WorkerSkill
+                # The 'skill' field from the front-end contains the data needed to find the skill
+                if nested_skill_data:
+                    # Find the Skill object. You should use a unique field like `skill_name` or `id`.
+                    # Assuming the front-end sends 'id' for the Skill itself
+                    skill_id = nested_skill_data.get('id')
+                    if not skill_id:
+                        # Fallback in case ID is not sent, get by name.
+                        # This is less robust but handles your current validated data.
+                        skill_name = nested_skill_data.get('skill_name')
+                        skill_instance = Skill.objects.get(skill_name=skill_name)
+                    else:
+                        skill_instance = Skill.objects.get(id=skill_id)
+                else:
+                    # This case is unlikely, but good to handle
+                    skill_instance = None
+
+                if worker_skill_id:
+                    # Update existing worker skill
+                    try:
+                        worker_skill = instance.worker_skills.get(id=worker_skill_id)
+                        for attr, value in skill_data.items():
+                            setattr(worker_skill, attr, value)
+                        worker_skill.save()
+                        updated_skill_ids.add(worker_skill_id)
+                    except WorkerSkill.DoesNotExist:
+                        # Handle case where a non-existent ID is sent
+                        pass
+                else:
+                    # Corrected logic for creating a new WorkerSkill
+                    if skill_instance:
+                        # Before creating, check if a WorkerSkill with this worker and skill already exists
+                        try:
+                            existing_worker_skill = WorkerSkill.objects.get(worker=instance, skill=skill_instance)
+                            # If it exists, update it instead of creating a new one
+                            for attr, value in skill_data.items():
+                                setattr(existing_worker_skill, attr, value)
+                            existing_worker_skill.save()
+                            updated_skill_ids.add(existing_worker_skill.id)
+                        except WorkerSkill.DoesNotExist:
+                            # If it does not exist, then create it
+                            new_worker_skill = WorkerSkill.objects.create(
+                                worker=instance, 
+                                skill=skill_instance, 
+                                **skill_data
+                            )
+                            updated_skill_ids.add(new_worker_skill.id)
+            
+            skills_to_delete = existing_skills - updated_skill_ids
+            instance.worker_skills.filter(id__in=skills_to_delete).delete()
+            
+        return instance
