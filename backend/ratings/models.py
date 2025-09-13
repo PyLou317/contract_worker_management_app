@@ -8,10 +8,10 @@ class Rating(models.Model):
     """
     Represents a single evaluation for a worker by a manager.
     """
-    worker = models.ForeignKey(
+    worker = models.OneToOneField(
         ContractWorker,
         on_delete=models.CASCADE,
-        related_name='ratings',
+        related_name='rating',
         verbose_name=_('worker')
     )
     
@@ -24,27 +24,20 @@ class Rating(models.Model):
         verbose_name=_('manager')
     )
     
-    class RatingChoices(models.IntegerChoices):
-        EXCELLENT = 5, _('Excellent')
-        GOOD = 4, _('Good')
-        AVERAGE = 3, _('Average')
-        BELOW_AVERAGE = 2, _('Below Average')
-        POOR = 1, _('Poor')
-    
-    attendance_score = models.IntegerField(
-        choices=RatingChoices.choices,
+    attendance_score = models.FloatField(
+        default=0,
         verbose_name=_('attendance')
     )
-    performance_score = models.IntegerField(
-        choices=RatingChoices.choices,
+    performance_score = models.FloatField(
+        default=0,
         verbose_name=_('performance')
     )
-    communication_score = models.IntegerField(
-        choices=RatingChoices.choices,
+    communication_score = models.FloatField(
+        default=0,
         verbose_name=_('communication')
     )
-    skills_score = models.IntegerField(
-        choices=RatingChoices.choices,
+    skills_score = models.FloatField(
+        default=0,
         verbose_name=_('skills')
     )
     
