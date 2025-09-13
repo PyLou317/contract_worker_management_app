@@ -16,10 +16,9 @@ class WorkerListViewAPI(generics.ListCreateAPIView):
     ordering = ['-avg_rating']
     
     def get_queryset(self):
-        # Annotate the queryset with the average rating.
         queryset = super().get_queryset()
         return queryset.annotate(
-            avg_rating=Avg('ratings__performance_score')
+            avg_rating=Avg('rating__performance_score')
         )
         
         
