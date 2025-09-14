@@ -8,7 +8,8 @@ import Workers from './components/WorkerListPage/WorkersPage';
 import Skills from './components/SkillsPage/SkillsPage';
 
 import Login from './components/Authentication/LoginPage';
-import WarningModal from './components/WorkerListPage/WarningModal';
+import LogoutModal from './components/Authentication/LogoutModal';
+import handleLogout from './components/Authentication/LogoutFunction';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -20,7 +21,6 @@ function App() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Check for the auth token when the app loads
     const token = localStorage.getItem('authToken');
     if (token) {
       setIsLoggedIn(true);
@@ -30,8 +30,7 @@ function App() {
   const handleSideLinkClick = (name) => {
     setIsActive(name);
   };
-
-  if (!isLoggedIn) {
+  if (isLoggedIn === false) {
     return <Login />;
   } else {
     return (
@@ -40,12 +39,14 @@ function App() {
           <SideNavBar
             activeLink={isActive}
             onLinkClick={handleSideLinkClick}
-            onLogoutClick={() => {setShowModal(true); console.log('Logout clicked')}}
+            onLogoutClick={() => {
+              setShowModal(true);
+            }}
           />
-          <WarningModal show={showModal} onClose={() => setShowModal(false)}>
+          <LogoutModal show={showModal} onClose={() => setShowModal(false)}>
             <p className="text-lg font-semibold">Are you sure you want to log out?</p>
             <p className="text-sm text-gray-400 mt-2">You will need to sign in again to access your account.</p>
-          </WarningModal>
+          </LogoutModal>
           <div className="flex flex-col flex-1 h-screen overflow-y-auto">
             <TopNavBar />
             <main className="m-4 flex-1">
