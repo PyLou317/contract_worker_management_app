@@ -38,10 +38,11 @@ class WorkerSkillSerializer(serializers.ModelSerializer):
     
 class ContractWorkerSerializer(serializers.ModelSerializer):
     current_contract = serializers.CharField(write_only=True)
-    rating = RatingSerializer()
-    worker_skills = WorkerSkillSerializer(many=True)
+    rating = RatingSerializer(required=False)
+    worker_skills = WorkerSkillSerializer(many=True, required=False)
     agency_details = serializers.SerializerMethodField()
     position = serializers.SerializerMethodField()
+    agency = serializers.CharField(write_only=True)
     
     class Meta:
         model = ContractWorker
@@ -55,7 +56,8 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             'agency_details',
             'position', 
             'rating',
-            'worker_skills'
+            'worker_skills',
+            'agency',
             )
         # Makes these fields write only
         extra_kwargs = {
@@ -109,6 +111,24 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
         rating_data = validated_data.pop('rating', None)
         worker_skills_data = validated_data.pop('worker_skills', None)
         
+        # Check if 'agency' is in validated_data and handle it separately
+        agency_name = validated_data.pop('agency', None)
+        if agency_name:
+            try:
+                agency_obj = Agency.objects.get(name=agency_name)
+                instance.agency = agency_obj
+            except Agency.DoesNotExist:
+                raise serializers.ValidationError({"agency": "Agency with this name does not exist."})
+                
+        # Check for 'current_contract' as well, since it's also a ForeignKey
+        contract_name = validated_data.pop('current_contract', None)
+        if contract_name:
+            try:
+                contract_obj = Contract.objects.get(name=contract_name)
+                instance.current_contract = contract_obj
+            except Contract.DoesNotExist:
+                raise serializers.ValidationError({"current_contract": "Contract with this name does not exist."})
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
