@@ -22,7 +22,7 @@ class WorkerListViewAPI(generics.ListCreateAPIView):
         )
         
         
-class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateAPIView):
+class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = ContractWorker.objects.all()
     serializer_class = ContractWorkerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
