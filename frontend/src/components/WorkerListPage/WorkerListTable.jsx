@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import { getWorkers } from '../../api/getWorkersApi';
@@ -9,12 +9,17 @@ import Pagination from '../Pagination';
 import AddWorkerModal from './AddWorkerModal/AddWorkerModal';
 import EditWorkerModal from './EditWorkerModal/EditWorkerModal';
 import skillColorClasses from '../SkillsPage/SkillColorClasses';
+import DeleteWarningModal from './DeleteWarningModal';
+import LoadingSpinner from '../Loader';
 
 export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen, setIsModalOpen }) {
   const [ordering, setOrdering] = useState('');
   const [editingWorker, setEditingWorker] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
   const [editingWorkerId, setEditingWorkerId] = useState(null);
+  const [deletingWorkerId, setDeletingWorkerId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const starRating = {
     size: 24,
@@ -52,9 +57,9 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
     setEditingWorkerId(workerId);
   };
 
-  const handleDeleteWorker = (workerId) => {
-    console.log('Delete worker with ID:', workerId);
-    // TODO add modal or API call here
+  const handleOpenDeleteWorker = (workerId) => {
+    setShowDeleteModal(true);
+    setDeletingWorkerId(workerId);
   };
 
   const { isPending, error, data, isFetching } = useQuery({
@@ -63,17 +68,17 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
     keepPreviousData: true,
   });
 
-  if (isPending || isFetching) {
+  if (isFetching || isPending) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <svg className="mr-3 size-10 animate-spin text-blue-500" viewBox="0 0 24 24"></svg>
+      <div className="flex justify-center items-center h-[400px]">
+        <LoadingSpinner size="10"/>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-full">
+      <div className="flex justify-center items-center h-[400px]">
         <div className="flex justify-center items-center h-auto w-1/3 mx-auto bg-red-100 text-red-700 p-4 rounded-lg">
           An error has occurred: {error.message}
         </div>
@@ -82,11 +87,32 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
   }
 
   const workers = data?.results || [];
-  const nextUrl = data.next;
-  const prevUrl = data.previous;
+  const nextUrl = data?.next;
+  const prevUrl = data?.previous;
 
   return (
     <>
+      {successMessage && (
+        <div className="fixed top-20 left-100 w-1/2 z-50 p-4">
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+            <span className="block sm:inline">{successMessage}</span>
+            <span
+              className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
+              onClick={() => setSuccessMessage(null)}
+            >
+              <svg
+                className="fill-current h-6 w-6 text-green-500"
+                role="button"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <title>Close</title>
+                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.85l-2.651 2.99a1.2 1.2 0 1 1-1.697-1.697l2.99-2.651-2.99-2.651a1.2 1.2 0 0 1 1.697-1.697L10 8.15l2.651-2.99a1.2 1.2 0 1 1 1.697 1.697L11.85 10l2.99 2.651a1.2 1.2 0 0 1 0 1.698z" />
+              </svg>
+            </span>
+          </div>
+        </div>
+      )}
       <style>
         {`
           .tooltip {
@@ -167,7 +193,12 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
                       {worker.rating ? worker.rating.average_rating : 'N/A'} out of 5
                     </div>
                   )}
-                  <Rating initialValue={worker.rating !== null && worker.rating.average_rating ? worker.rating.average_rating : 0} {...starRating} />
+                  <Rating
+                    initialValue={
+                      worker.rating !== null && worker.rating.average_rating ? worker.rating.average_rating : 0
+                    }
+                    {...starRating}
+                  />
                 </td>
                 <td className="text-white py-3 px-6 text-left border-r border-gray-200">
                   <div className="flex flex-wrap gap-2">
@@ -210,7 +241,7 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
                       </svg>
                     </button>
                     <button
-                      onClick={() => handleDeleteWorker(worker.id)}
+                      onClick={() => handleOpenDeleteWorker(worker.id)}
                       className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
                       aria-label="Delete worker"
                     >
@@ -239,10 +270,9 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
       <Pagination
         page={page}
         setPage={setPage}
-        totalPages={data.count}
+        totalPages={data?.count}
         nextUrl={nextUrl}
         prevUrl={prevUrl}
-        //   isFetching={isFetching}
         updateUrl={updateUrl}
       />
 
@@ -254,6 +284,24 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
           editingWorker={editingWorker}
           id={editingWorkerId}
         />
+      )}
+      {showDeleteModal && (
+        <DeleteWarningModal
+          show={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          workerId={deletingWorkerId}
+          onDeleteSuccess={() => {
+            setSuccessMessage('Worker successfully deleted!');
+            setShowDeleteModal(false);
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+          }}
+        >
+          <h1 className="text-3xl font-semibold mb-4 text-white">Delete Worker</h1>
+          <p className="text-lg font-semibold">Are you sure you want to delete this worker?</p>
+          <p className="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+        </DeleteWarningModal>
       )}
     </>
   );
