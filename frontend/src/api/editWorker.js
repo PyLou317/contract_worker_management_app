@@ -1,4 +1,5 @@
 import refreshToken from './refreshToken';
+import logout from '../components/Authentication/LogoutFunction';
 
 const attemptFetch = async ({ token, url, data }) => {
   try {
@@ -49,6 +50,9 @@ export const editWorker = async ({ formData, id }) => {
         }
         return await attemptFetch(newAuthToken, endpoint, formData);
       } catch (refreshError) {
+        if (refreshError.status === 401) {
+          logout();
+        }
         throw new Error('Session expired. Please log in again.');
       }
     } else {
@@ -56,4 +60,3 @@ export const editWorker = async ({ formData, id }) => {
     }
   }
 };
-
