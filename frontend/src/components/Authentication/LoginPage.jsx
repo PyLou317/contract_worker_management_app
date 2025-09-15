@@ -33,8 +33,9 @@ export default function Login() {
       // Store the access token in localStorage for later use
       localStorage.setItem('authToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
-      console.log('Login successful! Tokens saved:', data.access);
-      // Handle navigation to the next page or a dashboard here
+        console.log('Login successful! Tokens saved:', data.access);
+        
+      // Navigation to the next page
       window.location.href = '/dashboard';
     } catch (err) {
       console.error(err);
