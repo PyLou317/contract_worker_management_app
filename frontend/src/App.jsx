@@ -3,7 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import TopNavBar from './components/NavBars/TopNavBar';
 import SideNavBar from './components/NavBars/SideNavBar';
-import Dashboard from './pages/DashboardPage';
+import Dashboard from './pages/Dashboard/DashboardPage';
 import Workers from './components/WorkerListPage/WorkersPage';
 import Skills from './components/SkillsPage/SkillsPage';
 
