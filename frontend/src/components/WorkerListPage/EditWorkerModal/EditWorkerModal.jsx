@@ -46,7 +46,6 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
     queryFn: () => getWorkerDetails({ workerId: id }),
     enabled: !!id, // Only run this query if an ID exists
   });
-  console.log('Worker Data:', workerData);
 
   const {
     data: agenciesData,
