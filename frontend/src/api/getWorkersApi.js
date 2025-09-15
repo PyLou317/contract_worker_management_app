@@ -2,7 +2,13 @@ const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
 
 export async function getWorkers({ queryKey }) {
   const [, searchTerm, page, ordering] = queryKey;
-  const url = `${endpoint}?search=${searchTerm}&page=${page}&ordering=${ordering}`;
+  let url = '';
+
+  if (searchTerm || page || ordering) {
+    url = `${endpoint}?search=${searchTerm}&page=${page}&ordering=${ordering}`;
+  } else {
+    url = endpoint;
+  }
 
   try {
     const response = await fetch(url);
