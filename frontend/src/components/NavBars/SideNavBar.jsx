@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Brand from '../Brand';
 
 export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
