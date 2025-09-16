@@ -1,7 +1,0 @@
-.skill-card {
-  transition: transform 0.3s ease-in-out; /* Smooth transition for the scale effect */
-}
-
-.skill-card:hover {
-  height: 200px;
-}
