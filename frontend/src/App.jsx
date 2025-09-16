@@ -4,8 +4,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import TopNavBar from './components/NavBars/TopNavBar';
 import SideNavBar from './components/NavBars/SideNavBar';
 import Dashboard from './pages/Dashboard/DashboardPage';
-import Workers from './components/WorkerListPage/WorkersPage';
-import Skills from './components/SkillsPage/SkillsPage';
+import Workers from './pages/WorkerListPage/WorkersPage';
+import Skills from './pages/SkillsPage/SkillsPage';
 
 import Login from './components/Authentication/LoginPage';
 import LogoutModal from './components/Authentication/LogoutModal';
