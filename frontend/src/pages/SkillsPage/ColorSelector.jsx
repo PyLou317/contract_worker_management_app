@@ -3,7 +3,7 @@ import skillColorClasses from './SkillColorClasses';
 
 const colors = Object.keys(skillColorClasses);
 
-export default function ColorSelector({ onColorChange }) {
+export default function ColorSelector({ onColorChange, extraClasses }) {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
 
   const handleColorChange = (e) => {
@@ -25,7 +25,7 @@ export default function ColorSelector({ onColorChange }) {
           Base Color
         </label>
         <select
-          className="border rounded-lg p-2 w-full h-[40px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={`border rounded-lg p-2 w-full h-[40px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${extraClasses}`}
           id="color"
           name="color"
           value={selectedColor}
