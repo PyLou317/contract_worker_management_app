@@ -6,6 +6,7 @@ import SideNavBar from './components/NavBars/SideNavBar';
 import Dashboard from './pages/Dashboard/DashboardPage';
 import Workers from './pages/WorkerListPage/WorkersPage';
 import Skills from './pages/SkillsPage/SkillsPage';
+import Schedule from './pages/Schedule/SchedulePage';
 
 import Login from './components/Authentication/LoginPage';
 import LogoutModal from './components/Authentication/LogoutModal';
@@ -53,8 +54,8 @@ function App() {
               {isActive === 'Dashboard' && <Dashboard />}
               {isActive === 'Employees' && <Workers />}
               {isActive === 'Skills' && <Skills />}
-              {/* {isActive === 'Scheduling' &&  <Scheduling />}
-              {isActive === 'Settings' && <Settings />} */}
+              {isActive === 'Scheduling' &&  <Schedule />}
+              {/* {isActive === 'Settings' && <Settings />} */}
             </main>
           </div>
         </div>
