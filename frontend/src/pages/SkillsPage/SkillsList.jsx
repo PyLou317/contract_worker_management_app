@@ -19,22 +19,20 @@ export default function SkillsList() {
 
   const skills = data?.results || [];
 
-  const handleOpenEditSkillModal = (skillId, event) => {
-    console.log('Opening action menu for skill ID:', skillId);
+  const handleCloseActionMenu = () => {
+    setShowActionMenu(false);
+    setEditingSkillId(null);
+  };
+
+  const handleOpenActionMenu = (skillId, event) => {
     setEditingSkillId(skillId);
     setShowActionMenu(true);
 
     const rect = event.currentTarget.getBoundingClientRect();
-    console.log(rect);
     setMenuPosition({
       top: rect.bottom + window.scrollY,
       left: rect.left + window.scrollX,
     });
-  };
-
-  const handleCloseActionMenu = () => {
-    setShowActionMenu(false);
-    setEditingSkillId(null);
   };
 
   if (isPending || isFetching) {
@@ -56,7 +54,7 @@ export default function SkillsList() {
                 key={skill.id}
                 skill={skill}
                 colorClass={skill.base_color}
-                handleEditSkillClick={(event) => handleOpenEditSkillModal(skill.id, event)}
+                handleEditSkillClick={(event) => handleOpenActionMenu(skill.id, event)}
               />
             ))}
           </div>
@@ -67,7 +65,7 @@ export default function SkillsList() {
         )}
       </div>
       {showActionMenu && (
-        <ActionMenu skillId={editingSkillId} onClose={handleCloseActionMenu} position={menuPosition} />
+        <ActionMenu skillId={editingSkillId} position={menuPosition} onClose={handleCloseActionMenu} />
       )}
     </div>
   );
