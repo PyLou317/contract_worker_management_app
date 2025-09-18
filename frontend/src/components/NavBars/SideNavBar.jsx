@@ -63,7 +63,7 @@ export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
         <ul className="w-full mt-auto">
           {settingsItem.map((item, index) => (
             <li
-              key={index}
+              key={item.name}
               className={`flex my-2 p-4 gap-4 ${
                 activeLink === item.name ? 'bg-gray-700' : 'hover:bg-gray-700'
               } cursor-pointer rounded-lg`}
@@ -73,7 +73,6 @@ export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
                   if (item.name === 'Logout') {
                     {
                       onLogoutClick();
-                      console.log('Logout clicked');
                     }
                   }
                 }
