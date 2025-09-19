@@ -8,11 +8,16 @@ import { ScheduleContext } from './schedule-page-context';
 export default function Schedule() {
   const [isActive, setIsActive] = useState('AddSchedule');
 
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectLabelClasses = 'block text-gray-700 text-xs font-bold mb-2 grow';
+
   const handleTabLinkClick = (name) => {
     setIsActive(name);
   };
 
   const ctxValue = {
+    days: days,
+    selectLabelClasses: selectLabelClasses,
     isActive: isActive,
     handleTabLinkClick: handleTabLinkClick,
   };
