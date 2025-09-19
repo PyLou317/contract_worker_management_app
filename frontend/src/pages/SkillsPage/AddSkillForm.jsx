@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import ColorSelector from './ColorSelector';
-import addSkill from '../../api/addSkill';
+import addSkill from '@/api/addSkill';
+import SubmitButton from '@/components/Buttons/SubmitBtn';
 
 export default function AddSkillForm() {
   const [formData, setFormData] = useState({
@@ -76,13 +77,13 @@ export default function AddSkillForm() {
       )}
       <h1 className="text-2xl font-semibold text-gray-800 mb-8">Add New Skill</h1>
       <div className="flex flex-col">
-        <div className="flex flex-col md:flex-row gap-4 items-baseline">
+        <div className="flex flex-col lg:flex-row gap-4 items-baseline">
           <div>
             <label className="block text-gray-700 text-xs font-bold mb-2 grow" htmlFor="skill_name">
               Skill Name
             </label>
             <input
-              className="border rounded-lg p-2 md:w-[320px] h-[40px] bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-lg p-2 w-full h-[40px] bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="skill_name"
               name="skill_name"
@@ -97,7 +98,7 @@ export default function AddSkillForm() {
               Abreviation
             </label>
             <input
-              className="border rounded-lg p-2 md:w-[80px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-lg p-2 w-20 h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="abreviation"
               name="abreviation"
@@ -112,7 +113,7 @@ export default function AddSkillForm() {
               Description
             </label>
             <input
-              className="border rounded-lg p-2 md:w-[470px] w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-lg p-2 w-full lg:w-lg h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="description"
               name="description"
@@ -123,13 +124,12 @@ export default function AddSkillForm() {
           </div>
           <ColorSelector onColorChange={(color) => setFormData({ ...formData, base_color: color })} />
         </div>
-        <button
+        <SubmitButton
           type="submit"
-          className="px-4 py-2 mt-4 w-full bg-yellow-300 text-stone-500 font-medium rounded-lg hover:bg-yellow-400 hover:text-stone-600 transition-colors"
+          label="Add Skill"
           disabled={addSkillMutation.isPending}
-        >
-          Add Skill
-        </button>
+          className="px-4 py-2 mt-8 w-full bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors"
+        />
       </div>
     </form>
   );
