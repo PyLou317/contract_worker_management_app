@@ -1,5 +1,6 @@
 import { useContext, useRef } from 'react';
 import { SkillsContext } from './skills-page-ctx';
+import { useQuery } from '@tanstack/react-query';
 
 import Input from '@/components/Inputs/LabeledInput';
 import SelectInput from '@/components/Inputs/LabeledSelectInput';
