@@ -1,11 +1,11 @@
 import Input from './SelectInput';
 
-export default function LabeledInput({ label, id, inputClasses, ...props }) {
+export default function LabeledInput({ label, id, labelClasses, ...props }) {
   return (
     <div>
       <label
         htmlFor={id}
-        className={inputClasses}
+        className={labelClasses}
       >
         {label}
       </label>
