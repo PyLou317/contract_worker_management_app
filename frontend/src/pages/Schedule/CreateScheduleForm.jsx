@@ -3,10 +3,11 @@ import { ScheduleContext } from './schedule-page-context';
 
 import SelectInput from '@/components/Inputs/LabeledSelectInput';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
-import AddScheduleForm from './AddScheduleForm';
+import AddShiftForm from './AddShiftForm';
 import AddShiftBtn from './AddShiftBtn';
 
 export default function CreateScheduleForm() {
+  const [shifts, setShifts] = useState([{ id: Date.now(), day: '', startTime: '', endTime: '' }]);
   const [formData, setFormData] = useState({
     manager: '',
     area: '',
@@ -14,6 +15,21 @@ export default function CreateScheduleForm() {
   });
 
   const { selectLabelClasses } = useContext(ScheduleContext);
+
+  const handleAddShift = (e) => {
+    e.preventDefault();
+    setShifts([...shifts, { id: Date.now(), day: '', startTime: '', endTime: '' }]);
+  };
+
+  const handleInputChange = (e, id) => {
+    const { name, value } = e.target;
+    const updatedShifts = shifts.map((shift) => (shift.id === id ? { ...shift, [name]: value } : shift));
+    setShifts(updatedShifts);
+  };
+
+  const handleRemoveShift = (id) => {
+    setShifts(shifts.filter((shift) => shift.id !== id));
+  };
 
   return (
     <form className="container mx-auto p-8 bg-white shadow-md rounded-2xl">
@@ -28,7 +44,7 @@ export default function CreateScheduleForm() {
       <div>
         <h1 className="text-2xl font-semibold text-gray-800 mb-2">Create a New Schedule</h1>
         <div className="border-b border-gray-300 my-6"></div>
-        <p className="text-gray-700 mb-4">1. Select the area and manager aligned to the new schedule:</p>
+        {/* <p className="text-gray-700 mb-4">1. Select the area and manager aligned to the new schedule:</p> */}
         <div className="flex flex-col">
           <div className="flex flex-col md:flex-row gap-4 md:items-end">
             <SelectInput
@@ -51,12 +67,19 @@ export default function CreateScheduleForm() {
             />
           </div>
         </div>
-        <div className="">
+        <div key={shifts.id} className="mt-8">
           {/* <h1 className="text-2xl font-semibold text-gray-800 mt-12 mb-2">Add Shifts to Schedule</h1> */}
-          <p className="text-gray-700 mt-8 mb-4">2. Select the days and times for each shift:</p>
-          <AddScheduleForm />
+          {/* <p className="text-gray-700 mt-8 mb-4">2. Select the days and times for each shift:</p> */}
+          {shifts.map((shift) => (
+            <AddShiftForm
+              shift={shift}
+              handleInputChange={(e) => handleInputChange(e, shift.id)}
+              key={shift.id}
+              removeShift={() => handleRemoveShift(shift.id)}
+            />
+          ))}
         </div>
-        <AddShiftBtn />
+        <AddShiftBtn onClick={handleAddShift} />
       </div>
       <SubmitButton
         type="submit"
