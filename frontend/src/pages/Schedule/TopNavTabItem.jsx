@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { ScheduleContext } from '../Schedule/schedule-page-context';
 
-export default function TabMenuItem({ name, icon }) {
+export default function TabMenuItem({ name, Icon }) {
   const { isActive, handleTabLinkClick } = useContext(ScheduleContext);
 
   return (
@@ -12,7 +12,7 @@ export default function TabMenuItem({ name, icon }) {
       onClick={() => handleTabLinkClick(name)}
       aria-current={isActive === name ? 'page' : undefined}
     >
-      {icon}
+      <Icon />
       {name}
     </li>
   );
