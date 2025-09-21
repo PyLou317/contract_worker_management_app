@@ -5,6 +5,32 @@ from organizations.models import WarehouseBusiness
 from workers.models import ContractWorker
 
 
+class Area(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Area')
+        verbose_name_plural = _('Areas')
+        ordering = ['name']
+        
+
+class Manager(models.Model):
+    name = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Manager')
+        verbose_name_plural = _('Managers')
+        ordering = ['name']
+        
+
 class Schedule(models.Model):
     """
     Represents a weekly or bi-weekly work schedule for a specific organization.
@@ -18,14 +44,22 @@ class Schedule(models.Model):
         verbose_name=_('organization')
     )
 
-    # Link the schedule to the user who created it (e.g., a manager or admin)
     manager = models.ForeignKey(
-        User,
+        Manager,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='created_schedules',
         verbose_name=_('manager')
+    )
+    
+    area = models.ForeignKey(
+        Area,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='schedules',
+        verbose_name=_('area')
     )
 
     # The date range for the schedule
@@ -69,10 +103,10 @@ class Shift(models.Model):
     end_time = models.DateTimeField(_('end time'))
 
     # The position or role for this shift (e.g., 'Forklift Driver')
-    position = models.CharField(max_length=100, verbose_name=_('position'))
+    # position = models.CharField(max_length=100, verbose_name=_('position'))
 
     def __str__(self):
-        return f"{self.position} for {self.contract_worker} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
+        return f"{self.contract_worker} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
 
     class Meta:
         verbose_name = _('Shift')
