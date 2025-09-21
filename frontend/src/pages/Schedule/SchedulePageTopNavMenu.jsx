@@ -12,7 +12,7 @@ export default function NavTabs() {
     <div className='ms-4'>
       <ul className="flex flex-row gap-1 justify-start">
         {tabItems.map((item, index) => (
-          <TabMenuItem name={item.name} icon={item.icon} key={index} />
+          <TabMenuItem name={item.name} Icon={item.icon} key={index} />
         ))}
       </ul>
     </div>
