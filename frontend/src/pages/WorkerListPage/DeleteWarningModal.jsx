@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteWorker } from '../../api/deleteWorker';
+import { deleteWorker } from '@/hooks/deleteWorker';
 
 export default function DeleteWarningModal({ show, onClose, workerId, children, onDeleteSuccess }) {
   if (!show) {

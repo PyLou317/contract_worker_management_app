@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import ColorSelector from './ColorSelector';
-import addSkill from '@/api/addSkill';
+import addSkill from '@/hooks/addSkill';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
 
 export default function AddSkillForm() {

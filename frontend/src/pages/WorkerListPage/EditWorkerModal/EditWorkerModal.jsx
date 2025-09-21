@@ -11,10 +11,10 @@ import Comments from './Comments';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 
-import { getAgencies } from '../../../api/getAgencyDataApi';
-import { getWorkerDetails } from '../../../api/getWorkerDetailApi';
-import { fetchData } from '../../../api/fetchData';
-import { editWorker } from '../../../api/editWorker';
+import { getAgencies } from '@/hooks/getAgencyDataApi';
+import { getWorkerDetails } from '@/hooks/getWorkerDetailApi';
+import { fetchData } from '@/hooks/fetchData';
+import { editWorker } from '@/hooks/editWorker';
 
 export default function EditWorkerModal({ showModal, onClose, editingWorker, id }) {
   const [addSkillIsVisible, setAddSkillIsVisible] = useState(false);

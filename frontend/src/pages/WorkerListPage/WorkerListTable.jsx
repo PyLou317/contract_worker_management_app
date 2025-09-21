@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { getWorkers } from '../../api/getWorkersApi';
+import { getWorkers } from '@/hooks/getWorkersApi';
 import { Rating } from 'react-simple-star-rating';
 
-import '../../components/StarRatingStyles.css';
-import Pagination from '../../components/Pagination';
+import '@/components/StarRatingStyles.css';
+import Pagination from '@/components/Pagination';
 import AddWorkerModal from './AddWorkerModal/AddWorkerModal';
 import EditWorkerModal from './EditWorkerModal/EditWorkerModal';
-import skillColorClasses from '../../pages/SkillsPage/SkillColorClasses';
+import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
 import DeleteWarningModal from './DeleteWarningModal';
-import LoadingSpinner from '../../components/Loader';
+import LoadingSpinner from '@/components/Loader';
 
 export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen, setIsModalOpen }) {
   const [ordering, setOrdering] = useState('');
@@ -71,17 +71,7 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
   if (isFetching || isPending) {
     return (
       <div className="flex justify-center items-center h-[400px]">
-        <LoadingSpinner size="10"/>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <div className="flex justify-center items-center h-auto w-1/3 mx-auto bg-red-100 text-red-700 p-4 rounded-lg">
-          An error has occurred: {error.message}
-        </div>
+        <LoadingSpinner size="10" />
       </div>
     );
   }
@@ -89,6 +79,26 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
   const workers = data?.results || [];
   const nextUrl = data?.next;
   const prevUrl = data?.previous;
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-[200px]">
+        <div className="flex justify-center items-center h-auto w-fit mx-auto bg-red-100 text-red-700 p-4 rounded-lg">
+          An error has occurred: {error.message}
+        </div>
+      </div>
+    );
+  }
+
+  //   if (workers.length === 0) {
+  //     return (
+  //       <div className="flex justify-center items-center h-[200px]">
+  //         <div className="flex justify-center items-center h-auto w-fit mx-auto bg-yellow-100 text-yellow-700 p-4 rounded-lg">
+  //           No workers found, please add some.
+  //         </div>
+  //       </div>
+  //     );
+  //   }
 
   return (
     <>
@@ -175,95 +185,111 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {workers.map((worker) => (
-              <tr key={worker.id} className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200">
-                <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">{worker.id}</td>
-                <td className="py-3 px-6 text-left border-r border-gray-200">
-                  {worker.first_name} {worker.last_name}
-                </td>
-                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.position}</td>
-                <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency_details}</td>
-                <td
-                  className="py-3 px-6 text-left border-r border-gray-200 relative"
-                  onMouseEnter={() => setHoveredWorkerId(worker.id)}
-                  onMouseLeave={() => setHoveredWorkerId(null)}
+            {workers.length > 0 ? (
+              workers.map((worker) => (
+                <tr
+                  key={worker.id}
+                  className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200"
                 >
-                  {hoveredWorkerId === worker.id && (
-                    <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
-                      {worker.rating ? worker.rating.average_rating : 'N/A'} out of 5
+                  <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">{worker.id}</td>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">
+                    {worker.first_name} {worker.last_name}
+                  </td>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.position}</td>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency_details}</td>
+                  <td
+                    className="py-3 px-6 text-left border-r border-gray-200 relative"
+                    onMouseEnter={() => setHoveredWorkerId(worker.id)}
+                    onMouseLeave={() => setHoveredWorkerId(null)}
+                  >
+                    {hoveredWorkerId === worker.id && (
+                      <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
+                        {worker.rating ? worker.rating.average_rating : 'N/A'} out of 5
+                      </div>
+                    )}
+                    <Rating
+                      initialValue={
+                        worker.rating !== null && worker.rating.average_rating ? worker.rating.average_rating : 0
+                      }
+                      {...starRating}
+                    />
+                  </td>
+                  <td className="text-white py-3 px-6 text-left border-r border-gray-200">
+                    <div className="flex flex-wrap gap-2">
+                      {worker.worker_skills !== null &&
+                        worker.worker_skills?.map((skill, index) => (
+                          <span
+                            className={`text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-md transition-colors duration-200 tooltip ${
+                              skillColorClasses[skill.skill.base_color]?.[skill.level] ||
+                              'bg-gray-400 hover:bg-gray-500'
+                            }`}
+                            key={index}
+                          >
+                            {skill.skill.abreviation}LV{skill.level}
+                            <div className="tooltip-content cursor-pointer">
+                              {skill.skill.skill_name} level {skill.level}
+                            </div>
+                          </span>
+                        ))}
                     </div>
-                  )}
-                  <Rating
-                    initialValue={
-                      worker.rating !== null && worker.rating.average_rating ? worker.rating.average_rating : 0
-                    }
-                    {...starRating}
-                  />
-                </td>
-                <td className="text-white py-3 px-6 text-left border-r border-gray-200">
-                  <div className="flex flex-wrap gap-2">
-                    {worker.worker_skills !== null &&
-                      worker.worker_skills?.map((skill, index) => (
-                        <span
-                          className={`text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-md transition-colors duration-200 tooltip ${
-                            skillColorClasses[skill.skill.base_color]?.[skill.level] || 'bg-gray-400 hover:bg-gray-500'
-                          }`}
-                          key={index}
+                  </td>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleOpenEditWorker(worker.id)}
+                        className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
+                        aria-label="Edit worker"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5"
                         >
-                          {skill.skill.abreviation}LV{skill.level}
-                          <div className="tooltip-content cursor-pointer">
-                            {skill.skill.skill_name} level {skill.level}
-                          </div>
-                        </span>
-                      ))}
-                  </div>
-                </td>
-                <td className="py-3 px-6 text-left border-r border-gray-200">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleOpenEditWorker(worker.id)}
-                      className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
-                      aria-label="Edit worker"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-5"
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => handleOpenDeleteWorker(worker.id)}
+                        className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
+                        aria-label="Delete worker"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => handleOpenDeleteWorker(worker.id)}
-                      className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
-                      aria-label="Delete worker"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.115H6.28a2.25 2.25 0 0 1-2.244-2.115L3.75 6.75m16.5 0H3.75m16.5 0v-1.5a1.5 1.5 0 0 0-1.5-1.5h-10.5a1.5 1.5 0 0 0-1.5 1.5v1.5m6-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.115H6.28a2.25 2.25 0 0 1-2.244-2.115L3.75 6.75m16.5 0H3.75m16.5 0v-1.5a1.5 1.5 0 0 0-1.5-1.5h-10.5a1.5 1.5 0 0 0-1.5 1.5v1.5m6-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center">
+                  <div className="flex justify-center items-center h-[200px]">
+                    <div className="flex justify-center items-center h-auto w-fit mx-auto bg-yellow-100 text-yellow-700 p-4 rounded-lg">
+                      No workers found, please add some.
+                    </div>
                   </div>
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

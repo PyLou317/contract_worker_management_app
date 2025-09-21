@@ -5,8 +5,8 @@ import SelectInput from '@/components/Inputs/LabeledSelectInput';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 
-import { getAgencies } from '../../../api/getAgencyDataApi';
-import addWorker from '../../../api/addWorker';
+import { getAgencies } from '@/hooks/getAgencyDataApi';
+import addWorker from '@/hooks/addWorker';
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
   const contracts = ['Hello Fresh'];

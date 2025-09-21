@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getSkills } from '../../api/getSkillsDataApi';
+import { getSkills } from '@/hooks/getSkillsDataApi';
 
 import SkillCard from './SkillsCard';
 import ActionMenu from './ActionMenu';

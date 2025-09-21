@@ -7,7 +7,7 @@ import scheduledWorkerIcon from './Icons/ScheduledWorkersIcon';
 import clockedInWorkerIcon from './Icons/ClockInIcon';
 import clockedOutWorkerIcon from './Icons/ClockOutIcon';
 
-import { getWorkers } from '../../api/getWorkersApi';
+import { getWorkers } from '@/hooks/getWorkersApi';
 
 export default function Dashboard() {
   const { isPending, error, data, isFetching } = useQuery({

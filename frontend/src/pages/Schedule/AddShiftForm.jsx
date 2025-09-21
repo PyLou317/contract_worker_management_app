@@ -13,8 +13,8 @@ export default function AddShiftForm({ shift, handleInputChange, removeShift }) 
         <SelectInput
           label="Day"
           type="text"
-          id="manager"
-          name="manager"
+          id="day"
+          name="day"
           options={days}
           value={shift.day}
           onChange={handleInputChange}
@@ -29,8 +29,8 @@ export default function AddShiftForm({ shift, handleInputChange, removeShift }) 
           <input
             className="flex flex-grow-1 border rounded-lg p-2 w-full md:w-[250px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="time"
-            id="manager"
-            name="manager"
+            id="start_time"
+            name="start_time"
             value={shift.startTime}
             onChange={(e) => handleInputChange(e, shift.id)}
             step="1800"
@@ -44,8 +44,8 @@ export default function AddShiftForm({ shift, handleInputChange, removeShift }) 
           <input
             className="flex flex-grow-1 border rounded-lg p-2 w-full md:w-[250px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="time"
-            id="manager"
-            name="manager"
+            id="end_time"
+            name="end_time"
             value={shift.endTime}
             onChange={(e) => handleInputChange(e, shift.id)}
             step="1800"

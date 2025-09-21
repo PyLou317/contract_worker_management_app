@@ -7,7 +7,15 @@ import AddShiftForm from './AddShiftForm';
 import AddShiftBtn from './AddShiftBtn';
 
 export default function CreateScheduleForm() {
-  const [shifts, setShifts] = useState([{ id: Date.now(), day: '', startTime: '', endTime: '' }]);
+  const [shifts, setShifts] = useState([
+    {
+      id: Date.now(),
+      day: '',
+      start_time: '',
+      end_time: '',
+    },
+  ]);
+
   const [formData, setFormData] = useState({
     manager: '',
     area: '',
@@ -23,8 +31,16 @@ export default function CreateScheduleForm() {
 
   const handleInputChange = (e, id) => {
     const { name, value } = e.target;
-    const updatedShifts = shifts.map((shift) => (shift.id === id ? { ...shift, [name]: value } : shift));
-    setShifts(updatedShifts);
+    const updateSchedule = formData.map((schedule) => (schedule.id === id ? { ...schedule, [name]: value } : schedule));
+    setShifts(updateSchedule);
+    console.log(shifts);
+  };
+
+  const handleInputChangeShifts = (e, id) => {
+    const { name, value } = e.target;
+    const updateShifts = shifts.map((shift) => (shift.id === id ? { ...shift, [name]: value } : shift));
+    setShifts(updateShifts);
+    console.log(shifts);
   };
 
   const handleRemoveShift = (id) => {
@@ -73,7 +89,7 @@ export default function CreateScheduleForm() {
           {shifts.map((shift) => (
             <AddShiftForm
               shift={shift}
-              handleInputChange={(e) => handleInputChange(e, shift.id)}
+              handleInputChange={(e) => handleInputChangeShifts(e, shift.id)}
               key={shift.id}
               removeShift={() => handleRemoveShift(shift.id)}
             />
