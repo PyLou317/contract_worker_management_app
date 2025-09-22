@@ -6,6 +6,8 @@ from .views import *
 urlpatterns = [
     path('schedules/', SchedulingListViewAPI.as_view()),
     path('shifts/', ShiftListViewAPI.as_view()),
+    path('areas/', AreaListViewAPI.as_view()),
+    path('managers/', ManagerListViewAPI.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
