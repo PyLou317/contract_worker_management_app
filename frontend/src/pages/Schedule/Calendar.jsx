@@ -1,11 +1,31 @@
 import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+
+import { useContext } from 'react';
+import { ScheduleContext } from './schedule-page-context';
 
 // import '@fullcalendar/core/main.css';
 // import '@fullcalendar/daygrid/main.css';
 
 export default function Calendar() {
+  const { schedules } = useContext(ScheduleContext);
+
+  const events = schedules.map((schedule) => ({
+    id: schedule.id,
+    resourceId: schedule.area.id,
+    title: schedule.area.name,
+    start: schedule.start_date,
+    end: schedule.end_date,
+  }));
+
+  const resources = schedules.map((schedule) => ({
+    id: schedule.area.id,
+    title: schedule.area.name,
+  }));
+
   const handleEventClick = (clickInfo) => {
     alert('Event clicked: ' + clickInfo.event.title);
   };
@@ -31,20 +51,37 @@ export default function Calendar() {
     return String(new Date().getTime());
   };
 
+  const handleEventResize = (resizeInfo) => {
+    // Update your backend with the new end date
+    console.log('Event resized!', resizeInfo.event.end);
+  };
+
+  const headerToolbarOptions = {
+    left: 'prev,next',
+    center: 'title',
+    right: 'dayGridMonth,timeGridWeek,timeGridDay',
+  };
+
   return (
     <div className="shadow-lg rounded-2xl p-6">
       <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, resourceTimelinePlugin]}
+        initialView="timeGridWeek"
+        headerToolbar={headerToolbarOptions}
+        // resources={resources}
+        events={events}
         editable={true}
+        eventResize={handleEventResize}
         selectable={true}
         selectMirror={true}
         dayMaxEvents={true}
         weekends={true}
-        events={[{ title: 'All-day event', start: new Date() }]}
         eventClick={handleEventClick}
         select={handleDateSelect}
+        schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
       />
     </div>
   );
 }
+
+// [{ title: 'All-day event', start: new Date() }]
