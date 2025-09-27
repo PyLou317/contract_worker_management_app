@@ -2,8 +2,8 @@ from rest_framework import serializers
 from .models import *
 
 class SchedulingSerializer(serializers.ModelSerializer):
-    start_date = serializers.DateField(format='%B-%d')
-    end_date = serializers.DateField(format='%B-%d')
+    start_date = serializers.DateField(format='%Y-%m-%d')
+    end_date = serializers.DateField(format='%Y-%m-%d')
     
     class Meta:
         model = Schedule
