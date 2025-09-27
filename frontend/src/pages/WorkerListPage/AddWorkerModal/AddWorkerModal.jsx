@@ -5,7 +5,7 @@ import SelectInput from '@/components/Inputs/LabeledSelectInput';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 
-import { getAgencies } from '@/hooks/getAgencyDataApi';
+import { apiFetch } from '@/utilities/apiClient';
 import addWorker from '@/hooks/addWorker';
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
@@ -15,7 +15,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
 
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['agencies'],
-    queryFn: getAgencies,
+    queryFn: () => apiFetch('/agencies'),
     keepPreviousData: true,
   });
 
