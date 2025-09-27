@@ -9,4 +9,4 @@ from .serializers import StaffingAgencySerializer
 class AgencyListViewAPI(generics.ListCreateAPIView):
     queryset = StaffingAgency.objects.all()
     serializer_class = StaffingAgencySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]

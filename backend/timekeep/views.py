@@ -7,4 +7,4 @@ from .models import *
 class ClockInViewAPI(generics.RetrieveUpdateAPIView):
     queryset = TimeKeeping.objects.all()
     serializer_class = TimeKeepingSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]

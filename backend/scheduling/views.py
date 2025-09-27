@@ -7,22 +7,22 @@ from .serializers import *
 class SchedulingListViewAPI(generics.ListCreateAPIView):
     queryset = Schedule.objects.all()
     serializer_class = SchedulingSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     
 
 class ShiftListViewAPI(generics.ListCreateAPIView):
     queryset = Shift.objects.all()
     serializer_class = ShiftSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     
 
 class AreaListViewAPI(generics.ListCreateAPIView):
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     
 
 class ManagerListViewAPI(generics.ListCreateAPIView):
     queryset = Manager.objects.all()
-    serializer_class = Manager
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = ManagerSerializer
+    permission_classes = [permissions.IsAuthenticated]
