@@ -2,6 +2,7 @@ import { useState, useContext, createContext, useEffect } from 'react';
 import { ScheduleContext } from './schedule-page-context';
 
 import SelectInput from '@/components/Inputs/LabeledSelectInput';
+import Input from '@/components/Inputs/LabeledInput';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
 import AddShiftForm from './AddShiftForm';
 import AddShiftBtn from './AddShiftBtn';
@@ -19,32 +20,47 @@ export default function CreateScheduleForm() {
   const [formData, setFormData] = useState({
     manager: '',
     area: '',
+    start_date: '',
+    end_date: '',
+    is_active: true,
     shifts: [],
   });
 
-  const { selectLabelClasses } = useContext(ScheduleContext);
+  const { selectLabelClasses, InputLableClasses, areas, managers } = useContext(ScheduleContext);
 
   const handleAddShift = (e) => {
     e.preventDefault();
-    setShifts([...shifts, { id: Date.now(), day: '', startTime: '', endTime: '' }]);
+    setShifts([...shifts, { id: Date.now(), day: '', start_time: '', end_time: '' }]);
   };
 
-  const handleInputChange = (e, id) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const updateSchedule = formData.map((schedule) => (schedule.id === id ? { ...schedule, [name]: value } : schedule));
-    setShifts(updateSchedule);
-    console.log(shifts);
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleInputChangeShifts = (e, id) => {
     const { name, value } = e.target;
     const updateShifts = shifts.map((shift) => (shift.id === id ? { ...shift, [name]: value } : shift));
     setShifts(updateShifts);
-    console.log(shifts);
   };
 
   const handleRemoveShift = (id) => {
     setShifts(shifts.filter((shift) => shift.id !== id));
+  };
+
+  const handleSumbit = (e) => {
+    e.preventDefault();
+    const newSchedule = {};
+    newSchedule.manager = formData.manager;
+    newSchedule.area = formData.area;
+    newSchedule.start_date = formData.start_date;
+    newSchedule.end_date = formData.end_date;
+    newSchedule.is_active = formData.is_active;
+    newSchedule.shifts = shifts;
+    console.log('Created Schedule:', newSchedule);
   };
 
   return (
@@ -62,30 +78,55 @@ export default function CreateScheduleForm() {
         <div className="border-b border-gray-300 my-6"></div>
         {/* <p className="text-gray-700 mb-4">1. Select the area and manager aligned to the new schedule:</p> */}
         <div className="flex flex-col">
-          <div className="flex flex-col md:flex-row gap-4 md:items-end">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:items-end">
+          {/* <div className="flex flex-col md:flex-row gap-4 md:items-end"> */}
             <SelectInput
               label="Manager"
               name="manager"
               id="manager"
-              options={[]}
+              value={formData.manager}
+              onChange={handleInputChange}
+              options={managers}
               labelClasses={selectLabelClasses}
-              className="flex flex-grow-1 border rounded-lg p-2 w-full md:w-[250px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
             <SelectInput
               label="Area"
               name="area"
               id="area"
-              options={[]}
+              value={formData.area}
+              onChange={handleInputChange}
+              options={areas}
               labelClasses={selectLabelClasses}
-              className="flex flex-grow-1 border rounded-lg p-2 w-full md:w-[250px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <Input
+              label="Start Date"
+              labelClasses={InputLableClasses}
+              className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="date"
+              id="start_date"
+              name="start_date"
+              value={formData.start_date}
+              onChange={handleInputChange}
+              required
+            />
+            <Input
+              label="End Date"
+              labelClasses={InputLableClasses}
+              className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="date"
+              id="end_date"
+              name="end_date"
+              value={formData.end_date}
+              onChange={handleInputChange}
               required
             />
           </div>
         </div>
         <div key={shifts.id} className="mt-8">
-          {/* <h1 className="text-2xl font-semibold text-gray-800 mt-12 mb-2">Add Shifts to Schedule</h1> */}
-          {/* <p className="text-gray-700 mt-8 mb-4">2. Select the days and times for each shift:</p> */}
           {shifts.map((shift) => (
             <AddShiftForm
               shift={shift}
@@ -100,6 +141,7 @@ export default function CreateScheduleForm() {
       <SubmitButton
         type="submit"
         label="Create Schedule"
+        handleSubmit={handleSumbit}
         className="px-4 py-2 mt-8 w-full bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors"
       />
     </form>
