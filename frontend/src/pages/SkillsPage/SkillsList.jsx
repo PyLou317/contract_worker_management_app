@@ -69,7 +69,7 @@ export default function SkillsList() {
             ))}
           </div>
         ) : (
-          <div className='mt-8 w-full'>
+          <div className="mt-8 w-full">
             <div className="mt-4 w-fit mx-auto overflow-x-auto border border-gray-200 bg-gray-100/50 rounded-lg p-4">
               <p className="text-gray-500">No active skills found. Please add new skills above.</p>
             </div>
