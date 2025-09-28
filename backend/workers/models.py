@@ -34,6 +34,13 @@ class Skill(models.Model):
     abreviation = models.CharField(max_length=10, null=True, blank=True)
     base_color = models.CharField(max_length=7, null=True, blank=True, default='gray')
     description = models.TextField(null=True, blank=True)
+    organization = models.ForeignKey(
+        WarehouseBusiness, 
+        on_delete=models.CASCADE, 
+        related_name='created_skills',
+        null=True,
+        blank=True
+    )
     
 
     def __str__(self):
