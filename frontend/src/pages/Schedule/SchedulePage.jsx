@@ -1,23 +1,73 @@
 import { useQuery } from '@tanstack/react-query';
 import { createContext, useState } from 'react';
-import CalendarComponent from './Calendar';
-import NavTabs from './SchedulePageTopNavMenu';
-import ScheduleTabPage from './ScheduleTabPage';
+
 import { ScheduleContext } from './schedule-page-context';
+import { apiFetch } from '@/utilities/apiClient';
+
+import CalendarComponent from './Calendar';
+import ScheduleTabPage from './ScheduleTabPage';
+import NavTabs from './SchedulePageTopNavMenu';
 
 export default function Schedule() {
   const [isActive, setIsActive] = useState('AddSchedule');
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const selectLabelClasses = 'block text-gray-700 text-xs font-bold mb-2 grow';
+  const InputLableClasses = 'block text-gray-700 text-xs font-bold mb-2';
 
   const handleTabLinkClick = (name) => {
     setIsActive(name);
   };
 
+  const {
+    isPending: areaIsPending,
+    error: areaError,
+    data: areaData,
+    isFetching: areaIsFetching,
+  } = useQuery({
+    queryKey: ['areas'],
+    queryFn: () => apiFetch('/areas'),
+    keepPreviousData: true,
+  });
+  const areas = areaData?.results || [];
+  const areaNames = areas.map((area) => area.name);
+
+  const {
+    isPending: managersIsPending,
+    error: managersError,
+    data: managersData,
+    isFetching: managersIsFetching,
+  } = useQuery({
+    queryKey: ['managers'],
+    queryFn: () => apiFetch('/managers'),
+    keepPreviousData: true,
+  });
+  const managers = managersData?.results || [];
+  const managerNames = managers.map((manager) => manager.name);
+
+  const {
+    isPending: scheduleIsPending,
+    error: scheduleError,
+    data: scheduleData,
+    isFetching: scheduleIsFetching,
+  } = useQuery({
+    queryKey: ['schedules'],
+    queryFn: () => apiFetch('/schedules'),
+    keepPreviousData: true,
+  });
+
+  const schedules = scheduleData?.results || [];
+
   const ctxValue = {
     days: days,
+    areas: areaNames,
+    managers: managerNames,
+    schedules: schedules,
+    scheduleIsPending: scheduleIsPending,
+    scheduleError: scheduleError,
+    scheduleIsFetching: scheduleIsFetching,
     selectLabelClasses: selectLabelClasses,
+    InputLableClasses: InputLableClasses,
     isActive: isActive,
     handleTabLinkClick: handleTabLinkClick,
   };
