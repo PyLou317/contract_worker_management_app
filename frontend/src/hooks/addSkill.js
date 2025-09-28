@@ -1,4 +1,4 @@
-import refreshToken from './refreshToken';
+import refreshToken from '@/utilities/refreshToken';
 
 const endpoint = `${import.meta.env.VITE_API_URL}/skills/`;
 

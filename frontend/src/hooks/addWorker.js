@@ -1,4 +1,4 @@
-import refreshToken from '@/hooks/refreshToken';
+import refreshToken from '@/utilities/refreshToken';
 
 const endpoint = `${import.meta.env.VITE_API_URL}/workers/`;
 

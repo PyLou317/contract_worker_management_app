@@ -1,4 +1,4 @@
-import refreshToken from './refreshToken';
+import refreshToken from '@/utilities/refreshToken';
 import logout from '@/components/Authentication/LogoutFunction';
 
 const attemptFetch = async ({ token, url }) => {
