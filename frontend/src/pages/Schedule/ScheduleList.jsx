@@ -67,7 +67,7 @@ export default function ScheduleList() {
             ))
           ) : (
             <tr className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200">
-              <td colSpan="1" className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
+              <td colSpan="5" className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
                 <div className="flex justify-center items-center h-fit py-4">
                   <div className="flex justify-center items-center h-auto w-fit mx-auto bg-yellow-100 text-yellow-700 p-4 rounded-lg">
                     No schedules found, please add some.
