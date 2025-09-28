@@ -1,15 +1,16 @@
 import { useContext } from 'react';
 import { ScheduleContext } from './schedule-page-context';
 
+import Input from '@/components/Inputs/LabeledInput';
 import SelectInput from '@/components/Inputs/LabeledSelectInput';
 import RemoveShiftBtn from './RemoveShiftBtn';
 
 export default function AddShiftForm({ shift, handleInputChange, removeShift }) {
-  const { days, selectLabelClasses } = useContext(ScheduleContext);
+  const { days, selectLabelClasses, InputLableClasses } = useContext(ScheduleContext);
 
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-4 md:items-end mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:items-end mt-4">
         <SelectInput
           label="Day"
           type="text"
@@ -20,14 +21,13 @@ export default function AddShiftForm({ shift, handleInputChange, removeShift }) 
           onChange={handleInputChange}
           required
           labelClasses={selectLabelClasses}
-          className="flex flex-grow-1 border rounded-lg p-2 w-full md:w-[250px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div>
-          <label className="block text-gray-700 text-xs font-bold mb-2" htmlFor="abreviation">
-            Start Time
-          </label>
-          <input
-            className="flex flex-grow-1 border rounded-lg p-2 w-full md:w-[250px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <Input
+            label="Start Time"
+            labelClasses={InputLableClasses}
+            className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="time"
             id="start_time"
             name="start_time"
@@ -42,7 +42,7 @@ export default function AddShiftForm({ shift, handleInputChange, removeShift }) 
             End Time
           </label>
           <input
-            className="flex flex-grow-1 border rounded-lg p-2 w-full md:w-[250px] h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="time"
             id="end_time"
             name="end_time"
