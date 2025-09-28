@@ -1,35 +1,45 @@
+import refreshToken from '@/utilities/refreshToken';
+
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const apiFetch = async (endpoint, options = {}) => {
-  const token = localStorage.getItem('authToken'); // Retrieve the saved token
+  const attemptRequest = async (tokenOverride = null) => {
+    const currentToken = tokenOverride || localStorage.getItem('authToken');
 
-  const headers = {
-    ...options.headers,
-    // ONLY set the Authorization header if the token exists
-    ...(token && { 'Authorization': `Bearer ${token}` }),
-    // Default content type for APIs
-    'Content-Type': options.headers?.['Content-Type'] || 'application/json',
+    const headers = {
+      ...options.headers,
+      ...(currentToken && { Authorization: `Bearer ${currentToken}` }),
+      'Content-Type': options.headers?.['Content-Type'] || 'application/json',
+    };
+
+    const config = {
+      ...options,
+      headers,
+    };
+
+    return fetch(`${BASE_URL}${endpoint}`, config);
   };
 
-  const config = {
-    ...options,
-    headers,
-  };
+  let response = await attemptRequest();
 
-  // Prepend the base URL
-  const response = await fetch(`${BASE_URL}${endpoint}`, config);
+  if (response.status === 401) {
+    console.log('Access token expired. Attempting refresh...');
+    try {
+      const newToken = await refreshToken();
+      console.log('Token refreshed successfully');
+      response = await attemptRequest(newToken);
+    } catch (error) {
+      console.error('Refresh token failed. Redirecting to login.', error);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = '/login';
+
+      throw new Error('Authentication expired. Please log in again.');
+    }
+  }
 
   if (!response.ok) {
-    // Handle 401 Unauthorized globally here (e.g., redirect to login)
-    if (response.status === 401) {
-        console.error("Token expired or invalid. Redirecting to login.");
-        // Example: Clear token and redirect
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login'; 
-    }
-    // Convert error response to JSON to get Django's error message
-    const errorData = await response.json().catch(() => ({ detail: 'An error occurred.' }));
+    const errorData = await response.json().catch(() => ({ detail: 'An unknown server error occurred.' }));
     throw new Error(errorData.detail || `HTTP Error: ${response.status}`);
   }
 
