@@ -9,7 +9,6 @@ import { apiFetch } from '@/utilities/apiClient';
 import addWorker from '@/hooks/addWorker';
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
-  const contracts = ['Hello Fresh'];
   const queryClient = useQueryClient();
   const dialogRef = useRef(null);
 
@@ -27,7 +26,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
     last_name: '',
     email: '',
     phone_number: '',
-    current_contract: '',
+    // current_contract: '',
     agency: '',
   });
 
@@ -40,7 +39,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
         last_name: '',
         email: '',
         phone_number: '',
-        current_contract: '',
+        // current_contract: '',
         agency: '',
       });
       onClose();
@@ -130,7 +129,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             onChange={handleInputChange}
             className={inputFieldClasses}
           />
-          {contracts && (
+          {/* {contracts && (
             <SelectInput
               label="Current Contract"
               type="text"
@@ -142,7 +141,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
               options={contracts}
               className={inputFieldClasses}
             ></SelectInput>
-          )}
+          )} */}
           {agencies && (
             <SelectInput
               label="Agency"
