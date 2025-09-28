@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { getWorkers } from '@/hooks/getWorkersApi';
+// import { getWorkers } from '@/hooks/getWorkersApi';
+import { apiFetch } from '@/utilities/apiClient';
 import { Rating } from 'react-simple-star-rating';
 
 import '@/components/StarRatingStyles.css';
@@ -64,9 +65,32 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
 
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['workers', searchTerm, page, ordering],
-    queryFn: getWorkers,
+    queryFn: () => {
+      const params = new URLSearchParams();
+
+      if (page > 1) {
+        params.set('page', page);
+      }
+
+      if (searchTerm) {
+        params.set('search', searchTerm);
+      }
+
+      if (ordering) {
+        params.set('ordering', ordering);
+      }
+
+      const queryString = params.toString();
+      const endpoint = `/workers/${queryString ? `?${queryString}` : ''}`;
+
+      return apiFetch(endpoint);
+    },
     keepPreviousData: true,
   });
+
+  const workers = data?.results || [];
+  const nextUrl = data?.next;
+  const prevUrl = data?.previous;
 
   if (isFetching || isPending) {
     return (
@@ -75,10 +99,6 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
       </div>
     );
   }
-
-  const workers = data?.results || [];
-  const nextUrl = data?.next;
-  const prevUrl = data?.previous;
 
   if (error) {
     return (
