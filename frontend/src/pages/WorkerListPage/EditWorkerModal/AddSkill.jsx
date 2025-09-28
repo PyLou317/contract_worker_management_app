@@ -7,8 +7,8 @@ export default function AddSkill({
   handleAddSkillInputChange,
   newSkillFormData,
   skillNames,
-  inputLabelClasses,
   addSkillInputClasses,
+  inputLabelClasses,
 }) {
   return (
     <div
@@ -16,15 +16,9 @@ export default function AddSkill({
         addSkillIsVisible ? 'max-h-[400px]' : 'max-h-0'
       }`}
     >
-      <div className="p-4 rounded-xl shadow-sm border border-gray-700 bg-gray-200">
+      <div className="p-4 rounded-xl shadow-sm border border-gray-700 bg-gray-100">
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-gray-700">New Skill</h3>
-          <button
-            className="font-semibold px-4 py-2 text-gray-900 bg-yellow-200 rounded-md hover:bg-yellow-300 hover:text-gray-700"
-            onClick={handleAddSkill}
-          >
-            Add
-          </button>
         </div>
         <div className="grid grid-cols-4 gap-4 mt-4">
           <SelectInput
@@ -36,7 +30,7 @@ export default function AddSkill({
             onChange={handleAddSkillInputChange}
             options={skillNames}
             className={addSkillInputClasses}
-            inputClasses={inputLabelClasses}
+            labelClasses={inputLabelClasses}
             required
           />
           <Input
@@ -51,7 +45,7 @@ export default function AddSkill({
             onChange={handleAddSkillInputChange}
             required
             className={addSkillInputClasses}
-            inputClasses={inputLabelClasses}
+            labelClasses={inputLabelClasses}
           />
           <Input
             label="Certification Date"
@@ -62,7 +56,7 @@ export default function AddSkill({
             onChange={handleAddSkillInputChange}
             required
             className={addSkillInputClasses}
-            inputClasses={inputLabelClasses}
+            labelClasses={inputLabelClasses}
           />
           <Input
             label="Expiration Date"
@@ -73,9 +67,16 @@ export default function AddSkill({
             onChange={handleAddSkillInputChange}
             required
             className={addSkillInputClasses}
-            inputClasses={inputLabelClasses}
+            labelClasses={inputLabelClasses}
           />
         </div>
+        <button
+          type="button"
+          className="px-4 py-2 mt-4 w-full text-black bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors"
+          onClick={handleAddSkill}
+        >
+          Add Skill
+        </button>
       </div>
     </div>
   );
