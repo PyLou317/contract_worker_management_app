@@ -4,6 +4,7 @@ from rest_framework import filters
 from django.db.models import Avg
 from .models import *
 from .serializers import *
+from rest_framework.exceptions import ValidationError 
 
 class WorkerListViewAPI(generics.ListCreateAPIView):
     queryset = ContractWorker.objects.all()
@@ -30,7 +31,11 @@ class WorkerListViewAPI(generics.ListCreateAPIView):
         )
     
     def perform_create(self, serializer):
-        serializer.save(current_contract=self.request.user.organization) 
+        user_organization = self.request.user.organization
+        if not user_organization:
+            raise ValidationError({'detail': 'You must be associated with a Warehouse Business to create a worker.'})
+        
+        serializer.save(current_contract=user_organization) 
         
         
 class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -53,5 +58,14 @@ class SkillsListViewAPI(generics.ListCreateAPIView):
         if not user_organiztion:
             return Skill.objects.none()
         
-        queryset = super().get_queryset().filter(worker_skills__worker__current_contract=user_organiztion)
+        queryset = super().get_queryset().filter(organization=user_organiztion)
         return queryset.distinct()
+    
+    def perform_create(self, serializer):
+        user = self.request.user
+        user_organiztion = user.organization
+        
+        if not user_organiztion:
+            raise ValidationError({'detail': 'You must be associated with an organization to create a skill.'})
+        
+        serializer.save(organization=user_organiztion)
