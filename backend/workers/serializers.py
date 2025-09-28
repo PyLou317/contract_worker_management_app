@@ -18,8 +18,9 @@ class SkillSerializer(serializers.ModelSerializer):
                   'abreviation',
                   'base_color',
                   'description',
+                  'organization',
                   )
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'organization']
         
 
 class WorkerSkillSerializer(serializers.ModelSerializer):
@@ -90,13 +91,6 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"agency": "Agency with this name does not exist."}
             )
-        
-        # try:
-        #     contract_obj = Contract.objects.get(name=contract_name)
-        # except Contract.DoesNotExist:
-        #     raise serializers.ValidationError(
-        #         {"current_contract": "Contract with this name does not exist."}
-        #     )
         
         worker = ContractWorker.objects.create(
             agency=agency_obj, 
