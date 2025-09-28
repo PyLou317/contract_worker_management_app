@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import ColorSelector from './ColorSelector';
 import addSkill from '@/hooks/addSkill';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
+import getAcronym from '@/utilities/getAcronym';
 
 export default function AddSkillForm() {
   const [formData, setFormData] = useState({
@@ -27,17 +28,6 @@ export default function AddSkillForm() {
     }
     setFormData(newData);
   };
-
-  function getAcronym(str) {
-    if (!str) {
-      return '';
-    }
-    return str
-      .split(' ')
-      .map((word) => word.charAt(0))
-      .join('')
-      .toUpperCase();
-  }
 
   const queryClient = useQueryClient();
   const addSkillMutation = useMutation({
