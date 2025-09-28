@@ -2,7 +2,9 @@ import skillColorClasses from './SkillColorClasses';
 import './SkillCard.css';
 
 export default function SkillsCard({ skill, handleEditSkillClick }) {
-  const colorClass = skillColorClasses[skill.base_color][1] || skillColorClasses.gray;
+  const colorKey = skill?.base_color || 'gray';
+  const levelKey = String(skill?.level || 1);
+  const colorClass = skillColorClasses[colorKey]?.[levelKey] || skillColorClasses.gray[1];
 
   return (
     <div className="flex items-center h-[100px] gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
