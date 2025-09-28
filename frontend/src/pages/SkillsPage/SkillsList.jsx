@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getSkills } from '@/hooks/getSkillsDataApi';
+import { apiFetch } from '@/utilities/apiClient';
 
 import SkillCard from './SkillsCard';
 import ActionMenu from './ActionMenu';
+import LoadingSpinner from '@/components/Loader';
 
 export default function SkillsList() {
   const [showActionMenu, setShowActionMenu] = useState(false);
@@ -13,7 +14,7 @@ export default function SkillsList() {
 
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['skills'],
-    queryFn: getSkills,
+    queryFn: () => apiFetch('/skills/'),
     keepPreviousData: true,
   });
 
@@ -36,7 +37,16 @@ export default function SkillsList() {
   };
 
   if (isPending || isFetching) {
-    return <div className="mt-8 text-center text-gray-500">Loading skills...</div>;
+    return (
+      <div className="mt-8 text-center text-gray-500">
+        Loading skills...
+        <span>
+          <div className="flex justify-center items-center h-[400px]">
+            <LoadingSpinner size="10" />
+          </div>
+        </span>
+      </div>
+    );
   }
 
   if (error) {
@@ -59,8 +69,10 @@ export default function SkillsList() {
             ))}
           </div>
         ) : (
-          <div className="mt-4 w-full overflow-x-auto border border-gray-200 bg-gray-100/50 rounded-lg p-4">
-            <p className="text-gray-500">No active skills found. Please add new skills above.</p>
+          <div className='mt-8 w-full'>
+            <div className="mt-4 w-fit mx-auto overflow-x-auto border border-gray-200 bg-gray-100/50 rounded-lg p-4">
+              <p className="text-gray-500">No active skills found. Please add new skills above.</p>
+            </div>
           </div>
         )}
       </div>

@@ -11,9 +11,7 @@ import Comments from './Comments';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 
-import { getAgencies } from '@/hooks/getAgencyDataApi';
-import { getWorkerDetails } from '@/hooks/getWorkerDetailApi';
-import { fetchData } from '@/hooks/fetchData';
+import { apiFetch } from '@/utilities/apiClient';
 import { editWorker } from '@/hooks/editWorker';
 
 export default function EditWorkerModal({ showModal, onClose, editingWorker, id }) {
@@ -31,7 +29,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
     error: skillsError,
   } = useQuery({
     queryKey: ['skill'],
-    queryFn: () => fetchData({ api: 'skills' }),
+    queryFn: () => apiFetch('/skills'),
     keepPreviousData: true,
   });
   const skills = skillData?.results || [];
@@ -43,7 +41,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
     error: workerError,
   } = useQuery({
     queryKey: ['worker', id],
-    queryFn: () => getWorkerDetails({ workerId: id }),
+    queryFn: () => apiFetch(`/workers/${id}`),
     enabled: !!id, // Only run this query if an ID exists
   });
 
@@ -53,7 +51,7 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
     error: agenciesError,
   } = useQuery({
     queryKey: ['agencies'],
-    queryFn: getAgencies,
+    queryFn: () => apiFetch('/agencies'),
     keepPreviousData: true,
   });
   const agencies = agenciesData?.results || [];
