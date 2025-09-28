@@ -37,7 +37,6 @@ class WorkerSkillSerializer(serializers.ModelSerializer):
         
     
 class ContractWorkerSerializer(serializers.ModelSerializer):
-    current_contract = serializers.CharField(write_only=True)
     rating = RatingSerializer(required=False)
     worker_skills = WorkerSkillSerializer(many=True, required=False)
     agency_details = serializers.SerializerMethodField()
@@ -61,9 +60,10 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
             )
         # Makes these fields write only
         extra_kwargs = {
-            'current_contract': {'write_only': True},
+            # 'current_contract': {'write_only': True},
             'position': {'write_only': True}
             }
+        read_only_fields = ('current_contract',)
     
         
     def get_agency_details(self, obj):
@@ -82,7 +82,7 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         agency_name = validated_data.pop('agency')
-        contract_name = validated_data.pop('current_contract')
+        # contract_name = validated_data.pop('current_contract')
        
         try:
             agency_obj = Agency.objects.get(name=agency_name)
@@ -91,16 +91,16 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
                 {"agency": "Agency with this name does not exist."}
             )
         
-        try:
-            contract_obj = Contract.objects.get(name=contract_name)
-        except Contract.DoesNotExist:
-            raise serializers.ValidationError(
-                {"current_contract": "Contract with this name does not exist."}
-            )
+        # try:
+        #     contract_obj = Contract.objects.get(name=contract_name)
+        # except Contract.DoesNotExist:
+        #     raise serializers.ValidationError(
+        #         {"current_contract": "Contract with this name does not exist."}
+        #     )
         
         worker = ContractWorker.objects.create(
             agency=agency_obj, 
-            current_contract=contract_obj, 
+            # current_contract=contract_obj,
             **validated_data
             )
         
