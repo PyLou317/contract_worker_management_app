@@ -1,15 +1,31 @@
 import Input from '@/components/Inputs/LabeledInput';
 
 export default function Ratings({ workerData, formData, handleInputChange }) {
+  const averageRating =
+    formData.rating?.attendance_score &&
+    formData.rating?.communication_score &&
+    formData.rating?.performance_score &&
+    formData.rating?.skills_score
+      ? (Number(formData.rating?.attendance_score) +
+          Number(formData.rating?.communication_score) +
+          Number(formData.rating?.performance_score) +
+          Number(formData.rating?.skills_score)) /
+        4
+      : 'N/A';
+  let roundedAverageRating = 'N/A';
+  if (typeof averageRating === 'number') {
+    roundedAverageRating = averageRating.toFixed(2);
+  }
+
   return (
     <>
-      <div className="flex justify-between items-center align-baseline mt-12">
+      <div className="flex justify-between items-center align-baseline mt-12 gap-2">
         <div>
           <h2 className="text-2xl font-semibold text-white">Ratings</h2>
           <small>Each rating is out of 5 and will produce an average overal rating</small>
         </div>
-        <p className="text-black font-semibold text-center bg-yellow-300 px-4 py-2 rounded-md">
-          Average Rating: {workerData.rating?.[0]?.average_rating ? workerData.rating?.[0]?.average_rating : 'N/A'}
+        <p className="text-black font-semibold text-center bg-yellow-300 px-4 py-2 rounded-full drop-shadow-lg drop-shadow-yellow-500/35">
+          {roundedAverageRating} <span className="text-sm">average rating</span>
         </p>
       </div>
       <div className="grid grid-cols-4 gap-4 mt-4">
