@@ -19,7 +19,7 @@ export default function SearchBar({ onSearch }) {
         id="search"
         type="text"
         placeholder="Search..."
-        className="w-100 p-2 border border-gray-300 rounded-md focus:outline-none"
+        className="w-full md:w-100 p-2 border border-gray-300 rounded-md focus:outline-none"
         value={searchTerm}
         onChange={handleChange}
       />
