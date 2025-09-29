@@ -37,3 +37,12 @@ class ManagerSerializer(serializers.ModelSerializer):
         model = Manager
         fields = '__all__'
         
+        
+class CreateScheduleSerializer(serializers.ModelSerializer):
+    shift = ShiftSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Schedule
+        fields = '__all__'
+        read_only_fields = ('organization', 'shifts') 
+        depth = 2
