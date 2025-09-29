@@ -4,7 +4,7 @@ import scheduleIcon from './Icons/ScheduleIcon';
 
 export default function NavTabs() {
   const tabItems = [
-    { name: 'AddSchedule', icon: scheduleIcon },
+    { name: 'Create Schedule', icon: scheduleIcon },
     { name: 'Calendar', icon: calendarIcon },
   ];
 

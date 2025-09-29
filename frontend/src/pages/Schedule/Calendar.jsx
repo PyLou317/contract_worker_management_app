@@ -12,18 +12,20 @@ import { ScheduleContext } from './schedule-page-context';
 
 export default function Calendar() {
   const { schedules } = useContext(ScheduleContext);
+  console.log(schedules);
 
   const events = schedules.map((schedule) => ({
     id: schedule.id,
-    resourceId: schedule.area.id,
-    title: schedule.area.name,
+    resourceId: schedule.area,
+    title: schedule.area,
     start: schedule.start_date,
     end: schedule.end_date,
+    allDay: false,
   }));
 
   const resources = schedules.map((schedule) => ({
-    id: schedule.area.id,
-    title: schedule.area.name,
+    id: schedule.area,
+    title: schedule.area,
   }));
 
   const handleEventClick = (clickInfo) => {

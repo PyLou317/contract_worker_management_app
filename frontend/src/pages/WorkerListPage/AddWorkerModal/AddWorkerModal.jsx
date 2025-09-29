@@ -39,7 +39,6 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
         last_name: '',
         email: '',
         phone_number: '',
-        // current_contract: '',
         agency: '',
       });
       onClose();

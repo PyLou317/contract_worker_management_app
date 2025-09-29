@@ -75,7 +75,7 @@ export default function Schedule() {
   return (
     <ScheduleContext.Provider value={ctxValue}>
       <NavTabs />
-      {isActive === 'AddSchedule' && <ScheduleTabPage />}
+      {isActive === 'Create Schedule' && <ScheduleTabPage />}
       {isActive === 'Calendar' && <CalendarComponent />}
     </ScheduleContext.Provider>
   );

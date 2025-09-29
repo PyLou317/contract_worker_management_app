@@ -18,11 +18,7 @@ export default function AddSkillForm() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    // Temporary variable to hold the updated data
     let newData = { ...formData, [name]: value };
-
-    // If skill_name changes, update the acronym
     if (name === 'skill_name') {
       newData.abreviation = getAcronym(value);
     }

@@ -4,7 +4,7 @@ import { ScheduleContext } from './schedule-page-context';
 import formatDate from '@/utilities/formatDate';
 
 export default function ScheduleList() {
-    const { schedules, scheduleIsPending, scheduleError, scheduleIsFetching } = useContext(ScheduleContext);
+  const { schedules, scheduleIsPending, scheduleError, scheduleIsFetching } = useContext(ScheduleContext);
 
   if (scheduleIsPending || scheduleIsFetching) {
     return (
@@ -38,6 +38,7 @@ export default function ScheduleList() {
             <th className="py-3 px-6 text-left border-r border-gray-300">Manager</th>
             <th className="py-3 px-6 text-left border-r border-gray-300">Start Date</th>
             <th className="py-3 px-6 text-left border-r border-gray-300">End Date</th>
+            <th className="py-3 px-6 text-left border-r border-gray-300">Total Hours</th>
             <th className="py-3 px-6 text-left border-r border-gray-300">Active</th>
           </tr>
         </thead>
@@ -49,15 +50,20 @@ export default function ScheduleList() {
                 className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200"
               >
                 <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
-                  {schedule.area.name ? schedule.area.name : 'N/A'}
+                  {schedule.area ? schedule.area.name : 'N/A'}
                 </td>
                 <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
-                  {schedule.manager.name ? schedule.manager.name : 'N/A'}
+                  {schedule.manager ? schedule.manager.name : 'N/A'}
                 </td>
                 <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
                   {formatDate(schedule.start_date)}
                 </td>
-                <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">{formatDate(schedule.end_date)}</td>
+                <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
+                  {formatDate(schedule.end_date)}
+                </td>
+                <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
+                    Total Hours
+                </td>
                 <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
                   <span className="text-green-500 font-semibold bg-green-200 px-3 py-1 rounded-full">
                     {schedule.is_active ? 'Yes' : 'No'}
