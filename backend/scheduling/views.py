@@ -54,7 +54,7 @@ class AreaListViewAPI(generics.ListCreateAPIView):
         if not user_organization:
             return Area.objects.none()
 
-        queryset = super().get_queryset().filter(schedules__organization=user_organization).distinct()
+        queryset = super().get_queryset().filter(organization=user_organization).distinct()
         return queryset
     
 
@@ -72,5 +72,5 @@ class ManagerListViewAPI(generics.ListCreateAPIView):
         if not user_organization:
             return Manager.objects.none()
 
-        queryset = super().get_queryset().filter(created_schedules__organization=user_organization).distinct()
+        queryset = super().get_queryset().filter(organization=user_organization).distinct()
         return queryset

@@ -8,19 +8,34 @@ from workers.models import ContractWorker
 class Area(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
+    organization = models.ForeignKey(
+        'organizations.WarehouseBusiness', 
+        on_delete=models.CASCADE, 
+        related_name='areas',
+        null=False,
+        blank=False
+    )
 
     def __str__(self):
-        return self.name
+        return f'{self.organization.name} - {self.name}'
 
     class Meta:
         verbose_name = _('Area')
         verbose_name_plural = _('Areas')
         ordering = ['name']
+        unique_together = ('name', 'organization')
         
 
 class Manager(models.Model):
     name = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
+    organization = models.ForeignKey(
+        'organizations.WarehouseBusiness', 
+        on_delete=models.CASCADE, 
+        related_name='managers',
+        null=False, 
+        blank=False
+    )
 
     def __str__(self):
         return self.name
@@ -29,6 +44,7 @@ class Manager(models.Model):
         verbose_name = _('Manager')
         verbose_name_plural = _('Managers')
         ordering = ['name']
+        unique_together = ('email', 'organization',) 
         
 
 class Schedule(models.Model):
