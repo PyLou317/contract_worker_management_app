@@ -1,14 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
 import { ScheduleContext } from './schedule-page-context';
+
 import formatDate from '@/utilities/formatDate';
 import getTotalWorkers from '@/utilities/getTotalWorkers';
 import getTotalHours from '@/utilities/getTotalHours';
+import EditScheduleModal from './EditScheduleModal';
 
 export default function ScheduleList() {
   const { schedules, scheduleIsPending, scheduleError, scheduleIsFetching } =
     useContext(ScheduleContext);
-
+  const [editingSchedule, setEditingSchedule] = useState(false);
+  const [editingScheduleId, setEditingScheduleId] = useState(null);
+  const [deletingScheduleId, setDeletingScheduleId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [hoveredScheduleId, setHoveredScheduleId] = useState({
     scheduleId: null,
     buttonId: null,
@@ -31,6 +36,11 @@ export default function ScheduleList() {
     } else {
       return null;
     }
+  };
+
+  const handleOpenEditSchedule = (scheduleId) => {
+    setEditingSchedule(true);
+    setEditingScheduleId(scheduleId);
   };
 
   if (scheduleIsPending || scheduleIsFetching) {
@@ -155,7 +165,7 @@ export default function ScheduleList() {
                       </div>
                     )}
                     <button
-                      className="cursor-pointer me-2"
+                      className="text-green-500 hover:text-green-700 transition-colors duration-200 cursor-pointer me-2"
                       onMouseEnter={() =>
                         setHoveredScheduleId({
                           scheduleId: schedule.id,
@@ -181,7 +191,7 @@ export default function ScheduleList() {
                       </svg>
                     </button>
                     <button
-                      className="cursor-pointer me-2"
+                      className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer me-2"
                       onMouseEnter={() =>
                         setHoveredScheduleId({
                           scheduleId: schedule.id,
@@ -189,6 +199,7 @@ export default function ScheduleList() {
                         })
                       }
                       onMouseLeave={onMouseLeaveActionToolTip}
+                      onClick={() => handleOpenEditSchedule(schedule.id)}
                     >
                       <svg
                         id="edit-schedule"
@@ -207,7 +218,7 @@ export default function ScheduleList() {
                       </svg>
                     </button>
                     <button
-                      className="cursor-pointer"
+                      className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
                       onMouseEnter={() =>
                         setHoveredScheduleId({
                           scheduleId: schedule.id,
@@ -251,6 +262,10 @@ export default function ScheduleList() {
           </tbody>
         </table>
       </div>
+      <EditScheduleModal
+        showEditScheduleModal={editingSchedule}
+        onClose={() => setEditingSchedule(false)}
+      />
     </>
   );
 }
