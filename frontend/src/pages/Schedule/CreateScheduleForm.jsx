@@ -12,11 +12,12 @@ import AddShiftBtn from './AddShiftBtn';
 export default function CreateScheduleForm() {
   const queryClient = useQueryClient();
   const [showSuccess, setShowSuccess] = useState(false);
+  const [dateRange, setDateRange] = useState([]);
 
   const [shifts, setShifts] = useState([
     {
       id: Date.now(),
-      day: '',
+      date: '',
       start_time: '',
       end_time: '',
     },
@@ -28,14 +29,18 @@ export default function CreateScheduleForm() {
     start_date: '',
     end_date: '',
     is_active: true,
-    shift: [],
+    shifts: [],
   });
 
-  const { selectLabelClasses, InputLableClasses, areas, managers } = useContext(ScheduleContext);
+  const { selectLabelClasses, InputLableClasses, areas, managers } =
+    useContext(ScheduleContext);
 
   const handleAddShift = (e) => {
     e.preventDefault();
-    setShifts([...shifts, { id: Date.now(), day: '', start_time: '', end_time: '' }]);
+    setShifts([
+      ...shifts,
+      { id: Date.now(), date: '', start_time: '', end_time: '' },
+    ]);
   };
 
   const handleInputChange = (e) => {
@@ -44,15 +49,29 @@ export default function CreateScheduleForm() {
       ...prevData,
       [name]: value,
     }));
+    if (name === 'start_date') {
+      setDateRange((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+    if (name === 'end_date') {
+      setDateRange((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleInputChangeShifts = (e, id) => {
     const { name, value } = e.target;
-    const updateShifts = shifts.map((shift) => (shift.id === id ? { ...shift, [name]: value } : shift));
+    const updateShifts = shifts.map((shift) =>
+      shift.id === id ? { ...shift, [name]: value } : shift
+    );
     setShifts(updateShifts);
     setFormData((prevData) => ({
       ...prevData,
-      shift: updateShifts,
+      shifts: updateShifts,
     }));
   };
 
@@ -70,12 +89,12 @@ export default function CreateScheduleForm() {
         start_date: '',
         end_date: '',
         is_active: true,
-        shift: [],
+        shifts: [],
       });
       setShifts([
         {
           id: Date.now(),
-          day: '',
+          date: '',
           start_time: '',
           end_time: '',
         },
@@ -106,7 +125,9 @@ export default function CreateScheduleForm() {
         </div>
       )}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-800 mb-2">Create a New Schedule</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+          Create a New Schedule
+        </h1>
         <div className="border-b border-gray-300 my-6"></div>
         {/* <p className="text-gray-700 mb-4">1. Select the area and manager aligned to the new schedule:</p> */}
         <div className="flex flex-col">
@@ -165,6 +186,7 @@ export default function CreateScheduleForm() {
               handleInputChange={(e) => handleInputChangeShifts(e, shift.id)}
               key={shift.id}
               removeShift={() => handleRemoveShift(shift.id)}
+              dateRange={dateRange}
             />
           ))}
         </div>
