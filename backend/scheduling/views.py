@@ -8,7 +8,7 @@ from rest_framework.exceptions import PermissionDenied
 class SchedulingListViewAPI(generics.ListCreateAPIView):
     queryset = Schedule.objects.all()
     serializer_class = SchedulingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         user = self.request.user
@@ -26,16 +26,16 @@ class SchedulingListViewAPI(generics.ListCreateAPIView):
 class ShiftListViewAPI(generics.ListCreateAPIView):
     queryset = Shift.objects.all()
     serializer_class = ShiftSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:
-            return Schedule.objects.none()
+            return Shift.objects.none()
 
         user_organization = user.organization
         if not user_organization:
-            return Schedule.objects.none()
+            return Shift.objects.none()
 
         queryset = super().get_queryset().filter(schedule__organization=user_organization)
         return queryset
@@ -44,7 +44,7 @@ class ShiftListViewAPI(generics.ListCreateAPIView):
 class AreaListViewAPI(generics.ListCreateAPIView):
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         user = self.request.user
@@ -80,7 +80,7 @@ class ManagerListViewAPI(generics.ListCreateAPIView):
 class CreateScheduleView(generics.CreateAPIView):
     queryset = Schedule.objects.all()
     serializer_class = CreateScheduleSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def perform_create(self, serializer):
         print(self.request.data)
