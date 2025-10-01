@@ -20,6 +20,7 @@ export default function CreateScheduleForm() {
       date: '',
       start_time: '',
       end_time: '',
+      workers_needed: '',
     },
   ]);
 
@@ -97,6 +98,7 @@ export default function CreateScheduleForm() {
           date: '',
           start_time: '',
           end_time: '',
+          workers_needed: '',
         },
       ]);
       setShowSuccess(true);
