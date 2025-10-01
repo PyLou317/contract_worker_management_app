@@ -107,22 +107,21 @@ class Shift(models.Model):
         verbose_name=_('schedule')
     )
 
-    # The user assigned to this shift
-    contract_worker = models.ManyToManyField(
+    contract_workers = models.ManyToManyField(
         ContractWorker,
         related_name='shifts',
-        verbose_name=_('worker')
+        verbose_name=_('worker'),
+        null=True,
+        blank=True,
     )
 
-    # The start and end times for the shift
-    start_time = models.DateTimeField(_('start time'))
-    end_time = models.DateTimeField(_('end time'))
-
-    # The position or role for this shift (e.g., 'Forklift Driver')
-    # position = models.CharField(max_length=100, verbose_name=_('position'))
+    workers_needed = models.PositiveIntegerField(default=1, verbose_name=_('workers needed'))
+    date = models.DateField(_('date'))
+    start_time = models.TimeField(_('start time'))
+    end_time = models.TimeField(_('end time'))
 
     def __str__(self):
-        return f"{self.contract_worker} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
+        return f"{self.contract_workers.count()} workers on {self.date})"
 
     class Meta:
         verbose_name = _('Shift')
