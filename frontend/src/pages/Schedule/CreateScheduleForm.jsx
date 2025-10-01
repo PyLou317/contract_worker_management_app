@@ -181,7 +181,11 @@ export default function CreateScheduleForm() {
             />
           </div>
         </div>
-        <div key={shifts.id} className="mt-8">
+        <div
+          key={shifts.id}
+          className="mt-8 border border-gray-300 p-4 rounded-xl"
+        >
+          <h1>Add Shifts</h1>
           {shifts.map((shift) => (
             <AddShiftForm
               shift={shift}
