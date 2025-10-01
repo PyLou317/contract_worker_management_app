@@ -121,7 +121,7 @@ class Shift(models.Model):
     end_time = models.TimeField(_('end time'))
 
     def __str__(self):
-        return f"{self.contract_workers.count()} workers on {self.date})"
+        return f"{self.contract_workers.count()} workers on {self.date} for {self.schedule.organization.name}"
 
     class Meta:
         verbose_name = _('Shift')
