@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard/DashboardPage';
 import Workers from './pages/WorkerListPage/WorkersPage';
 import Skills from './pages/SkillsPage/SkillsPage';
 import Schedule from './pages/Schedule/SchedulePage';
+import Messaging from './pages/Messaging/MessagingPage';
+// import Settings from './pages/SettingsPage/SettingsPage';
 
 import Login from './components/Authentication/LoginPage';
 import LogoutModal from './components/Authentication/LogoutModal';
@@ -44,21 +46,26 @@ function App() {
               setShowModal(true);
             }}
           />
-          <LogoutModal show={showModal} onClose={() => setShowModal(false)}>
-            <p className="text-lg font-semibold">Are you sure you want to log out?</p>
-            <p className="text-sm text-gray-400 mt-2">You will need to sign in again to access your account.</p>
-          </LogoutModal>
           <div className="flex flex-col flex-1 h-screen overflow-y-auto">
             <TopNavBar />
             <main className="m-4 flex-1">
               {isActive === 'Dashboard' && <Dashboard />}
               {isActive === 'Employees' && <Workers />}
               {isActive === 'Skills' && <Skills />}
-              {isActive === 'Scheduling' &&  <Schedule />}
+              {isActive === 'Scheduling' && <Schedule />}
+              {isActive === 'Messaging' && <Messaging />}
               {/* {isActive === 'Settings' && <Settings />} */}
             </main>
           </div>
         </div>
+        <LogoutModal show={showModal} onClose={() => setShowModal(false)}>
+          <p className="text-lg font-semibold">
+            Are you sure you want to log out?
+          </p>
+          <p className="text-sm text-gray-400 mt-2">
+            You will need to sign in again to access your account.
+          </p>
+        </LogoutModal>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     );
