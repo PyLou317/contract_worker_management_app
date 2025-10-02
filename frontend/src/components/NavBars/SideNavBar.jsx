@@ -1,36 +1,9 @@
 import Brand from '../Brand';
+import mainItems from './main-items-list';
+import settingItems from './settings-items-list';
+
 
 export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
-  const menuItems = [
-    {
-      name: 'Dashboard',
-      icon: <i className="fa-solid fa-chart-line"></i>,
-    },
-    {
-      name: 'Employees',
-      icon: <i className="fa-solid fa-users"></i>,
-    },
-    {
-      name: 'Scheduling',
-      icon: <i className="fa-solid fa-calendar"></i>,
-    },
-    {
-      name: 'Skills',
-      icon: <i className="fa-solid fa-square-check"></i>,
-    },
-    {
-      name: 'Settings',
-      icon: <i className="fa-solid fa-gear"></i>,
-    },
-    {
-      name: 'Logout',
-      icon: <i className="fa-solid fa-right-from-bracket"></i>,
-    },
-  ];
-
-  const mainItems = menuItems.slice(0, 4);
-  const settingsItem = menuItems.slice(4, 6);
-
   return (
     <>
       <nav className="bg-gray-800 w-64 text-white p-4 h-screen overflow-y-auto flex flex-col">
@@ -61,7 +34,7 @@ export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
         </ul>
 
         <ul className="w-full mt-auto">
-          {settingsItem.map((item, index) => (
+          {settingItems.map((item, index) => (
             <li
               key={item.name}
               className={`flex my-2 p-4 gap-4 ${
