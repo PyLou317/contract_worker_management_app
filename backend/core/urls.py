@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/', include('agencies.urls')),
     path('api/', include('organizations.urls')),
     path('api/', include('ratings.urls')),
+    path('api/', include('messaging.urls')),
     
     # DRF + dj_rest_auth authentication urls
     path('api/auth/', include('dj_rest_auth.urls')),
