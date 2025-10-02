@@ -10,10 +10,8 @@ export default function ActionMenu({ skillId, position, onClose }) {
         onClose();
       }
     }
-    // Bind the event listener
     document.addEventListener('mousedown', handleClickOutside);
 
-    // Clean up on component unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -23,7 +21,8 @@ export default function ActionMenu({ skillId, position, onClose }) {
     return null;
   }
 
-  const { openEditSkillModal, openDeleteSkillModal } = useContext(SkillsContext);
+  const { openEditSkillModal, openDeleteSkillModal } =
+    useContext(SkillsContext);
 
   return (
     <div
@@ -34,14 +33,14 @@ export default function ActionMenu({ skillId, position, onClose }) {
       <ul>
         <li
           onClick={() => openEditSkillModal(skillId)}
-          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 hover:border-blue-600 hover:border transition-colors duration-200 px-2 py-1 cursor-default"
+          className="text-gray-500 hover:text-gray-700 hover:border-blue-600 hover:border transition-colors duration-200 px-2 py-1 cursor-default"
           aria-label="Edit skill"
         >
           Edit
         </li>
         <li
           onClick={() => openDeleteSkillModal(skillId)}
-          className="text-red-500 hover:text-red-500 hover:bg-gray-100 hover:border-blue-600 hover:border transition-colors duration-200 px-2 py-1 cursor-default"
+          className="text-red-500 hover:text-red-500 hover:border-blue-600 hover:border transition-colors duration-200 px-2 py-1 cursor-default"
           aria-label="Edit skill"
         >
           Delete
