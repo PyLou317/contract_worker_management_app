@@ -11,7 +11,15 @@ import NavTabs from './SchedulePageTopNavMenu';
 export default function Schedule() {
   const [isActive, setIsActive] = useState('Create Schedule');
 
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
   const selectLabelClasses = 'block text-gray-700 text-xs font-bold mb-2 grow';
   const InputLableClasses = 'block text-gray-700 text-xs font-bold mb-2';
 
@@ -55,7 +63,6 @@ export default function Schedule() {
     queryFn: () => apiFetch('/schedules'),
     keepPreviousData: true,
   });
-
   const schedules = scheduleData?.results || [];
 
   const ctxValue = {
