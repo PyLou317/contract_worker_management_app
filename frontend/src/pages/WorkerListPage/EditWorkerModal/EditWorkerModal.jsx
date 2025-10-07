@@ -14,7 +14,12 @@ import SubmitBtn from '@/components/Buttons/SubmitBtn';
 import { apiFetch } from '@/utilities/apiClient';
 import { editWorker } from '@/hooks/editWorker';
 
-export default function EditWorkerModal({ showModal, onClose, editingWorker, id }) {
+export default function EditWorkerModal({
+  showModal,
+  onClose,
+  editingWorker,
+  id,
+}) {
   const [addSkillIsVisible, setAddSkillIsVisible] = useState(false);
   const [newSkillFormData, setNewSkillFormData] = useState({
     skill_name: '',
@@ -155,7 +160,9 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
   };
 
   const handleAddSkill = (e) => {
-    const selectedSkill = skills.find((skill) => skill.skill_name === newSkillFormData.skill_name);
+    const selectedSkill = skills.find(
+      (skill) => skill.skill_name === newSkillFormData.skill_name
+    );
 
     if (
       selectedSkill &&
@@ -218,7 +225,6 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
       rating: formData.rating,
       worker_skills: skillsPayload,
     };
-    console.log('Final Payload:', finalPayload);
     editWorkerMutation.mutate({ formData: finalPayload, id });
     onClose();
   };
@@ -241,8 +247,10 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
   }
 
   const inputLabelClasses = 'block text-sm font-medium text-gray-700';
-  const addSkillInputClasses = 'bg-white text-gray-900 border border-gray-400 text-gray-200';
-  const selectInputClasses = 'bg-gray-800 text-gray-200 border border-gray-400 text-gray-200';
+  const addSkillInputClasses =
+    'bg-white text-gray-900 border border-gray-400 text-gray-200';
+  const selectInputClasses =
+    'bg-gray-800 text-gray-200 border border-gray-400 text-gray-200';
 
   return (
     <div
@@ -261,14 +269,21 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
       >
         <Header onClick={onClose} />
         <form>
-          <PersonalDetails formData={formData} handleInputChange={handleInputChange} />
+          <PersonalDetails
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
           <WorkerDetails
             formData={formData}
             handleInputChange={handleInputChange}
             agencyNames={agencyNames}
             selectInputClasses={selectInputClasses}
           />
-          <Ratings workerData={workerData} formData={formData} handleInputChange={handleRatingChange} />
+          <Ratings
+            workerData={workerData}
+            formData={formData}
+            handleInputChange={handleRatingChange}
+          />
           <Skills
             addSkillIsVisible={addSkillIsVisible}
             toggleAddSkillVisibility={toggleAddSkillVisibility}
@@ -281,11 +296,24 @@ export default function EditWorkerModal({ showModal, onClose, editingWorker, id 
             formData={formData}
             handleWorkerSkillChange={handleWorkerSkillChange}
           />
-          <Comments formData={formData} handleInputChange={handleRatingChange} />
+          <Comments
+            formData={formData}
+            handleInputChange={handleRatingChange}
+          />
           <div className="mt-6 flex justify-end gap-3">
-            <CancelBtn onClick={onClose} disabled={editWorkerMutation.isPending} label="Cancel" />
+            <CancelBtn
+              onClick={onClose}
+              disabled={editWorkerMutation.isPending}
+              label="Cancel"
+            />
             <SubmitBtn
-              label={editWorkerMutation.isPending ? 'Adding...' : editingWorker ? 'Save Changes' : 'Add Worker'}
+              label={
+                editWorkerMutation.isPending
+                  ? 'Adding...'
+                  : editingWorker
+                  ? 'Save Changes'
+                  : 'Add Worker'
+              }
               disabled={editWorkerMutation.isPending}
               handleSubmit={handleSubmit}
             />
