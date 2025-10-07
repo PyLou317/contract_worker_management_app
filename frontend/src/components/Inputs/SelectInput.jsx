@@ -1,27 +1,39 @@
+import React from 'react';
+
 export default function SelectInput(props) {
+  const { label, value, options, className, ...restProps } = props;
   const vowels = ['a', 'e', 'i', 'o', 'u'];
 
-  const isVowel = vowels.includes(props.label[0].toLowerCase());
-
-  let firstOption = '';
-  if (isVowel) {
-    firstOption = <option value="">Select an {props.label}</option>;
+  // Determine the placeholder text
+  let placeholder;
+  if (label) {
+    const isVowel = vowels.includes(label[0].toLowerCase());
+    placeholder = isVowel ? `Select an ${label}` : `Select a ${label}`;
   } else {
-    firstOption = <option value="">Select a {props.label}</option>;
+    placeholder = "Select an option";
   }
+
+  // Determine the default value for the placeholder option
+  // Use an empty string so the placeholder is selected when props.value is empty/null/undefined
+  const placeholderValue = "";
 
   return (
     <div>
       <select
-        {...props}
+        {...restProps}
+        value={value}
         className={`
-        mt-1 p-2 block w-full rounded-md shadow-sm
-        focus:ring-blue-500 focus:border-blue-500
-        ${props.className || ''}
-      `}
+          mt-1 p-2 block w-full rounded-md shadow-sm
+          focus:ring-blue-500 focus:border-blue-500
+          ${className || ''}
+        `}
       >
-        {firstOption}
-        {props.options.map((option) => (
+
+        <option value={placeholderValue} disabled>
+          {placeholder}
+        </option>
+        
+        {options.map((option) => (
           <option key={option} value={option}>
             {option}
           </option>
