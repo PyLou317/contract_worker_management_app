@@ -5,7 +5,7 @@ import { ScheduleContext } from './schedule-page-context';
 import formatDate from '@/utilities/formatDate';
 import getTotalWorkers from '@/utilities/getTotalWorkers';
 import getTotalHours from '@/utilities/getTotalHours';
-import EditScheduleModal from './EditScheduleModal';
+import EditScheduleModal from './EditScheduleModal/EditScheduleModal';
 
 export default function ScheduleList() {
   const { schedules, scheduleIsPending, scheduleError, scheduleIsFetching } =
@@ -30,7 +30,7 @@ export default function ScheduleList() {
     if (buttonId === 'add-workers') {
       return 'Add Workers';
     } else if (buttonId === 'edit-schedule') {
-      return 'Edit Schedule';
+      return `Edit Schedule & Add Workers`;
     } else if (buttonId === 'delete-schedule') {
       return 'Delete Schedule';
     } else {
@@ -67,28 +67,28 @@ export default function ScheduleList() {
     <>
       <style>
         {`
-          .tooltip {
+        .tooltip {
             position: relative;
-            }
-            .tooltip-content {
-                visibility: hidden;
-                position: absolute;
-                bottom: 100%;
-                left: 50%;
-                transform: translateX(-50%);
-                white-space: nowrap;
-                background-color: #334155;
-                color: #e2e8f0;
-                padding: 0.5rem 0.75rem;
-                border-radius: 0.5rem;
-                font-size: 0.75rem;
-                z-index: 10;
-                margin-bottom: 0.5rem;
-                }
-                .tooltip:hover .tooltip-content {
-                    visibility: visible;
-                    }
-                    `}
+        }
+        .tooltip-content {
+            visibility: hidden;
+            position: absolute;
+            bottom: 100%;
+            left: 40%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            background-color: #334155;
+            color: #e2e8f0;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            z-index: 10;
+            margin-bottom: 0.5rem;
+        }
+        .tooltip:hover .tooltip-content {
+            visibility: visible;
+        }
+        `}
       </style>
       <div className="container mx-auto p-8 mt-4 bg-white shadow-md rounded-2xl">
         <div className="my-3">
@@ -160,11 +160,11 @@ export default function ScheduleList() {
                   </td>
                   <td className="relative text-center whitespace-nowrap border-r border-gray-200">
                     {hoveredScheduleId.scheduleId === schedule.id && (
-                      <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
+                      <div className="absolute bottom-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
                         {toolTipLabel(hoveredScheduleId.buttonId)}
                       </div>
                     )}
-                    <button
+                    {/* <button
                       className="text-green-500 hover:text-green-700 transition-colors duration-200 cursor-pointer me-2"
                       onMouseEnter={() =>
                         setHoveredScheduleId({
@@ -189,7 +189,7 @@ export default function ScheduleList() {
                           d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
                         />
                       </svg>
-                    </button>
+                    </button> */}
                     <button
                       className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer me-2"
                       onMouseEnter={() =>
@@ -265,6 +265,8 @@ export default function ScheduleList() {
       <EditScheduleModal
         showEditScheduleModal={editingSchedule}
         onClose={() => setEditingSchedule(false)}
+        Id={editingScheduleId}
+        editingSchedule={editingSchedule}
       />
     </>
   );
