@@ -110,3 +110,21 @@ class CreateScheduleView(generics.CreateAPIView):
 
         queryset = super().get_queryset().filter(schedule__organization=user_organization)
         return queryset
+    
+    
+class ScheduleDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Schedule.objects.all()
+    serializer_class = SchedulingSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return Schedule.objects.none()
+
+        user_organization = user.organization
+        if not user_organization:
+            return Schedule.objects.none()
+
+        queryset = super().get_queryset().filter(organization=user_organization)
+        return queryset

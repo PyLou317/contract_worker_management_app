@@ -9,6 +9,7 @@ urlpatterns = [
     path('areas/', AreaListViewAPI.as_view()),
     path('managers/', ManagerListViewAPI.as_view()),
     path('schedule/create/', CreateScheduleView.as_view(), name='create-schedule'),
+    path('schedules/<int:pk>/', ScheduleDetailUpdateViewAPI.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
