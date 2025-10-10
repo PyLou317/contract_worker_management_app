@@ -15,6 +15,9 @@ export default function AddShiftForm({
   const { selectLabelClasses, InputLableClasses } = useContext(ScheduleContext);
   const days = getDaysArray(dateRange);
 
+  const inputClasses =
+    'flex flex-grow-1 border border-gray-300 text-gray-800 ounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500';
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:items-end mt-4">
       <SelectInput
@@ -27,15 +30,16 @@ export default function AddShiftForm({
         onChange={handleInputChange}
         required
         labelClasses={selectLabelClasses}
-        className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={inputClasses}
       />
       <Input
         label="Start Time"
         labelClasses={InputLableClasses}
-        className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={inputClasses}
         type="time"
         id="start_time"
         name="start_time"
+        defaultValue="08:00"
         value={shift.startTime}
         onChange={(e) => handleInputChange(e, shift.id)}
         step="1800"
@@ -44,10 +48,11 @@ export default function AddShiftForm({
       <Input
         label="End Time"
         labelClasses={InputLableClasses}
-        className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={inputClasses}
         type="time"
         id="end_time"
         name="end_time"
+        defaultValue="16:30"
         value={shift.endTime}
         onChange={(e) => handleInputChange(e, shift.id)}
         step="1800"
@@ -56,7 +61,7 @@ export default function AddShiftForm({
       <Input
         label="Workers Needed"
         labelClasses={InputLableClasses}
-        className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={inputClasses}
         type="number"
         id="workers_needed"
         name="workers_needed"
