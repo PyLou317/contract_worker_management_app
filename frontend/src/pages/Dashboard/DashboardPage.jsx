@@ -10,9 +10,25 @@ import clockedOutWorkerIcon from './Icons/ClockOutIcon';
 import { apiFetch } from '@/utilities/apiClient';
 
 export default function Dashboard() {
-  const { isPending, error, data, isFetching } = useQuery({
+  const {
+    isPending: workerIsPending,
+    error: workerError,
+    data: workerData,
+    isFetching: workerIsFetching,
+  } = useQuery({
     queryKey: ['workers'],
     queryFn: () => apiFetch('/workers'),
+    keepPreviousData: true,
+  });
+
+  const {
+    isPending: scheduleIsPending,
+    error: scheduleError,
+    data: scheuleData,
+    isFetching: scheduleIsFetching,
+  } = useQuery({
+    queryKey: ['schedules'],
+    queryFn: () => apiFetch('/schedules'),
     keepPreviousData: true,
   });
 
@@ -20,7 +36,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // This effect runs when isPending or isFetching changes
-    if (!isPending && !isFetching) {
+    if (!workerIsPending && !workerIsFetching) {
       // Data fetching is complete. Now, start the timer for the minimum spinner duration.
       const timer = setTimeout(() => {
         setIsLoading(false);
@@ -31,17 +47,38 @@ export default function Dashboard() {
       // Data is pending or fetching, so set isLoading to true
       setIsLoading(true);
     }
-  }, [isPending, isFetching]);
+  }, [workerIsPending, workerIsFetching]);
 
-  const workerCount = data?.count || 0;
+  const workerCount = workerData?.count || 0;
+  const scheduleCount = scheuleData?.count || 0;
 
   return (
     <div>
       <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4">
-        <StatCard icon={totalWorkerIcon} value={workerCount} title="Total Workers" loading={isLoading} />
-        <StatCard icon={scheduledWorkerIcon} value="200" title="Total Scheduled Workers" loading={isLoading} />
-        <StatCard icon={clockedInWorkerIcon} value="200" title="Clocked In Workers" loading={isLoading}/>
-        <StatCard icon={clockedOutWorkerIcon} value="200" title="Clocked Out Workers" loading={isLoading}/>
+        <StatCard
+          icon={totalWorkerIcon}
+          value={workerCount}
+          title="Total Workers"
+          loading={isLoading}
+        />
+        <StatCard
+          icon={scheduledWorkerIcon}
+          value={scheduleCount}
+          title="Total Schedules Created"
+          loading={isLoading}
+        />
+        <StatCard
+          icon={clockedOutWorkerIcon}
+          value="0"
+          title="Total Workers Scheduled"
+          loading={isLoading}
+        />
+        <StatCard
+          icon={clockedInWorkerIcon}
+          value="0"
+          title="Clocked In Workers"
+          loading={isLoading}
+        />
       </div>
     </div>
   );
