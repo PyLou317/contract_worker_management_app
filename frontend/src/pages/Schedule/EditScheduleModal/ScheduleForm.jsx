@@ -11,17 +11,18 @@ export default function ScheduleForm() {
   const { formData, handleScheduleInputChange } =
     useContext(EditScheduleContext);
 
-  const inputClasses = 'border border-gray-300 text-gray-800';
+  const inputClasses =
+    'flex flex-grow-1 border border-gray-300 rounded-lg p-2 w-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500';
   const labelClasses = 'text-gray-800';
 
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:items-end">
         <SelectInput
-          label="Manager"
+          label="Managers"
           name="manager"
           id="manager"
-          value={formData.manager.name}
+          value={formData.manager}
           onChange={handleScheduleInputChange}
           options={managers || []}
           className={inputClasses}
@@ -32,7 +33,7 @@ export default function ScheduleForm() {
           label="Area"
           name="area"
           id="area"
-          value={formData.area.name}
+          value={formData.area}
           onChange={handleScheduleInputChange}
           options={areas || []}
           className={inputClasses}
