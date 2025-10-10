@@ -69,7 +69,7 @@ export default function AddSkillForm() {
               Skill Name
             </label>
             <input
-              className="border rounded-lg p-2 w-full h-[40px] bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-600 rounded-lg shadow-md p-2 w-full h-[40px] bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="skill_name"
               name="skill_name"
@@ -84,7 +84,7 @@ export default function AddSkillForm() {
               Abreviation
             </label>
             <input
-              className="border rounded-lg p-2 w-20 h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-600 rounded-lg shadow-md p-2 w-20 h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="abreviation"
               name="abreviation"
@@ -99,7 +99,7 @@ export default function AddSkillForm() {
               Description
             </label>
             <input
-              className="border rounded-lg p-2 w-full lg:w-lg h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-600 rounded-lg shadow-md p-2 w-full lg:w-lg h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               id="description"
               name="description"
