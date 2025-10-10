@@ -7,8 +7,6 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import { useContext } from 'react';
 import { ScheduleContext } from './schedule-page-context';
 
-// import '@fullcalendar/core/main.css';
-// import '@fullcalendar/daygrid/main.css';
 
 export default function Calendar() {
   const { schedules } = useContext(ScheduleContext);
@@ -16,12 +14,14 @@ export default function Calendar() {
 
   const events = schedules.map((schedule) => ({
     id: schedule.id,
-    resourceId: schedule.area,
-    title: schedule.area,
+    resourceId: schedule.area.id,
+    title: schedule.area.name,
     start: schedule.start_date,
     end: schedule.end_date,
     allDay: false,
   }));
+    
+    
 
   const resources = schedules.map((schedule) => ({
     id: schedule.area,
