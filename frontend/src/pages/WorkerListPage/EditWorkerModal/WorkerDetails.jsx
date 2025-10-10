@@ -1,12 +1,7 @@
 import Input from '@/components/Inputs/LabeledInput';
 import SelectInput from '@/components/Inputs/LabeledSelectInput';
 
-export default function WorkerDetails({ formData, handleInputChange, agencyNames, selectInputClasses }) {
-  const managerName =
-    formData.rating.manager && formData.rating.manager.first_name && formData.rating.manager.last_name
-      ? `${formData.rating.manager.first_name} ${formData.rating.manager.last_name}`
-          : '';
-    
+export default function WorkerDetails({ formData, handleInputChange, agencyNames, selectInputClasses }) {    
   return (
     <>
       <h3 className="text-2xl font-semibold text-white mb-4 mt-12">Work Details</h3>
