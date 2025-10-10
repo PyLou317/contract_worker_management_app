@@ -128,19 +128,6 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             onChange={handleInputChange}
             className={inputFieldClasses}
           />
-          {/* {contracts && (
-            <SelectInput
-              label="Current Contract"
-              type="text"
-              id="current_contract"
-              name="current_contract"
-              value={formData.current_contract}
-              onChange={handleInputChange}
-              required
-              options={contracts}
-              className={inputFieldClasses}
-            ></SelectInput>
-          )} */}
           {agencies && (
             <SelectInput
               label="Agency"
