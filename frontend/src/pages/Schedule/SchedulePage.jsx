@@ -39,6 +39,10 @@ export default function Schedule() {
   });
   const areas = areaData?.results || [];
   const areaNames = areas.map((area) => area.name);
+  const areaOptions = areas.map((area) => ({
+    label: area.name,
+    value: area.id,
+  }));
 
   const {
     isPending: managersIsPending,
@@ -52,6 +56,10 @@ export default function Schedule() {
   });
   const managers = managersData?.results || [];
   const managerNames = managers.map((manager) => manager.name);
+  const managerOptions = managers.map((manager) => ({
+    label: manager.name,
+    value: manager.id,
+  }));
 
   const {
     isPending: scheduleIsPending,
