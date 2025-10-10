@@ -128,3 +128,13 @@ class ScheduleDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
 
         queryset = super().get_queryset().filter(organization=user_organization)
         return queryset
+    
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        user = self.request.user
+        user_organization = getattr(user, 'organization', None)
+        
+        if instance.organization != user_organization:
+            raise PermissionDenied("You do not have permission to update this schedule.")
+        
+        serializer.save()
