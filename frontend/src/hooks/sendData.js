@@ -13,47 +13,51 @@ const attemptFetch = async (token, formData, apiEndpoint) => {
   });
 
   if (response.status === 401) {
-    throw new Error('Unauthorized');
+    throw response;
   }
 
   if (!response.ok) {
     const errorData = await response.json();
     console.error('Server error details:', errorData);
-    throw new Error('Failed to send data to the server.');
+
+    const errorMessage =
+      errorData.detail ||
+      errorData.message ||
+      'Failed to send data to the server.';
+    const validationError = new Error(errorMessage);
+    validationError.data = errorData; // Attach error data for external handlers
+    throw validationError;
   }
 
   return await response.json();
 };
 
-const sendData = async ({formData, endpoint}) => {
+const sendData = async ({ formData, endpoint, method = 'PATCH' }) => {
   const authToken = localStorage.getItem('authToken');
-  console.log('endpoint: ', endpoint);
+  const apiEndpoint = url + endpoint;
 
   if (!authToken) {
     throw new Error('Authentication token not found. Please log in.');
   }
 
   try {
-    return await attemptFetch(authToken, formData, url + endpoint);
+    return await attemptFetch(authToken, formData, apiEndpoint);
   } catch (error) {
-    console.error('Error sending data to the server:', error);
-
-    // Check if the error has a response and it's not a 401
-    if (error.response && error.response.status !== 401) {
-      // If it's a validation error, parse and re-throw the specific error data
-      const errorData = await error.response.json();
-      throw new Error(errorData.email[0] || 'Validation error');
-    }
-
-    if (error.message === 'Unauthorized') {
+    if (error instanceof Response && error.status === 401) {
       console.log('Token expired. Attempting to refresh...');
+
       try {
         const newAuthToken = await refreshToken();
-        return await attemptFetch(newAuthToken, formData, url + endpoint);
+        localStorage.setItem('authToken', newAuthToken);
+
+        return await attemptFetch(newAuthToken, formData, apiEndpoint);
       } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
         throw new Error('Session expired. Please log in again.');
       }
-    } else {
+    }
+
+    else {
       throw error;
     }
   }
