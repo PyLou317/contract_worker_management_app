@@ -103,14 +103,14 @@ export default function ScheduleList() {
               {/* <th className="py-3 px-6 border-r border-gray-300">Manager</th> */}
               <th className="py-3 px-6 border-r border-gray-300">Start Date</th>
               <th className="py-3 px-6 border-r border-gray-300">End Date</th>
-              {/* <th className="py-3 px-6 border-r border-gray-300">
-              Shift Duration
-              </th> */}
               <th className="py-3 px-6 border-r border-gray-300">
-                Workers Needed
+              Shifts
               </th>
               <th className="py-3 px-6 border-r border-gray-300">
-                Workers Scheduled
+                Total Workers
+              </th>
+              <th className="py-3 px-6 border-r border-gray-300">
+                Scheduled Workers
               </th>
               <th className="py-3 px-6 border-r border-gray-300">
                 Hours Needed
@@ -130,16 +130,16 @@ export default function ScheduleList() {
                   className="border-b border-gray-200 text-center hover:bg-gray-100 transition-colors duration-200"
                 >
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    {schedule.area ? schedule.area.name : 'N/A'}
+                    {schedule.area_detail?.name ? schedule.area_detail?.name : 'N/A'}
                   </td>
-                  {/* <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                  {schedule.manager ? schedule.manager.name : 'N/A'}
-                  </td> */}
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {formatDate(schedule.start_date)}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {formatDate(schedule.end_date)}
+                  </td>
+                  <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
+                  {schedule.shifts ? schedule.shifts.length : 'N/A'}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {getTotalWorkers(schedule)}
@@ -164,32 +164,6 @@ export default function ScheduleList() {
                         {toolTipLabel(hoveredScheduleId.buttonId)}
                       </div>
                     )}
-                    {/* <button
-                      className="text-green-500 hover:text-green-700 transition-colors duration-200 cursor-pointer me-2"
-                      onMouseEnter={() =>
-                        setHoveredScheduleId({
-                          scheduleId: schedule.id,
-                          buttonId: 'add-workers',
-                        })
-                      }
-                      onMouseLeave={onMouseLeaveActionToolTip}
-                    >
-                      <svg
-                        id="add-workers"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="size-4"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-                        />
-                      </svg>
-                    </button> */}
                     <button
                       className="text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer me-2"
                       onMouseEnter={() =>
