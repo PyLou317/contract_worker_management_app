@@ -13,6 +13,9 @@ export default function CreateScheduleForm() {
   const queryClient = useQueryClient();
   const [showSuccess, setShowSuccess] = useState(false);
   const [dateRange, setDateRange] = useState([]);
+  const [validationError, setValidationError] = useState('');
+  const { selectLabelClasses, InputLableClasses, areas, managers } =
+    useContext(ScheduleContext);
 
   const [shifts, setShifts] = useState([
     {
@@ -33,9 +36,6 @@ export default function CreateScheduleForm() {
     shifts: [],
   });
 
-  const { selectLabelClasses, InputLableClasses, areas, managers } =
-    useContext(ScheduleContext);
-
   const handleAddShift = (e) => {
     e.preventDefault();
     setShifts([
@@ -44,25 +44,52 @@ export default function CreateScheduleForm() {
     ]);
   };
 
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-    if (name === 'start_date') {
-      setDateRange((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
-    if (name === 'end_date') {
-      setDateRange((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+
+    setValidationError('');
+
+    setFormData((prevData) => {
+      let newFormData = { ...prevData, [name]: value };
+
+      if (name === 'start_date') {
+        const startDate = new Date(value);
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 7);
+        const newEndDateString = formatDate(endDate);
+
+        newFormData.end_date = newEndDateString;
+
+        setDateRange({
+          start_date: value,
+          end_date: newEndDateString,
+        });
+      } else if (name === 'end_date') {
+        const startDateTime = new Date(prevData.start_date);
+        const endDateTime = new Date(value);
+
+        if (endDateTime < startDateTime) {
+          setValidationError('End date cannot be before the start date.');
+          newFormData[name] = prevData.start_date;
+        }
+
+        setDateRange((prevRange) => ({
+          ...prevRange,
+          [name]: newFormData[name],
+        }));
+      }
+      return newFormData;
+    });
   };
+
+  console.log(dateRange);
 
   const handleInputChangeShifts = (e, id) => {
     const { name, value } = e.target;
@@ -112,18 +139,30 @@ export default function CreateScheduleForm() {
 
   const handleSumbit = (e) => {
     e.preventDefault();
-    console.log('Schedule Created:', formData);
     addScheduleMutation.mutate(formData);
   };
 
   return (
     <form className="container mx-auto p-8 bg-white shadow-md rounded-2xl">
+      {/* SUCCESS MESSAGE */}
       {showSuccess && (
         <div
           className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md relative mb-4"
           role="alert"
         >
           <span className="block sm:inline">Schedule added successfully!</span>
+        </div>
+      )}
+      {/* VALIDATION ERROR MESSAGE */}
+      {validationError && (
+        <div
+          className="bg-red-100 border border-red-500 text-red-700 p-3 rounded-xl relative mb-4 transition-all"
+          role="alert"
+        >
+          <span className="block sm:inline font-medium">
+            Validation Error:{' '}
+          </span>
+          <span className="block sm:inline">{validationError}</span>
         </div>
       )}
       <div>
