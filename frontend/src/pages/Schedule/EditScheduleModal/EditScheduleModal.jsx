@@ -9,6 +9,9 @@ import ScheduleForm from './ScheduleForm';
 import ShiftForm from './ShiftForm';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
+import AddShiftBtn from '@/pages/Schedule/AddShiftBtn';
+import AddShiftForm from '@/pages/Schedule/AddShiftForm';
+import getDaysArray from '@/utilities/getDateArray';
 
 export default function EditScheduleModal({
   Id,
@@ -17,6 +20,16 @@ export default function EditScheduleModal({
   editingSchedule,
 }) {
   const dialogRef = useRef(null);
+  const [shifts, setShifts] = useState([
+    {
+      id: Date.now(),
+      date: '',
+      start_time: '',
+      end_time: '',
+      workers_needed: '',
+    },
+  ]);
+  const [dateRange, setDateRange] = useState([]);
 
   const [formData, setFormData] = useState({
     manager: '',
@@ -42,8 +55,8 @@ export default function EditScheduleModal({
       const shifts = scheduleData.shifts || [];
 
       setFormData({
-        manager: scheduleData.manager.name ? scheduleData.manager.name : '',
-        area: scheduleData.area.name ? scheduleData.area.name : '',
+        manager: scheduleData.manager_detail.id,
+        area: scheduleData.area_detail.id,
         start_date: scheduleData.start_date ? scheduleData.start_date : '',
         end_date: scheduleData.end_date ? scheduleData.end_date : '',
         is_active: true,
@@ -58,18 +71,39 @@ export default function EditScheduleModal({
       ...prevData,
       [name]: value,
     }));
-    console.log('Updated Schedule:', formData);
   };
 
   const handleShiftInputChange = (e, index) => {
     const { name, value } = e.target;
     const updatedShifts = [...formData.shifts];
-    updatedShifts[index][name] = value;
+
+    let processedValue = value;
+
+    if (name === 'workers_needed') {
+      processedValue = parseInt(value);
+      if (isNaN(processedValue)) {
+        processedValue = 0;
+      }
+    }
+
+    updatedShifts[index][name] = processedValue;
+
     setFormData((prevData) => ({
       ...prevData,
       shifts: updatedShifts,
     }));
-    console.log('Updated Shifts:', updatedShifts);
+  };
+
+  const handleAddShift = (e) => {
+    e.preventDefault();
+    setShifts([
+      ...shifts,
+      { id: Date.now(), date: '', start_time: '', end_time: '' },
+    ]);
+  };
+
+  const handleRemoveShift = (id) => {
+    setShifts(shifts.filter((shift) => shift.id !== id));
   };
 
   const queryClient = useQueryClient();
@@ -78,8 +112,8 @@ export default function EditScheduleModal({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] });
       queryClient.invalidateQueries({ queryKey: ['shifts'] });
+      queryClient.invalidateQueries({ queryKey: ['schedule', Id] });
       queryClient.invalidateQueries({ queryKey: ['workers'] });
-      onClose();
     },
     onError: (error) => {
       console.error('Error editing schedule:', error);
@@ -89,7 +123,6 @@ export default function EditScheduleModal({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
     const endpoint = `/schedules/${Id}/`;
     editScheduleMutation.mutate({ formData: formData, endpoint: endpoint });
   };
@@ -122,7 +155,7 @@ export default function EditScheduleModal({
         ></div>
         <dialog
           ref={dialogRef}
-          className={`text-white p-8 rounded-2xl shadow-xl max-w-5xl w-full transform transition-transform duration-300 relative ${
+          className={`text-white p-8 rounded-2xl shadow-xl max-w-6xl w-full max-h-7/8 transform transition-transform duration-300 relative overflow-auto ${
             showEditScheduleModal ? 'scale-100' : 'scale-95'
           }`}
           open={showEditScheduleModal}
@@ -154,6 +187,24 @@ export default function EditScheduleModal({
           <form onSubmit={handleSubmit} className="space-y-4">
             <ScheduleForm />
             <ShiftForm />
+            <div
+              key={shifts.id}
+              className="mt-8 border border-gray-300 p-4 rounded-xl"
+            >
+              <h1 className="font-semibold text-gray-800 mb-2">Add Shifts</h1>
+              {shifts.map((shift) => (
+                <AddShiftForm
+                  shift={shift}
+                  handleInputChange={(e) =>
+                    handleInputChangeShifts(e, shift.id)
+                  }
+                  key={shift.id}
+                  removeShift={() => handleRemoveShift(shift.id)}
+                  dateRange={dateRange}
+                />
+              ))}
+            </div>
+            <AddShiftBtn onClick={handleAddShift} />
             <div className="mt-6 flex justify-end gap-3">
               <CancelBtn onClick={onClose} label="Cancel" />
               <SubmitBtn
