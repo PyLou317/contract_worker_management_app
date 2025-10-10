@@ -209,7 +209,7 @@ export default function EditWorkerModal({
     const skillsPayload = formData.worker_skills.map((workerSkill) => {
       return {
         id: workerSkill.id,
-        skill: workerSkill.skill, // Corrected: Send the full skill object
+        skill: workerSkill.skill,
         level: workerSkill.level,
         certification_date: workerSkill.certification_date,
         expiration_date: workerSkill.expiration_date,
