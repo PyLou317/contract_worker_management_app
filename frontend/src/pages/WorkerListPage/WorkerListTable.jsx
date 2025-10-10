@@ -67,22 +67,17 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
     queryKey: ['workers', searchTerm, page, ordering],
     queryFn: () => {
       const params = new URLSearchParams();
-
       if (page > 1) {
         params.set('page', page);
       }
-
       if (searchTerm) {
         params.set('search', searchTerm);
       }
-
       if (ordering) {
         params.set('ordering', ordering);
       }
-
       const queryString = params.toString();
       const endpoint = `/workers/${queryString ? `?${queryString}` : ''}`;
-
       return apiFetch(endpoint);
     },
     keepPreviousData: true,
