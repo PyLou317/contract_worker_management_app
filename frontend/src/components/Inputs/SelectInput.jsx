@@ -10,12 +10,13 @@ export default function SelectInput(props) {
     const isVowel = vowels.includes(label[0].toLowerCase());
     placeholder = isVowel ? `Select an ${label}` : `Select a ${label}`;
   } else {
-    placeholder = "Select an option";
+    placeholder = 'Select an option';
   }
 
-  // Determine the default value for the placeholder option
-  // Use an empty string so the placeholder is selected when props.value is empty/null/undefined
-  const placeholderValue = "";
+  const placeholderValue = '';
+
+  // Check if options is valid before mapping (a defensive measure)
+  const validOptions = Array.isArray(options) ? options : [];
 
   return (
     <div>
@@ -28,14 +29,16 @@ export default function SelectInput(props) {
           ${className || ''}
         `}
       >
-
         <option value={placeholderValue} disabled>
           {placeholder}
         </option>
-        
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+
+        {validOptions.map((option) => (
+          <option
+            key={option.value ? option.value : option}
+            value={option.value ? option.value : option}
+          >
+            {option.label ? option.label : option}
           </option>
         ))}
       </select>
