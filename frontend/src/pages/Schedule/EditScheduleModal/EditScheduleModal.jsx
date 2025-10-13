@@ -141,7 +141,7 @@ export default function EditScheduleModal({
     scheduleData: scheduleData,
     scheduleIsPending: scheduleIsPending,
     scheduleError: scheduleError,
-    dialogRef: dialogRef,
+    // dialogRef: dialogRef,        
     showEditScheduleModal: showEditScheduleModal,
     onClose: onClose,
     formData: formData,
