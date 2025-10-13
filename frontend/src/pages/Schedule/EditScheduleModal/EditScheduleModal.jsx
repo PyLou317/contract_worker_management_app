@@ -27,6 +27,7 @@ export default function EditScheduleModal({
       start_time: '',
       end_time: '',
       workers_needed: '',
+      contract_workers: [],
     },
   ]);
   const [dateRange, setDateRange] = useState([]);
@@ -98,7 +99,14 @@ export default function EditScheduleModal({
     e.preventDefault();
     setShifts([
       ...shifts,
-      { id: Date.now(), date: '', start_time: '', end_time: '' },
+      {
+        id: Date.now(),
+        date: '',
+        start_time: '',
+        end_time: '',
+        workers_needed: '',
+        contract_workers: [],
+      },
     ]);
   };
 
