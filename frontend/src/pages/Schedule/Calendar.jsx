@@ -10,12 +10,11 @@ import { ScheduleContext } from './schedule-page-context';
 
 export default function Calendar() {
   const { schedules } = useContext(ScheduleContext);
-  console.log(schedules);
 
   const events = schedules.map((schedule) => ({
     id: schedule.id,
-    resourceId: schedule.area.id,
-    title: schedule.area.name,
+    resourceId: schedule.area_detail.id,
+    title: schedule.area_detail.name,
     start: schedule.start_date,
     end: schedule.end_date,
     allDay: false,
