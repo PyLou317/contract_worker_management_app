@@ -1,6 +1,5 @@
 const refreshToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
-  console.log('Refresh Token: ' + refreshToken);
 
   if (!refreshToken) {
     throw new Error('Refresh token not found. Please log in again.');
