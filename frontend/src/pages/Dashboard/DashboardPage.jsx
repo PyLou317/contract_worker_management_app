@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import StatCard from './StatCard';
+import WorkerSkillsList from './WorkersSkillsList';
+import DashboardCard from './DashboardCard';
+
 import totalWorkerIcon from './Icons/TotalWorkersIcon';
 import scheduledWorkerIcon from './Icons/ScheduledWorkersIcon';
 import clockedInWorkerIcon from './Icons/ClockInIcon';
@@ -51,6 +54,7 @@ export default function Dashboard() {
 
   const workerCount = workerData?.count || 0;
   const scheduleCount = scheuleData?.count || 0;
+  const workerListData = workerData?.results || [];
 
   return (
     <div>
@@ -79,6 +83,28 @@ export default function Dashboard() {
           title="Clocked In Workers"
           loading={isLoading}
         />
+      </div>
+      <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+        <DashboardCard
+          heading="Skills"
+          subHeading="Worker Skills List"
+        >
+          <WorkerSkillsList
+            workers={workerListData}
+            isFetching={workerIsFetching}
+            isPending={workerIsPending}
+          />
+        </DashboardCard>
+        <DashboardCard
+          heading="Clocked In Workers"
+          subHeading="Current Active Workers On Shift"
+        >
+          <WorkerSkillsList
+            workers={workerListData}
+            isFetching={workerIsFetching}
+            isPending={workerIsPending}
+          />
+        </DashboardCard>
       </div>
     </div>
   );
