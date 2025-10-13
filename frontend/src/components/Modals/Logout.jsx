@@ -1,4 +1,6 @@
-export default function LogoutModal({ onClose, handleLogout }) {
+import handleLogout from '../Authentication/LogoutFunction';
+
+export default function LogoutModal({ onClose }) {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <svg
