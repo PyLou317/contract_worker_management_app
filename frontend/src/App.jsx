@@ -8,10 +8,10 @@ import Workers from './pages/WorkerListPage/WorkersPage';
 import Skills from './pages/SkillsPage/SkillsPage';
 import Schedule from './pages/Schedule/SchedulePage';
 import Messaging from './pages/Messaging/MessagingPage';
-// import Settings from './pages/SettingsPage/SettingsPage';
+import Modal from './components/Modals/Modal';
+import LogoutModal from './components/Modals/Logout';
 
 import Login from './components/Authentication/LoginPage';
-import LogoutModal from './components/Authentication/LogoutModal';
 import handleLogout from './components/Authentication/LogoutFunction';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -33,39 +33,43 @@ function App() {
   const handleSideLinkClick = (name) => {
     setIsActive(name);
   };
+
+  const mainContent = (isActive) => {
+    if (isActive === 'Dashboard') {
+      return <Dashboard />;
+    } else if (isActive === 'Workers') {
+      return <Workers />;
+    } else if (isActive === 'Skills') {
+      return <Skills />;
+    } else if (isActive === 'Scheduling') {
+      return <Schedule />;
+    } else if (isActive === 'Messaging') {
+      return <Messaging />;
+    } else if (isActive === 'Settings') {
+      return <Settings />;
+    }
+  };
+
   if (isLoggedIn === false) {
     return <Login />;
   } else {
     return (
       <QueryClientProvider client={queryClient}>
-        <div className="flex w-full min-h-screen">
+        <div className="flex w-full min-h-screen bg-gray-100/50">
           <SideNavBar
             activeLink={isActive}
             onLinkClick={handleSideLinkClick}
+            showModal={showModal}
+            setShowModal={setShowModal}
             onLogoutClick={() => {
               setShowModal(true);
             }}
           />
           <div className="flex flex-col flex-1 h-screen overflow-y-auto">
             <TopNavBar />
-            <main className="m-4 flex-1">
-              {isActive === 'Dashboard' && <Dashboard />}
-              {isActive === 'Employees' && <Workers />}
-              {isActive === 'Skills' && <Skills />}
-              {isActive === 'Scheduling' && <Schedule />}
-              {isActive === 'Messaging' && <Messaging />}
-              {/* {isActive === 'Settings' && <Settings />} */}
-            </main>
+            <main className="m-4 flex-1">{mainContent(isActive)}</main>
           </div>
         </div>
-        <LogoutModal show={showModal} onClose={() => setShowModal(false)}>
-          <p className="text-lg font-semibold">
-            Are you sure you want to log out?
-          </p>
-          <p className="text-sm text-gray-400 mt-2">
-            You will need to sign in again to access your account.
-          </p>
-        </LogoutModal>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     );
