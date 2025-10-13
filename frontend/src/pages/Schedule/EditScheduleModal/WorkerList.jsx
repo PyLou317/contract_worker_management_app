@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Rating } from 'react-simple-star-rating';
-import '@/components/StarRatingStyles.css';
-import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
-import LoadingSpinner from '@/components/Loader';
+import { EditScheduleContext } from './edit-schedule-context';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/utilities/apiClient';
 
-export default function WorkerList() {
+import '@/utilities/toolTipStyles.css';
+
+import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
+import LoadingSpinner from '@/components/Loader';
+
+export default function WorkerList({ shiftId }) {
   const [ordering, setOrdering] = useState('');
   const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const { formData, handleWorkerCheck } = useContext(EditScheduleContext);
 
   const starRating = {
     size: 24,
@@ -59,6 +64,13 @@ export default function WorkerList() {
   const nextUrl = data?.next;
   const prevUrl = data?.previous;
 
+  const shiftIndex = formData.shifts.findIndex((shift) => shift.id === shiftId);
+  const currentShiftWorkers =
+    formData.shifts[shiftIndex]?.contract_workers || [];
+  const selectedWorkerIds = currentShiftWorkers.map(
+    (workerObj) => workerObj.id
+  );
+
   if (isFetching || isPending) {
     return (
       <div className="flex justify-center items-center h-[400px]">
@@ -78,7 +90,7 @@ export default function WorkerList() {
   }
 
   return (
-    <div className="overflow-x-auto border border-gray-300 rounded-lg mb-8">
+    <div className="overflow-x-auto border border-gray-300 rounded-lg mt-4 mb-8">
       <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
         <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
           <tr>
@@ -128,7 +140,7 @@ export default function WorkerList() {
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
           {workers && workers.length > 0 ? (
-            workers.map((worker) => (
+            workers.map((worker, index) => (
               <tr
                 key={worker.id}
                 className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200"
@@ -136,9 +148,17 @@ export default function WorkerList() {
                 <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
                   <input
                     type="checkbox"
-                    id="schedule_worker"
-                    name="schedule_worker"
-                    value="yes"
+                    id={`contract_workers_${worker.id}`}
+                    name="contract_workers"
+                    value={worker.id}
+                    checked={selectedWorkerIds.includes(worker.id)}
+                    onChange={(e) =>
+                      handleWorkerCheck(
+                        shiftIndex,
+                        e.target.value,
+                        e.target.checked
+                      )
+                    }
                   />
                 </td>
                 <td className="py-3 px-6 text-left border-r border-gray-200">
