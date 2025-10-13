@@ -4,7 +4,7 @@ const mainItems = [
     icon: <i className="fa-solid fa-chart-line"></i>,
   },
   {
-    name: 'Employees',
+    name: 'Workers',
     icon: <i className="fa-solid fa-users"></i>,
   },
   {
@@ -17,7 +17,7 @@ const mainItems = [
   },
   {
     name: 'Messaging',
-    icon: <i class="fa-solid fa-message"></i>,
+    icon: <i className="fa-solid fa-message"></i>,
   },
 ];
 
