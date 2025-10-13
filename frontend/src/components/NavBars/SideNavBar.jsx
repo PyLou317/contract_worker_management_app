@@ -1,9 +1,16 @@
 import Brand from '../Brand';
 import mainItems from './main-items-list';
 import settingItems from './settings-items-list';
+import Modal from '@/components/Modals/Modal';
+import LogoutModal from '@/components/Modals/Logout';
 
-
-export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
+export default function SideNavBar({
+  activeLink,
+  onLinkClick,
+  onLogoutClick,
+  showModal,
+  setShowModal,
+}) {
   return (
     <>
       <nav className="bg-gray-800 w-64 text-white p-4 h-screen overflow-y-auto flex flex-col">
@@ -65,6 +72,13 @@ export default function SideNavBar({ activeLink, onLinkClick, onLogoutClick }) {
           ))}
         </ul>
       </nav>
+      <Modal
+        modalTitle="Logout"
+        show={showModal}
+        onClose={() => setShowModal(false)}
+      >
+        <LogoutModal onClose={() => setShowModal(false)} />
+      </Modal>
     </>
   );
 }
