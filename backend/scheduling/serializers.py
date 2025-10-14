@@ -1,7 +1,40 @@
 from rest_framework import serializers
 from .models import *
 from workers.models import ContractWorker as Worker
+from workers.serializers import SkillSerializer, WorkerSkillSerializer
 
+
+class AreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Area
+        fields = '__all__'
+        
+        
+class ManagerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manager
+        fields = '__all__'
+        
+
+class WorkerSerializer(serializers.ModelSerializer):
+    # rating = RatingSerializer(required=False)
+    worker_skills = WorkerSkillSerializer(many=True, required=False)
+    
+    class Meta:
+        model = Worker
+        fields = (
+            'id', 
+            'first_name', 
+            'last_name', 
+            'email', 
+            'phone_number', 
+            'current_contract', 
+            'agency', 
+            'position', 
+            'rating', 
+            'worker_skills'
+        )
+        
 
 class WorkerIdSerializer(serializers.Serializer):
     """Serializer used only for receiving worker IDs in nested updates."""
@@ -11,11 +44,20 @@ class WorkerIdSerializer(serializers.Serializer):
 class ShiftSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False,read_only=False) 
     workers_needed = serializers.IntegerField(required=False, min_value=1)
-    contract_workers = WorkerIdSerializer(many=True, required=False)
+    contract_workers = WorkerIdSerializer(
+        many=True,
+        write_only=True,
+        required=False,
+    )
+    workers = WorkerSerializer(
+        many=True,
+        read_only=True,
+        source='contract_workers'
+    )
      
     class Meta:
         model = Shift
-        fields = ('id', 'workers_needed', 'date', 'start_time', 'end_time', 'contract_workers')
+        fields = ('id', 'workers_needed', 'date', 'start_time', 'end_time', 'contract_workers', 'workers')
         read_only_fields = ('schedule',)
         
     def update(self, instance, validated_data):
@@ -29,18 +71,6 @@ class ShiftSerializer(serializers.ModelSerializer):
             instance.contract_workers.set(workers)
 
         return instance
-
-
-class AreaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Area
-        fields = '__all__'
-        
-        
-class ManagerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Manager
-        fields = '__all__'
         
         
 class SchedulingSerializer(serializers.ModelSerializer):
