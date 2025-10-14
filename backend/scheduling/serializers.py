@@ -1,15 +1,34 @@
 from rest_framework import serializers
 from .models import *
+from workers.models import ContractWorker as Worker
 
 
+class WorkerIdSerializer(serializers.Serializer):
+    """Serializer used only for receiving worker IDs in nested updates."""
+    id = serializers.IntegerField() 
+    
+    
 class ShiftSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False,read_only=False) 
     workers_needed = serializers.IntegerField(required=False, min_value=1)
+    contract_workers = WorkerIdSerializer(many=True, required=False)
      
     class Meta:
         model = Shift
-        fields = ('id', 'workers_needed', 'date', 'start_time', 'end_time')
+        fields = ('id', 'workers_needed', 'date', 'start_time', 'end_time', 'contract_workers')
         read_only_fields = ('schedule',)
+        
+    def update(self, instance, validated_data):
+        contract_workers_data = validated_data.pop('contract_workers', None)
+        
+        instance = super().update(instance, validated_data)
+        
+        if contract_workers_data is not None:
+            worker_ids = [item['id'] for item in contract_workers_data]
+            workers = Worker.objects.filter(pk__in=worker_ids)
+            instance.contract_workers.set(workers)
+
+        return instance
 
 
 class AreaSerializer(serializers.ModelSerializer):
