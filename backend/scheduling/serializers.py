@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from workers.models import ContractWorker as Worker
 from workers.serializers import SkillSerializer, WorkerSkillSerializer
+from ratings.serializers import RatingSerializer
 
 
 class AreaSerializer(serializers.ModelSerializer):
@@ -17,8 +18,9 @@ class ManagerSerializer(serializers.ModelSerializer):
         
 
 class WorkerSerializer(serializers.ModelSerializer):
-    # rating = RatingSerializer(required=False)
+    rating = RatingSerializer(required=False)
     worker_skills = WorkerSkillSerializer(many=True, required=False)
+    agency_details = serializers.SerializerMethodField()
     
     class Meta:
         model = Worker
@@ -30,10 +32,14 @@ class WorkerSerializer(serializers.ModelSerializer):
             'phone_number', 
             'current_contract', 
             'agency', 
+            'agency_details', 
             'position', 
             'rating', 
             'worker_skills'
         )
+        
+    def get_agency_details(self, obj):
+        return obj.agency.name
         
 
 class WorkerIdSerializer(serializers.Serializer):
@@ -57,7 +63,15 @@ class ShiftSerializer(serializers.ModelSerializer):
      
     class Meta:
         model = Shift
-        fields = ('id', 'workers_needed', 'date', 'start_time', 'end_time', 'contract_workers', 'workers')
+        fields = (
+            'id',
+            'workers_needed', 
+            'date', 
+            'start_time', 
+            'end_time', 
+            'contract_workers', 
+            'workers'
+          )
         read_only_fields = ('schedule',)
         
     def update(self, instance, validated_data):
@@ -173,3 +187,9 @@ class CreateScheduleSerializer(serializers.ModelSerializer):
             Shift.objects.create(schedule=schedule, **shift_data)
         
         return schedule
+    
+
+# class ScheduledWorkersSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Shift
+#         fields = ('contract_workers')
