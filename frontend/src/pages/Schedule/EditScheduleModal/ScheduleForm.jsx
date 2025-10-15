@@ -17,9 +17,10 @@ export default function ScheduleForm() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:items-end">
+      <h1 className="text-xl font-semibold text-gray-800 mb-2">Schedule</h1>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:items-end border border-gray-300 rounded-md shadow p-4 mb-4">
         <SelectInput
-          label="Managers"
+          label="Manager"
           name="manager"
           id="manager"
           value={formData.manager}
