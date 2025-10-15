@@ -68,13 +68,13 @@ export default function Dashboard() {
         <StatCard
           icon={scheduledWorkerIcon}
           value={scheduleCount}
-          title="Total Schedules Created"
+          title="Schedules Created"
           loading={isLoading}
         />
         <StatCard
           icon={clockedOutWorkerIcon}
           value="0"
-          title="Total Workers Scheduled"
+          title="Scheduled Workers"
           loading={isLoading}
         />
         <StatCard
