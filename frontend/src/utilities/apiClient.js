@@ -23,13 +23,10 @@ export const apiFetch = async (endpoint, options = {}) => {
   let response = await attemptRequest();
 
   if (response.status === 401) {
-    console.log('Access token expired. Attempting refresh...');
     try {
       const newToken = await refreshToken();
-      console.log('Token refreshed successfully');
       response = await attemptRequest(newToken);
     } catch (error) {
-      console.error('Refresh token failed. Redirecting to login.', error);
       localStorage.removeItem('authToken');
       localStorage.removeItem('refreshToken');
       window.location.href = '/login';
