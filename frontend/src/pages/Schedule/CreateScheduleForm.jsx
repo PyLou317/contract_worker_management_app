@@ -6,7 +6,7 @@ import addSchedule from '@/hooks/addSchedule';
 import SelectInput from '@/components/Inputs/LabeledSelectInput';
 import Input from '@/components/Inputs/LabeledInput';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
-import AddShiftForm from './AddShiftForm';
+import CreateShiftForm from './CreateShiftForm';
 import AddShiftBtn from './AddShiftBtn';
 
 export default function CreateScheduleForm() {
@@ -268,7 +268,7 @@ export default function CreateScheduleForm() {
             >
               <h1>Add Shifts</h1>
               {shifts.map((shift) => (
-                <AddShiftForm
+                <CreateShiftForm
                   shift={shift}
                   handleInputChange={(e) =>
                     handleInputChangeShifts(e, shift.id)
