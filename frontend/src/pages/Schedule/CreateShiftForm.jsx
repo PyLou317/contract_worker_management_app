@@ -28,7 +28,6 @@ export default function AddShiftForm({
         options={days}
         value={shift.date}
         onChange={handleInputChange}
-        required
         labelClasses={selectLabelClasses}
         className={inputClasses}
       />
@@ -39,11 +38,10 @@ export default function AddShiftForm({
         type="time"
         id="start_time"
         name="start_time"
-        defaultValue="08:00"
+        placeholder="08:00"
         value={shift.startTime}
         onChange={(e) => handleInputChange(e, shift.id)}
         step="1800"
-        required
       />
       <Input
         label="End Time"
@@ -52,11 +50,10 @@ export default function AddShiftForm({
         type="time"
         id="end_time"
         name="end_time"
-        defaultValue="16:30"
+        placeholder="16:30"
         value={shift.endTime}
         onChange={(e) => handleInputChange(e, shift.id)}
         step="1800"
-        required
       />
       <Input
         label="Workers Needed"
@@ -65,10 +62,9 @@ export default function AddShiftForm({
         type="number"
         id="workers_needed"
         name="workers_needed"
-        defaultValue="1"
+        placeholder="1"
         value={shift.workersNeeded}
         onChange={(e) => handleInputChange(e, shift.id)}
-        required
       />
       <RemoveShiftBtn onClick={removeShift} />
     </div>
