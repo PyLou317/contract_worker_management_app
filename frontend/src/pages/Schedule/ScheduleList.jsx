@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
 import { ScheduleContext } from './schedule-page-context';
 
+import '@/utilities/toolTipStyles.css';
+
 import formatDate from '@/utilities/formatDate';
 import getTotalWorkers from '@/utilities/getTotalWorkers';
 import getTotalHours from '@/utilities/getTotalHours';
@@ -43,6 +45,20 @@ export default function ScheduleList() {
     setEditingScheduleId(scheduleId);
   };
 
+  function totalScheduledWorkersPerShift(schedule) {
+    if (!schedule || !schedule.shifts) {
+      return 0;
+    }
+
+    const shiftsArray = schedule.shifts;
+
+    let totalWorkers = 0;
+    shiftsArray.forEach((shift) => {
+      totalWorkers += shift.workers.length;
+    });
+    return totalWorkers;
+  }
+
   if (scheduleIsPending || scheduleIsFetching) {
     return (
       <div className="flex justify-center items-center h-[200px]">
@@ -78,14 +94,12 @@ export default function ScheduleList() {
               {/* <th className="py-3 px-6 border-r border-gray-300">Manager</th> */}
               <th className="py-3 px-6 border-r border-gray-300">Start Date</th>
               <th className="py-3 px-6 border-r border-gray-300">End Date</th>
+              <th className="py-3 px-6 border-r border-gray-300">Shifts</th>
               <th className="py-3 px-6 border-r border-gray-300">
-              Shifts
+                Workers Needed
               </th>
               <th className="py-3 px-6 border-r border-gray-300">
-                Total Workers
-              </th>
-              <th className="py-3 px-6 border-r border-gray-300">
-                Scheduled Workers
+                Workers Scheduled
               </th>
               <th className="py-3 px-6 border-r border-gray-300">
                 Hours Needed
@@ -105,7 +119,9 @@ export default function ScheduleList() {
                   className="border-b border-gray-200 text-center hover:bg-gray-100 transition-colors duration-200"
                 >
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    {schedule.area_detail?.name ? schedule.area_detail?.name : 'N/A'}
+                    {schedule.area_detail?.name
+                      ? schedule.area_detail?.name
+                      : 'N/A'}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {formatDate(schedule.start_date)}
@@ -114,19 +130,21 @@ export default function ScheduleList() {
                     {formatDate(schedule.end_date)}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                  {schedule.shifts ? schedule.shifts.length : 'N/A'}
+                    {schedule.shifts ? schedule.shifts.length : 'N/A'}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {getTotalWorkers(schedule)}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    0
+                    {totalScheduledWorkersPerShift(schedule)}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {getTotalHours(schedule) * getTotalWorkers(schedule)} hrs
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    0
+                    {getTotalHours(schedule) *
+                      totalScheduledWorkersPerShift(schedule)}{' '}
+                    hrs
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     <span className="text-green-500 font-semibold bg-green-200 px-3 py-1 rounded-full">
@@ -182,7 +200,7 @@ export default function ScheduleList() {
                         viewBox="0 0 24 24"
                         strokeWidth="1.5"
                         stroke="currentColor"
-                        class="size-4"
+                        className="size-4"
                       >
                         <path
                           strokeLinecap="round"
