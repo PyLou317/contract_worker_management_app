@@ -65,32 +65,7 @@ export default function ScheduleList() {
 
   return (
     <>
-      <style>
-        {`
-        .tooltip {
-            position: relative;
-        }
-        .tooltip-content {
-            visibility: hidden;
-            position: absolute;
-            bottom: 100%;
-            left: 40%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            background-color: #334155;
-            color: #e2e8f0;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            z-index: 10;
-            margin-bottom: 0.5rem;
-        }
-        .tooltip:hover .tooltip-content {
-            visibility: visible;
-        }
-        `}
-      </style>
-      <div className="container mx-auto p-8 mt-4 bg-white shadow-md rounded-2xl">
+      <div className="container mx-auto p-8 mt-4 bg-white shadow-md rounded-2xl overflow-x-auto">
         <div className="my-3">
           <h1 className="text-2xl font-semibold text-gray-800 mb-2">
             Created Schedules
