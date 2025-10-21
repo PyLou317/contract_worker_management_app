@@ -76,7 +76,7 @@ export default function Schedule() {
   const ctxValue = {
     days: days,
     areas: areaNames,
-    managers: managerNames,
+    managers: managerOptions,
     schedules: schedules,
     scheduleIsPending: scheduleIsPending,
     scheduleError: scheduleError,
