@@ -50,34 +50,50 @@ export default function SkillsList() {
   }
 
   if (error) {
-    return <div className="mt-8 text-center text-red-500">Error: {error.message}</div>;
+    return (
+      <div className="mt-8 text-center text-red-500">
+        Error: {error.message}
+      </div>
+    );
   }
 
   return (
-    <div className="mt-8 w-full">
+    <div className="mt-8 lg:w-1/2">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Active Skills</h1>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">Active Skills</h1>
+          <small>Active skills count: {skills.length}</small>
+        </div>
+
         {skills.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          <ul>
             {skills.map((skill) => (
               <SkillCard
                 key={skill.id}
                 skill={skill}
                 colorClass={skill.base_color}
-                handleEditSkillClick={(event) => handleOpenActionMenu(skill.id, event)}
+                handleEditSkillClick={(event) =>
+                  handleOpenActionMenu(skill.id, event)
+                }
               />
             ))}
-          </div>
+          </ul>
         ) : (
           <div className="mt-8 w-full">
             <div className="mt-4 w-fit mx-auto overflow-x-auto border border-gray-200 bg-gray-100/50 rounded-lg p-4">
-              <p className="text-gray-500">No active skills found. Please add new skills above.</p>
+              <p className="text-gray-500">
+                No active skills found. Please add new skills above.
+              </p>
             </div>
           </div>
         )}
       </div>
       {showActionMenu && (
-        <ActionMenu skillId={editingSkillId} position={menuPosition} onClose={handleCloseActionMenu} />
+        <ActionMenu
+          skillId={editingSkillId}
+          position={menuPosition}
+          onClose={handleCloseActionMenu}
+        />
       )}
     </div>
   );
