@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-// import { getWorkers } from '@/hooks/getWorkersApi';
 import { apiFetch } from '@/utilities/apiClient';
 import { Rating } from 'react-simple-star-rating';
 
 import '@/components/StarRatingStyles.css';
+import '@/utilities/toolTipStyles.css';
 import Pagination from '@/components/Pagination';
 import AddWorkerModal from './AddWorkerModal/AddWorkerModal';
 import EditWorkerModal from './EditWorkerModal/EditWorkerModal';
@@ -13,7 +13,13 @@ import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
 import DeleteWarningModal from './DeleteWarningModal';
 import LoadingSpinner from '@/components/Loader';
 
-export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen, setIsModalOpen }) {
+export default function WorkerListTable({
+  searchTerm,
+  page,
+  setPage,
+  isModalOpen,
+  setIsModalOpen,
+}) {
   const [ordering, setOrdering] = useState('');
   const [editingWorker, setEditingWorker] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -138,31 +144,6 @@ export default function WorkerListTable({ searchTerm, page, setPage, isModalOpen
           </div>
         </div>
       )}
-      <style>
-        {`
-          .tooltip {
-            position: relative;
-          }
-          .tooltip-content {
-            visibility: hidden;
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            background-color: #334155;
-            color: #e2e8f0;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            z-index: 10;
-            margin-bottom: 0.5rem;
-          }
-          .tooltip:hover .tooltip-content {
-            visibility: visible;
-          }
-        `}
-      </style>
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
           <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
