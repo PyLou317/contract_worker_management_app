@@ -1,7 +1,10 @@
 import { useContext, useRef, useEffect, useState } from 'react';
 import { EditScheduleContext } from './edit-schedule-context';
+
+import ScheduledWorkersList from './ScheduledWorkersList';
 import WorkerList from '@/pages/Schedule/EditScheduleModal/WorkerList';
 import Input from '@/components/Inputs/LabeledInput';
+import calcShiftDuration from '@/utilities/calculateShiftDuration';
 
 export default function ScheduleForm() {
   const [addWorkersId, setAddWorkersId] = useState(false);
@@ -24,21 +27,16 @@ export default function ScheduleForm() {
   const shiftInputLabelClasses = 'text-gray-800 text-sm';
 
   return (
-    <div className="mb-8">
-      <h1 className="text-xl font-semibold text-gray-800 mt-12 mb-4">Shifts</h1>
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-4 md:items-end text-gray-600 mb-2">
-        <span>Date</span>
-        <span>Start Time</span>
-        <span>End Time</span>
-        <span>Shift Duration</span>
-        <span>Workers Needed</span>
-        <span>Workers Scheduled</span>
-      </div>
+    <div className="mb-4">
       {formData?.shifts?.map((shift, index) => (
-        <>
-          <div key={shift.id || index} className="mb-2">
-            <div className="grid grid-cols-1 md:grid-cols-7 gap-4 md:items-end">
+        <div
+          key={shift.id || index}
+          className="border border-gray-300 bg-white rounded-xl shadow p-4 mb-4"
+        >
+          <div className="mb-2">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 md:items-end">
               <Input
+                label="Date"
                 type="date"
                 name="date"
                 id={`${shift.date}-${index}`}
@@ -49,6 +47,7 @@ export default function ScheduleForm() {
                 required
               />
               <Input
+                label="Start Time"
                 type="time"
                 name="start_time"
                 id={`start_time-${index}`}
@@ -59,6 +58,7 @@ export default function ScheduleForm() {
                 required
               />
               <Input
+                label="End Time"
                 type="time"
                 name="end_time"
                 id={`end_time-${index}`}
@@ -68,10 +68,14 @@ export default function ScheduleForm() {
                 labelClasses={labelClasses}
                 required
               />
-              <div className="border border-gray-300 rounded-md shadow text-gray-800 px-4 py-2 flex justify-center items-center w-full">
-                {calcShiftDuration(shift.start_time, shift.end_time)}
+              <div>
+                <label className="text-gray-800 text-sm">Shift Duration:</label>
+                <div className="border border-gray-300 rounded-md shadow text-gray-800 px-4 py-2 mt-1 flex justify-center items-center w-full">
+                  {calcShiftDuration(shift.start_time, shift.end_time)}
+                </div>
               </div>
               <Input
+                label="Workers Needed"
                 type="number"
                 name="workers_needed"
                 id={`workers-${index}`}
@@ -81,44 +85,32 @@ export default function ScheduleForm() {
                 labelClasses={labelClasses}
                 required
               />
-              <Input
-                type="number"
-                name="workers_scheduled"
-                id={`workers-${index}`}
-                value={shift.workers_scheduled || '0'}
-                onChange={(e) => handleShiftInputChange(e, index)}
-                className={inputClasses + ' text-center'}
-                labelClasses={labelClasses}
-                required
-              />
-              <button
-                type="button"
-                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors duration-200 mb-2 cursor-pointer"
-                onClick={() => {
-                  if (shift.id) handleAddWorkerClick(shift.id);
-                  else console.warn('Shift ID is missing, cannot add workers.');
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-6 me-1"
+              <div>
+                <label className="text-gray-800 text-sm">
+                  Scheduled Workers:
+                </label>
+                <div
+                  id={`workers-${index}`}
+                  className={
+                    inputClasses +
+                    ' text-center py-2 mt-1 rounded-md shadow bg-gray-200'
+                  }
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-                  />
-                </svg>
-                <span>Add Workers</span>
-              </button>
+                  <span className={`${workersScheduledClasses}`}>
+                    {shift.workers ? shift.workers.length : 0}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-          {addWorkersId === shift.id &&  <WorkerList />}
-        </>
+          <ScheduledWorkersList shiftId={shift.id} index={index} />
+          <WorkerList
+            shiftId={shift.id}
+            index={index}
+            handleAddWorkerClick={handleAddWorkerClick}
+            addWorkersId={addWorkersId}
+          />
+        </div>
       ))}
     </div>
   );
