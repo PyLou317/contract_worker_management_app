@@ -1,7 +1,6 @@
 import { useContext, useRef, useEffect, useState } from 'react';
 import { EditScheduleContext } from './edit-schedule-context';
 import WorkerList from '@/pages/Schedule/EditScheduleModal/WorkerList';
-
 import Input from '@/components/Inputs/LabeledInput';
 
 export default function ScheduleForm() {
@@ -12,23 +11,7 @@ export default function ScheduleForm() {
 
   const handleAddWorkerClick = (shiftId) => {
     const isAlreadyOpen = addWorkersId === shiftId;
-
-    // 2. If it's already open, set 'addWorkersId' to null to close it (toggle off).
-    // 3. If it's closed, set 'addWorkersId' to the current 'shiftId' to open it (toggle on).
     setAddWorkersId(isAlreadyOpen ? null : shiftId);
-  };
-
-  const calcShiftDuration = (startTime, endTime) => {
-    if (!startTime || !endTime) return 'N/A';
-
-    const start = new Date(`1970-01-01T${startTime}`);
-    const end = new Date(`1970-01-01T${endTime}`);
-
-    const duration = end.getTime() - start.getTime();
-    const hours = Math.floor(duration / (1000 * 60 * 60));
-    const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
-
-    return `${hours}h ${minutes}m`;
   };
 
   if (!formData || !shifts || formData.shifts.length === 0) {
@@ -36,7 +19,9 @@ export default function ScheduleForm() {
   }
 
   const inputClasses = 'border border-gray-300 text-gray-800';
-  const labelClasses = 'text-gray-800';
+  const labelClasses = 'text-gray-800 text-sm';
+  const workersScheduledClasses = 'text-gray-800';
+  const shiftInputLabelClasses = 'text-gray-800 text-sm';
 
   return (
     <div className="mb-8">
