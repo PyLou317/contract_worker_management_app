@@ -47,7 +47,7 @@ export default function CreateScheduleForm() {
 
   const formatDate = (date) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
@@ -184,7 +184,7 @@ export default function CreateScheduleForm() {
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="currentColor"
-              className="size-6"
+              className="size-8 text-red-500"
             >
               <path
                 strokeLinecap="round"
@@ -199,7 +199,7 @@ export default function CreateScheduleForm() {
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="currentColor"
-              className="size-6"
+              className="size-8 text-blue-500"
             >
               <path
                 strokeLinecap="round"
