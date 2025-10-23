@@ -85,6 +85,18 @@ class ShiftSerializer(serializers.ModelSerializer):
             instance.contract_workers.set(workers)
 
         return instance
+    
+    def create(self, validated_data):
+        contract_workers_data = validated_data.pop('contract_workers', None)
+        
+        shift = super().create(validated_data)
+        
+        if contract_workers_data is not None:
+            workers_ids = [item['id'] for item in contract_workers_data]
+            workers = Worker.objects.filter(pk__in=workers_ids)
+            shift.contract_workers.set(workers)
+        
+        return shift
         
         
 class SchedulingSerializer(serializers.ModelSerializer):
@@ -130,22 +142,29 @@ class SchedulingSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
         
         existing_shifts = {shift.id: shift for shift in instance.shifts.all()}
+        for shift in existing_shifts.values():
+            print(shift)
         
         for shift_item in shifts_data:
             shift_id = shift_item.get('id')
             
-            # Check if this shift already exists (it should, as you're editing)
+            # Update Logic
             if shift_id in existing_shifts:
                 shift_instance = existing_shifts.pop(shift_id)
                 
-                # Update the shift instance using the ShiftSerializer
                 nested_serializer = ShiftSerializer(
                     instance=shift_instance, 
                     data=shift_item, 
-                    partial=True # Allow partial update
+                    partial=True
                 )
                 nested_serializer.is_valid(raise_exception=True)
                 nested_serializer.save()
+            
+            # Create Logic
+            else:
+                new_shift = ShiftSerializer(data=shift_item, partial=True)
+                new_shift.is_valid(raise_exception=True)
+                new_shift.save(schedule=instance)
         
         return instance 
     
