@@ -7,6 +7,7 @@ import '@/utilities/toolTipStyles.css';
 import formatDate from '@/utilities/formatDate';
 import getTotalWorkers from '@/utilities/getTotalWorkers';
 import getTotalHours from '@/utilities/getTotalHours';
+import calcTotalScheduledWorkersPerShift from '@/utilities/calcTotalScheduledWorkers';
 import EditScheduleModal from './EditScheduleModal/EditScheduleModal';
 
 export default function ScheduleList() {
@@ -44,20 +45,6 @@ export default function ScheduleList() {
     setEditingSchedule(true);
     setEditingScheduleId(scheduleId);
   };
-
-  function totalScheduledWorkersPerShift(schedule) {
-    if (!schedule || !schedule.shifts) {
-      return 0;
-    }
-
-    const shiftsArray = schedule.shifts;
-
-    let totalWorkers = 0;
-    shiftsArray.forEach((shift) => {
-      totalWorkers += shift.workers.length;
-    });
-    return totalWorkers;
-  }
 
   if (scheduleIsPending || scheduleIsFetching) {
     return (
@@ -137,7 +124,7 @@ export default function ScheduleList() {
                     {getTotalWorkers(schedule)}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    {totalScheduledWorkersPerShift(schedule)}
+                    {calcTotalScheduledWorkersPerShift(schedule)}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {Math.round(
@@ -148,7 +135,7 @@ export default function ScheduleList() {
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {Math.round(
                       getTotalHours(schedule) *
-                        totalScheduledWorkersPerShift(schedule)
+                        calcTotalScheduledWorkersPerShift(schedule)
                     )}{' '}
                     hrs
                   </td>
