@@ -3,10 +3,11 @@ import SearchBar from '@/components/Search';
 export default function WorkerTableHeader({
   handleSearch,
   handleOpenAddWorkerModal,
+  searchTerm,
 }) {
   return (
     <div className="flex justify-between items-center gap-3">
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar onSearch={handleSearch} searchTerm={searchTerm} />
       <button
         onClick={handleOpenAddWorkerModal}
         className="flex gap-1 text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
