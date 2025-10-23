@@ -56,6 +56,16 @@ export default function Dashboard() {
   const scheduleCount = scheuleData?.count || 0;
   const workerListData = workerData?.results || [];
 
+  function calculateTotalScheduledWorkers(schedules) {
+    let totalWorkers = 0;
+    schedules?.forEach((schedule) => {
+      schedule?.shifts?.forEach((shift) => {
+        totalWorkers += shift.workers.length;
+      });
+    });
+    return totalWorkers;
+  }
+
   return (
     <div>
       <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4">
@@ -73,7 +83,7 @@ export default function Dashboard() {
         />
         <StatCard
           icon={clockedOutWorkerIcon}
-          value="0"
+          value={calculateTotalScheduledWorkers(scheuleData?.results)}
           title="Scheduled Workers"
           loading={isLoading}
         />
@@ -85,10 +95,7 @@ export default function Dashboard() {
         />
       </div>
       <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
-        <DashboardCard
-          heading="Skills"
-          subHeading="Worker Skills List"
-        >
+        <DashboardCard heading="Skills" subHeading="Worker Skills List">
           <WorkerSkillsList
             workers={workerListData}
             isFetching={workerIsFetching}
