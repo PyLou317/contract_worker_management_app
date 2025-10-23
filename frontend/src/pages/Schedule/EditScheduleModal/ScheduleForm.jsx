@@ -6,10 +6,11 @@ import Input from '@/components/Inputs/LabeledInput';
 import SelectInput from '@/components/Inputs/LabeledSelectInput';
 
 export default function ScheduleForm() {
-  const { managers, areas } = useContext(ScheduleContext);
+    const { managers, areas } = useContext(ScheduleContext);
 
   const { formData, handleScheduleInputChange } =
-    useContext(EditScheduleContext);
+      useContext(EditScheduleContext);
+
 
   const inputClasses =
     'flex flex-grow-1 border border-gray-300 rounded-lg p-2 w-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500';
@@ -18,7 +19,7 @@ export default function ScheduleForm() {
   return (
     <>
       <h1 className="text-xl font-semibold text-gray-800 mb-2">Schedule</h1>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:items-end border border-gray-300 rounded-md shadow p-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:items-end border border-gray-300 rounded-xl shadow p-4 mb-4">
         <SelectInput
           label="Manager"
           name="manager"
