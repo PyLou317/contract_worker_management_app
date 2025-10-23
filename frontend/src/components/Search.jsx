@@ -1,20 +1,11 @@
-import { useState } from 'react';
-
-export default function SearchBar({ onSearch }) {
-  const [searchTerm, setSearchTerm] = useState('');
-
+export default function SearchBar({ onSearch, searchTerm }) {
   const handleChange = (event) => {
     const term = event.target.value;
-    setSearchTerm(term);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onSearch(searchTerm);
+    onSearch(term);
   };
 
   return (
-    <div onSubmit={handleSubmit} className="relative items-center align-middle flex gap-1 mb-4">
+    <div className="relative items-center align-middle flex gap-1 mb-4">
       <input
         id="search"
         type="text"
@@ -23,12 +14,12 @@ export default function SearchBar({ onSearch }) {
         value={searchTerm}
         onChange={handleChange}
       />
-      <button
+      {/* <button
         type="submit"
         className="px-4 p-2 bg-gray-600 text-white rounded-md shadow-md hover:bg-gray-700 transition-colors"
       >
         Search
-      </button>
+      </button> */}
     </div>
   );
 }
