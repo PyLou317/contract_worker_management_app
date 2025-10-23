@@ -14,7 +14,7 @@ export default function SearchBar({ onSearch }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative items-center align-middle flex gap-1 mb-4">
+    <div onSubmit={handleSubmit} className="relative items-center align-middle flex gap-1 mb-4">
       <input
         id="search"
         type="text"
@@ -29,6 +29,6 @@ export default function SearchBar({ onSearch }) {
       >
         Search
       </button>
-    </form>
+    </div>
   );
 }
