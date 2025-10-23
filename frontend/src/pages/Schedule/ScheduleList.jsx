@@ -117,6 +117,7 @@ export default function ScheduleList() {
                 <tr
                   key={schedule.id}
                   className="border-b border-gray-200 text-center hover:bg-gray-100 transition-colors duration-200"
+                  onClick={() => handleOpenEditSchedule(schedule.id)}
                 >
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
                     {schedule.area_detail?.name
@@ -139,15 +140,20 @@ export default function ScheduleList() {
                     {totalScheduledWorkersPerShift(schedule)}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    {getTotalHours(schedule) * getTotalWorkers(schedule)} hrs
-                  </td>
-                  <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    {getTotalHours(schedule) *
-                      totalScheduledWorkersPerShift(schedule)}{' '}
+                    {Math.round(
+                      getTotalHours(schedule) * getTotalWorkers(schedule)
+                    )}{' '}
                     hrs
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
-                    <span className="text-green-500 font-semibold bg-green-200 px-3 py-1 rounded-full">
+                    {Math.round(
+                      getTotalHours(schedule) *
+                        totalScheduledWorkersPerShift(schedule)
+                    )}{' '}
+                    hrs
+                  </td>
+                  <td className="py-3 px-6 whitespace-nowrap border-r border-gray-200">
+                    <span className={`${schedule.is_active ? 'bg-green-200' : 'bg-red-200'} font-semibold px-3 py-1 rounded-full`}>
                       {schedule.is_active ? 'Yes' : 'No'}
                     </span>
                   </td>
