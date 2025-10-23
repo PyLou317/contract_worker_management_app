@@ -20,16 +20,7 @@ export default function EditScheduleModal({
   editingSchedule,
 }) {
   const dialogRef = useRef(null);
-  const [shifts, setShifts] = useState([
-    {
-      id: Date.now(),
-      date: '',
-      start_time: '',
-      end_time: '',
-      workers_needed: '',
-      contract_workers: [],
-    },
-  ]);
+  const [pendingNewShifts, setPendingNewShifts] = useState([]);
   const [dateRange, setDateRange] = useState([]);
 
   const [formData, setFormData] = useState({
