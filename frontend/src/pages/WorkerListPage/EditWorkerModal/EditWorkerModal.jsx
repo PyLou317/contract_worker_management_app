@@ -88,10 +88,13 @@ export default function EditWorkerModal({
         agency: workerData.agency_details || '',
         rating: {
           id: rating.id || null,
-          attendance_score: rating.attendance_score || '',
-          communication_score: rating.communication_score || '',
-          performance_score: rating.performance_score || '',
-          skills_score: rating.skills_score || '',
+          attendance_score:
+            rating.attendance_score >= 0 ? rating.attendance_score : 0,
+          communication_score:
+            rating.communication_score >= 0 ? rating.communication_score : 0,
+          performance_score:
+            rating.performance_score >= 0 ? rating.performance_score : 0,
+          skills_score: rating.skills_score >= 0 ? rating.skills_score : 0,
           comment: rating.comment || '',
         },
         worker_skills: skillsArray,
