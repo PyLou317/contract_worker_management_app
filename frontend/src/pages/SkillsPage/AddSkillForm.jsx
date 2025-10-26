@@ -63,7 +63,7 @@ export default function AddSkillForm() {
       )}
       <h1 className="text-2xl font-semibold text-gray-800 mb-8">Add New Skill</h1>
       <div className="flex flex-col">
-        <div className="flex flex-col lg:flex-row gap-4 items-baseline">
+        <div className="flex flex-col xl:flex-row gap-4 items-baseline">
           <div>
             <label className="block text-gray-700 text-xs font-bold mb-2 grow" htmlFor="skill_name">
               Skill Name
