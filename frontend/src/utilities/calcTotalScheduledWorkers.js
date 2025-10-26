@@ -4,8 +4,6 @@ function calcTotalScheduledWorkersPerShift(schedule) {
   }
 
   const shiftsArray = schedule.shifts;
-  console.log('Schedule:', schedule);
-  console.log('shifts:', shiftsArray);
 
   let totalWorkers = 0;
   shiftsArray.forEach((shift) => {
