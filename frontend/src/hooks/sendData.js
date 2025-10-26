@@ -2,9 +2,9 @@ import refreshToken from '@/utilities/refreshToken';
 
 const url = `${import.meta.env.VITE_API_URL}`;
 
-const attemptFetch = async (token, formData, apiEndpoint) => {
+const attemptFetch = async (token, formData, apiEndpoint, method = 'PATCH') => {
   const response = await fetch(apiEndpoint, {
-    method: 'PATCH',
+    method: method,
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -32,16 +32,17 @@ const attemptFetch = async (token, formData, apiEndpoint) => {
   return await response.json();
 };
 
-const sendData = async ({ formData, endpoint, method = 'PATCH' }) => {
+const sendData = async (formData, endpoint, method) => {
   const authToken = localStorage.getItem('authToken');
-  const apiEndpoint = url + endpoint;
+    const apiEndpoint = url + endpoint;
+    console.log(apiEndpoint)
 
   if (!authToken) {
     throw new Error('Authentication token not found. Please log in.');
   }
 
   try {
-    return await attemptFetch(authToken, formData, apiEndpoint);
+    return await attemptFetch(authToken, formData, apiEndpoint, method);
   } catch (error) {
     if (error instanceof Response && error.status === 401) {
       console.log('Token expired. Attempting to refresh...');
@@ -50,14 +51,12 @@ const sendData = async ({ formData, endpoint, method = 'PATCH' }) => {
         const newAuthToken = await refreshToken();
         localStorage.setItem('authToken', newAuthToken);
 
-        return await attemptFetch(newAuthToken, formData, apiEndpoint);
+        return await attemptFetch(newAuthToken, formData, apiEndpoint, method);
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
         throw new Error('Session expired. Please log in again.');
       }
-    }
-
-    else {
+    } else {
       throw error;
     }
   }
