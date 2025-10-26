@@ -1,35 +1,23 @@
 import React from 'react';
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSendSMSMutation } from '@/hooks/sendSMSMutation';
+
 import Input from '@/components/Inputs/LabeledInput';
 import sendData from '@/hooks/sendData';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 
 export default function SendSMSMessage() {
-  const [sendSMS, setSendSMS] = useState(false);
   const [formData, setFormData] = useState({
     receipient_name: '',
     to_number: '',
     message_body: '',
   });
 
-  const queryClient = useQueryClient();
-  const sendSMSMutation = useMutation({
-    mutationFn: () => sendData(formData, '/sms/schedule_made_notification/'),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['message'] });
-      setFormData({
-        receipient_name: '',
-        to_number: '',
-        message_body: '',
-      });
-      setSendSMS(false);
-    },
-    onError: (error) => {
-      console.error('Error sending sms:', error);
-      alert('Failed to send sms. Please try again. ' + error.message);
-    },
-  });
+  const {
+    mutate: sendSMSMutation,
+    isPending,
+    error,
+  } = useSendSMSMutation({ setFormData });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,10 +26,16 @@ export default function SendSMSMessage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSendSMS(true);
-    const new_to_number = formData.to_number;
-    setFormData({ ...formData, to_number: '+' + new_to_number });
-    sendSMSMutation.mutate();
+
+    const cleanedNumber = formData.to_number.replace(/\D/g, '');
+
+    const dataToSend = {
+      ...formData,
+      to_number: cleanedNumber.startsWith('+')
+        ? cleanedNumber
+        : '+' + cleanedNumber,
+    };
+    sendSMSMutation(dataToSend);
     console.log(formData);
   };
 
@@ -93,15 +87,10 @@ export default function SendSMSMessage() {
         </div>
       </div>
       <SubmitBtn
-        label={
-          sendSMSMutation.isPending
-            ? 'Sending...'
-            : sendSMS
-            ? 'Send SMS'
-            : 'Send SMS'
-        }
-        disabled={sendSMSMutation.isPending}
+        label={isPending ? 'Sending...' : 'Send SMS'}
+        disabled={isPending}
       />
+      {error && <p className="text-red-500 mt-2">Error: {error.message}</p>}
     </form>
   );
 }
