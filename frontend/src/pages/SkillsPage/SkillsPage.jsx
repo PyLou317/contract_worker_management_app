@@ -35,7 +35,7 @@ export default function SkillsPage() {
 
   return (
     <SkillsContext.Provider value={ctxValue}>
-      <div className="container mx-auto p-4 bg-white">
+      <div className="container mx-auto p-4">
         <AddSkillForm />
         <div className="mt-8 w-full border-t border-gray-200"></div>
         <SkillsList />
