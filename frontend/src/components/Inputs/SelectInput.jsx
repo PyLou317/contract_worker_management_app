@@ -36,7 +36,7 @@ export default function SelectInput(props) {
         {validOptions.map((option) => (
           <option
             key={option.value ? option.value : option}
-            value={option.value ? option.value : option}
+            value={option.label ? option.label : option}
           >
             {option.label ? option.label : option}
           </option>
