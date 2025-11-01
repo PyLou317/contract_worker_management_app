@@ -1,8 +1,11 @@
+import { useState } from 'react';
+
 import Brand from '../Brand';
 import mainItems from './main-items-list';
 import settingItems from './settings-items-list';
 import Modal from '@/components/Modals/Modal';
 import LogoutModal from '@/components/Modals/Logout';
+import SidebarToggleBtn from './ToggleSidebarBtn';
 
 export default function SideNavBar({
   activeLink,
@@ -11,11 +14,38 @@ export default function SideNavBar({
   showModal,
   setShowModal,
 }) {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  let sidebarWidth = '';
+  if (sidebarOpen) {
+    sidebarWidth = 'w-64';
+  } else {
+    sidebarWidth = 'w-20';
+  }
+
+  let toggleBtnPosition = '';
+  if (sidebarOpen) {
+    toggleBtnPosition = 'left-59';
+  } else {
+    toggleBtnPosition = 'left-15';
+  }
+
   return (
     <>
-      <nav className="bg-gray-800 w-64 text-white p-4 h-screen overflow-y-auto flex flex-col">
-        <div className="border-b-2 border-gray-700 py-4">
-          <Brand className="text-2xl" />
+      <nav
+        className={`bg-gray-800 ${sidebarWidth} text-white p-4 h-screen overflow-y-auto flex flex-col rounded-r-xl`}
+      >
+        <div className="flex border-b-2 border-gray-700 py-4">
+          <Brand className="text-2xl" sidebarOpen={sidebarOpen} />
+          <SidebarToggleBtn
+            onClick={toggleSidebar}
+            position={toggleBtnPosition}
+            sidebarOpen={sidebarOpen}
+          />
         </div>
         <ul className="w-full flex-1">
           {mainItems.map((item, index) => (
@@ -35,7 +65,7 @@ export default function SideNavBar({
               >
                 {item.icon}
               </span>
-              <span>{item.name}</span>
+              {sidebarOpen && <span>{item.name}</span>}
             </li>
           ))}
         </ul>
@@ -67,7 +97,7 @@ export default function SideNavBar({
               >
                 {item.icon}
               </span>
-              <span>{item.name}</span>
+              {sidebarOpen && <span>{item.name}</span>}
             </li>
           ))}
         </ul>
