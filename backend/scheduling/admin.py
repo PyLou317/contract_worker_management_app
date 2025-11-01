@@ -6,4 +6,9 @@ from scheduling.models import Schedule, Shift, Area, Manager
 admin.site.register(Schedule)
 admin.site.register(Shift)
 admin.site.register(Area)
-admin.site.register(Manager)
+
+class ManagerAdmin(admin.ModelAdmin):
+    fields = ('id', 'name', 'organization', 'email') 
+    readonly_fields = ('id',) 
+    
+admin.site.register(Manager, ManagerAdmin)
