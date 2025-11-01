@@ -66,6 +66,10 @@ export default function Dashboard() {
     return totalWorkers;
   }
 
+  const workersWithSkills = workerListData?.filter((worker) => {
+    return worker.worker_skills.length > 0;
+  });
+
   return (
     <div>
       <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4">
@@ -95,9 +99,12 @@ export default function Dashboard() {
         />
       </div>
       <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
-        <DashboardCard heading="Skills" subHeading="Worker Skills List">
+        <DashboardCard
+          heading="Skills"
+          subHeading={`${workersWithSkills.length} Workers With Skills`}
+        >
           <WorkerSkillsList
-            workers={workerListData}
+            workers={workersWithSkills}
             isFetching={workerIsFetching}
             isPending={workerIsPending}
           />
