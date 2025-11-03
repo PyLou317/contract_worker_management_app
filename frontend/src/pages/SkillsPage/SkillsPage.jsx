@@ -3,7 +3,6 @@ import { SkillsContext } from './skills-page-ctx';
 
 import AddSkillForm from './AddSkillForm';
 import SkillsList from './SkillsList';
-import EditSkillModal from './EditSkillModal';
 
 export default function SkillsPage() {
   const [showEditSkillModal, setShowEditSkillModal] = useState(false);
@@ -12,13 +11,11 @@ export default function SkillsPage() {
     setShowEditSkillModal(false);
   };
 
-  const handleOpenEditSkillModal = (skillId) => {
-    console.log('Opening edit skill modal for skill ID:', skillId);
+  const handleOpenEditSkillModal = () => {
     setShowEditSkillModal(true);
   };
 
   const handleOpenDeleteSkillModal = (skillId) => {
-    console.log('Opening delete skill modal for skill ID:', skillId);
   };
 
   const handleSubmit = (e) => {
@@ -40,7 +37,6 @@ export default function SkillsPage() {
         <div className="mt-8 w-full border-t border-gray-200"></div>
         <SkillsList />
       </div>
-      <EditSkillModal />
     </SkillsContext.Provider>
   );
 }
