@@ -1,20 +1,30 @@
+import Section from './Section';
+import SectionHeader from './SectionHeader';
+
 export default function Comments({ formData, handleInputChange }) {
   const ratings = formData?.rating;
   const comment = ratings?.comment;
 
   return (
-    <div>
-      <h3 className="text-2xl font-semibold text-white mt-12">Comments</h3>
-      <div>
+    <Section>
+      <SectionHeader title="Comments" />
+      <div className='relative'>
         <textarea
           id="comment"
           name="comment"
           rows={3}
           value={comment}
+          placeholder="Add a comment..."
           onChange={handleInputChange}
-          className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="peer p-2 block w-full placeholder-transparent bg-white rounded-t-lg caret-gray-800 text-gray-800 border-b-2 border-b-gray-600 focus:border-yellow-500 focus:outline-none mt-8"
         ></textarea>
+        <label
+          htmlFor="comment"
+          className="peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-placeholder-shown:left-2 absolute text-gray-400 left-0 -top-5.5 text-sm transition-all cursor-text"
+        >
+          Add a comment...
+        </label>
       </div>
-    </div>
+    </Section>
   );
 }

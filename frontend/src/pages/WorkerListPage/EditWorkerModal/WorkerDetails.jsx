@@ -1,10 +1,16 @@
-import Input from '@/components/Inputs/LabeledInput';
-import SelectInput from '@/components/Inputs/LabeledSelectInput';
+import Section from './Section';
+import SelectInput from '@/components/Inputs/FloatingSelectInput';
+import SectionHeader from './SectionHeader';
 
-export default function WorkerDetails({ formData, handleInputChange, agencyNames, selectInputClasses }) {    
+export default function WorkerDetails({
+  formData,
+  handleInputChange,
+  agencyNames,
+  managerNames,
+}) {
   return (
-    <>
-      <h3 className="text-2xl font-semibold text-white mb-4 mt-12">Work Details</h3>
+    <Section>
+      <SectionHeader title="Work Details" />
       <div>
         <div className="grid grid-cols-2 gap-4">
           <SelectInput
@@ -15,20 +21,18 @@ export default function WorkerDetails({ formData, handleInputChange, agencyNames
             value={formData.agency}
             onChange={handleInputChange}
             options={agencyNames}
-            className={selectInputClasses}
           />
-          {/* <Input
+          <SelectInput
             label="Manager"
             type="text"
             id="manager"
             name="manager"
-            value={managerName}
+            value={formData.manager}
             onChange={handleInputChange}
-            className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          /> */}
+            options={managerNames}
+          />
         </div>
       </div>
-      <div className="border-b border-gray-700 mt-4"></div>
-    </>
+    </Section>
   );
 }

@@ -1,4 +1,6 @@
+import Section from './Section';
 import Input from '@/components/Inputs/LabeledInput';
+import SectionHeader from './SectionHeader';
 
 export default function Ratings({ workerData, formData, handleInputChange }) {
   const averageRating =
@@ -18,13 +20,16 @@ export default function Ratings({ workerData, formData, handleInputChange }) {
   }
 
   return (
-    <>
-      <div className="flex justify-between items-center align-baseline mt-12 gap-2">
+    <Section>
+      <div className="flex justify-between items-center align-baseline gap-2">
         <div>
-          <h2 className="text-2xl font-semibold text-white">Ratings</h2>
-          <small>Each rating is out of 5 and will produce an average overal rating</small>
+          <SectionHeader title="Ratings">
+            <small>
+              Each rating is out of 5 and will produce an average overal rating
+            </small>
+          </SectionHeader>
         </div>
-        <p className="text-black font-semibold text-center bg-yellow-300 px-4 py-2 rounded-full drop-shadow-lg drop-shadow-yellow-500/35">
+        <p className="text-black font-semibold text-center bg-yellow-300 px-4 py-2 rounded-full drop-shadow-lg drop-shadow-yellow-500/35 hover:scale-105">
           {roundedAverageRating} <span className="text-sm">average rating</span>
         </p>
       </div>
@@ -37,9 +42,9 @@ export default function Ratings({ workerData, formData, handleInputChange }) {
           type="number"
           id="attendance_score"
           name="attendance_score"
+          placeholder="Attendance"
           value={formData.rating.attendance_score}
           onChange={handleInputChange}
-          className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
         <Input
           step="0.25"
@@ -49,9 +54,9 @@ export default function Ratings({ workerData, formData, handleInputChange }) {
           type="number"
           id="communication_score"
           name="communication_score"
+          placeholder="Communication"
           value={formData.rating.communication_score}
           onChange={handleInputChange}
-          className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
         <Input
           step="0.25"
@@ -61,9 +66,9 @@ export default function Ratings({ workerData, formData, handleInputChange }) {
           type="number"
           id="performance_score"
           name="performance_score"
+          placeholder="Performance"
           value={formData.rating.performance_score}
           onChange={handleInputChange}
-          className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
         <Input
           step="0.25"
@@ -73,12 +78,11 @@ export default function Ratings({ workerData, formData, handleInputChange }) {
           type="number"
           id="skills_score"
           name="skills_score"
+          placeholder="Skills"
           value={formData.rating.skills_score}
           onChange={handleInputChange}
-          className="mt-1 p-2 block w-full rounded-md bg-gray-800 border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
       </div>
-      <div className="border-b border-gray-700 mt-4"></div>
-    </>
+    </Section>
   );
 }
