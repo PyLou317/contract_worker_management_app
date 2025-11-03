@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/utilities/apiClient';
 
+import EditSkillModal from './EditSkillModal';
 import SkillCard from './SkillsCard';
 import ActionMenu from './ActionMenu';
 import LoadingSpinner from '@/components/Loader';
@@ -59,7 +60,7 @@ export default function SkillsList() {
   }
 
   return (
-    <div className="mt-8 lg:w-1/2">
+    <div className="mt-8 lg:w-full">
       <div className="mb-8">
         <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-800">Active Skills</h1>
@@ -96,6 +97,7 @@ export default function SkillsList() {
           onClose={handleCloseActionMenu}
         />
       )}
+      <EditSkillModal skillId={editingSkillId} />
     </div>
   );
 }
