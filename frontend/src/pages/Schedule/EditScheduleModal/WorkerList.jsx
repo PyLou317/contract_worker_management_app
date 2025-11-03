@@ -100,7 +100,57 @@ export default function WorkerList({ shiftId }) {
   }
 
   return (
-    <div className="overflow-x-auto border border-gray-300 rounded-lg mt-4 mb-8">
+    <>
+      <button
+        type="button"
+        className="flex items-center text-blue-500 hover:text-blue-600 transition-colors duration-200 mb-2 cursor-pointer"
+        onClick={() => {
+          if (shiftId) handleAddWorkerClick(shiftId);
+          else console.warn('Shift ID is missing, cannot add workers.');
+        }}
+      >
+        {addWorkersId === shiftId ? (
+          <>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6 me-1"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+            <span>Close Add Workers</span>
+          </>
+        ) : (
+          <>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6 me-1"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+              />
+            </svg>
+            <span>Add Workers</span>
+          </>
+        )}
+      </button>
+      {addWorkersId === shiftId && (
+        <>
+          <Search onSearch={handleSearch} searchTerm={searchTerm} />
+          <div className="overflow-x-auto border border-gray-300 rounded-lg mb-8">
       <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
         <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
           <tr>
