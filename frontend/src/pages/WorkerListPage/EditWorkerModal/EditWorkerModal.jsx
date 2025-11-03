@@ -62,12 +62,25 @@ export default function EditWorkerModal({
   const agencies = agenciesData?.results || [];
   const agencyNames = agencies.map((agency) => agency.name);
 
+  const {
+    data: managersData,
+    isPending: managersPending,
+    error: managersError,
+  } = useQuery({
+    queryKey: ['managers'],
+    queryFn: () => apiFetch('/managers'),
+    keepPreviousData: true,
+  });
+  const managers = managersData?.results || [];
+  const managerNames = managers.map((agency) => agency.name);
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     phone_number: '',
     agency: '',
+    manager: '',
     rating: {},
     worker_skills: [],
   });
@@ -79,13 +92,14 @@ export default function EditWorkerModal({
       const skills = workerData.worker_skills || [];
 
       const skillsArray = Array.isArray(skills) ? skills : [skills];
-
+      console.log(workerData);
       setFormData({
         first_name: workerData.first_name || '',
         last_name: workerData.last_name || '',
         email: workerData.email || '',
         phone_number: workerData.phone_number || '',
         agency: workerData.agency_details || '',
+        manager: workerData?.rating?.manager || '',
         rating: {
           id: rating.id || null,
           attendance_score:
@@ -249,12 +263,6 @@ export default function EditWorkerModal({
     return <div>Error loading skills data: {skillsError.message}</div>;
   }
 
-  const inputLabelClasses = 'block text-sm font-medium text-gray-700';
-  const addSkillInputClasses =
-    'bg-white text-gray-900 border border-gray-400 text-gray-200';
-  const selectInputClasses =
-    'bg-gray-800 text-gray-200 border border-gray-400 text-gray-200';
-
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300 ${
@@ -264,7 +272,7 @@ export default function EditWorkerModal({
       <div className="bg-gray-800/75 absolute inset-0" onClick={onClose}></div>
       <dialog
         ref={dialogRef}
-        className={` bg-gray-900 text-white p-8 rounded-2xl shadow-xl w-full sm:w-2/3 md:w-1/2 transform transition-transform duration-300 relative h-full sm:h-screen md:h-3/4 overflow-y-auto ${
+        className={` bg-white text-gray-800 p-8 rounded-2xl shadow-xl w-full sm:w-2/3 md:w-5/8 transform transition-transform duration-300 relative h-full sm:h-screen md:h-3/4 overflow-y-auto ${
           showModal ? 'scale-100' : 'scale-95'
         }`}
         open={showModal}
@@ -280,7 +288,7 @@ export default function EditWorkerModal({
             formData={formData}
             handleInputChange={handleInputChange}
             agencyNames={agencyNames}
-            selectInputClasses={selectInputClasses}
+            managerNames={managerNames}
           />
           <Ratings
             workerData={workerData}
@@ -294,8 +302,6 @@ export default function EditWorkerModal({
             handleAddSkillInputChange={handleAddSkillInputChange}
             newSkillFormData={newSkillFormData}
             skillNames={skillNames}
-            inputLabelClasses={inputLabelClasses}
-            addSkillInputClasses={addSkillInputClasses}
             formData={formData}
             handleWorkerSkillChange={handleWorkerSkillChange}
           />
