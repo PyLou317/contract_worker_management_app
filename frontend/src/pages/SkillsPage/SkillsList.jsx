@@ -29,10 +29,11 @@ export default function SkillsList() {
     setEditingSkillId(skillId);
     setShowActionMenu(true);
 
-    const rect = event.currentTarget.getBoundingClientRect();
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
     setMenuPosition({
-      top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX,
+      top: mouseY,
+      left: mouseX,
     });
   };
 
