@@ -12,7 +12,7 @@ export default function Modal({ show, children, onClose }) {
       <div className="bg-gray-800/75 absolute inset-0" onClick={onClose}></div>
       <dialog
         ref={dialogRef}
-        className={` bg-gray-900 text-white p-8 rounded-2xl shadow-xl max-w-lg w-full transform transition-transform duration-300 relative ${
+        className={`text-gray-800 p-10 rounded-2xl shadow-xl max-w-fit w-full transform transition-transform duration-300 relative ${
           show ? 'scale-100' : 'scale-95'
         }`}
         open={show}
