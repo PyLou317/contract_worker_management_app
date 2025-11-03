@@ -3,7 +3,6 @@ import { useState } from 'react';
 import WorkerListTable from './WorkerListTable';
 import Header from './WorkerTableHeader';
 
-// We can assume by this point that `isSuccess === true`
 export default function Workers() {
   const searchParams = new URLSearchParams(window.location.search);
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
