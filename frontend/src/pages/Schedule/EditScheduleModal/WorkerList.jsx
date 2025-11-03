@@ -64,6 +64,16 @@ export default function WorkerList({ shiftId }) {
   const nextUrl = data?.next;
   const prevUrl = data?.previous;
 
+  function filterScheduledWorkers(workers, targetShiftWorkers) {
+    const scheduleWorkers = targetShiftWorkers.map((worker) => worker.id);
+    return workers.filter((worker) => !scheduleWorkers.includes(worker.id));
+  }
+
+  const unscheduledWorkers = filterScheduledWorkers(
+    workers,
+    targetShiftWorkers
+  );
+
   const shiftIndex = formData.shifts.findIndex((shift) => shift.id === shiftId);
   const currentShiftWorkers =
     formData.shifts[shiftIndex]?.contract_workers || [];
