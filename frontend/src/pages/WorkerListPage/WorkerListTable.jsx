@@ -111,16 +111,6 @@ export default function WorkerListTable({
     );
   }
 
-  //   if (workers.length === 0) {
-  //     return (
-  //       <div className="flex justify-center items-center h-[200px]">
-  //         <div className="flex justify-center items-center h-auto w-fit mx-auto bg-yellow-100 text-yellow-700 p-4 rounded-lg">
-  //           No workers found, please add some.
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-
   return (
     <>
       {successMessage && (
