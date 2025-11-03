@@ -1,13 +1,14 @@
 import { useState, useContext, createContext, useEffect } from 'react';
 import { ScheduleContext } from './schedule-page-context';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import addSchedule from '@/hooks/addSchedule';
 
-import SelectInput from '@/components/Inputs/LabeledSelectInput';
+import SelectInput from '@/components/Inputs/FloatingSelectInput';
 import Input from '@/components/Inputs/LabeledInput';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
-import CreateShiftForm from './CreateShiftForm';
+import CreateShiftForm from '@/pages/Schedule/CreateShiftForm';
 import AddShiftBtn from './AddShiftBtn';
+import SectionHeader from '../WorkerListPage/EditWorkerModal/SectionHeader';
 
 export default function CreateScheduleForm() {
   const queryClient = useQueryClient();
@@ -15,8 +16,7 @@ export default function CreateScheduleForm() {
   const [dateRange, setDateRange] = useState([]);
   const [validationError, setValidationError] = useState('');
   const [createSchedule, setCreateSchedule] = useState(false);
-  const { selectLabelClasses, InputLableClasses, areas, managers } =
-    useContext(ScheduleContext);
+  const { areas, managers } = useContext(ScheduleContext);
 
   const [shifts, setShifts] = useState([
     {
@@ -54,6 +54,8 @@ export default function CreateScheduleForm() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
+    console.log(managers);
 
     setValidationError('');
 
@@ -139,6 +141,7 @@ export default function CreateScheduleForm() {
   const handleSumbit = (e, id) => {
     e.preventDefault();
     addScheduleMutation.mutate(formData);
+    console.log('Submitted Data:', formData);
   };
 
   const handleCreateScheduleClick = () => {
@@ -209,84 +212,78 @@ export default function CreateScheduleForm() {
             </svg>
           )}
         </button>
-
         <div className="border-b border-gray-300 mt-6"></div>
         {createSchedule && (
-          <form className="mt-6">
-            <div className="flex flex-col">
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:items-end">
-                {/* <div className="flex flex-col md:flex-row gap-4 md:items-end"> */}
-                <SelectInput
-                  label="Manager"
-                  name="manager"
-                  id="manager"
-                  value={formData.manager}
-                  onChange={handleInputChange}
-                  options={managers}
-                  labelClasses={selectLabelClasses}
-                  className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-                <SelectInput
-                  label="Area"
-                  name="area"
-                  id="area"
-                  value={formData.area}
-                  onChange={handleInputChange}
-                  options={areas}
-                  labelClasses={selectLabelClasses}
-                  className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-                <Input
-                  label="Start Date"
-                  labelClasses={InputLableClasses}
-                  className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="date"
-                  id="start_date"
-                  name="start_date"
-                  value={formData.start_date}
-                  onChange={handleInputChange}
-                  required
-                />
-                <Input
-                  label="End Date"
-                  labelClasses={InputLableClasses}
-                  className="flex flex-grow-1 border rounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="date"
-                  id="end_date"
-                  name="end_date"
-                  value={formData.end_date}
-                  onChange={handleInputChange}
-                  required
-                />
+          <div className="mt-8">
+            <SectionHeader title="Create a New Schedule" />
+            <form>
+              <div className="flex flex-col">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:items-end">
+                  <SelectInput
+                    label="Manager"
+                    name="manager"
+                    id="manager"
+                    value={formData.manager}
+                    onChange={handleInputChange}
+                    options={managers}
+                    required
+                  />
+                  <SelectInput
+                    label="Area"
+                    name="area"
+                    id="area"
+                    value={formData.area}
+                    onChange={handleInputChange}
+                    options={areas}
+                    required
+                  />
+                  <Input
+                    label="Start Date"
+                    type="date"
+                    id="start_date"
+                    name="start_date"
+                    value={formData.start_date}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <Input
+                    label="End Date"
+                    type="date"
+                    id="end_date"
+                    name="end_date"
+                    value={formData.end_date}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
               </div>
-            </div>
-            <div
-              key={shifts.id}
-              className="mt-8 border border-gray-300 p-4 rounded-xl"
-            >
-              <h1>Add Shifts</h1>
-              {shifts.map((shift) => (
-                <CreateShiftForm
-                  shift={shift}
-                  handleInputChange={(e) =>
-                    handleInputChangeShifts(e, shift.id)
-                  }
-                  key={shift.id}
-                  removeShift={() => handleRemoveShift(shift.id)}
-                  dateRange={dateRange}
-                />
-              ))}
-            </div>
-            <AddShiftBtn onClick={handleAddShift} />
-            <SubmitButton
-              type="submit"
-              label="Create Schedule"
-              handleSubmit={handleSumbit}
-              className="px-4 py-2 mt-8 w-full bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors"
-            />
-          </form>
+              <div key={shifts.id} className="mt-8 p-2 bg-white rounded-2xl">
+                <h1 className="text-xl font-semibold text-gray-800 mb-4">
+                  Add Shifts
+                </h1>
+                {shifts.map((shift) => (
+                  <CreateShiftForm
+                    shift={shift}
+                    handleInputChange={(e) =>
+                      handleInputChangeShifts(e, shift.id)
+                    }
+                    key={shift.id}
+                    removeShift={() => handleRemoveShift(shift.id)}
+                    dateRange={dateRange}
+                  />
+                ))}
+              </div>
+              <div className="p-2">
+                <AddShiftBtn onClick={handleAddShift} />
+              </div>
+              <SubmitButton
+                type="submit"
+                label="Create Schedule"
+                handleSubmit={handleSumbit}
+                className="px-4 py-2 mt-8 w-full bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors"
+              />
+            </form>
+          </div>
         )}
       </div>
     </>
