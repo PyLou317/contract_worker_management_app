@@ -10,7 +10,8 @@ import ShiftForm from './ShiftForm';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 import AddShiftBtn from '@/pages/Schedule/AddShiftBtn';
-import AddShiftForm from '@/pages/Schedule/AddShiftForm';
+import AddShiftForm from '@/pages/Schedule/EditScheduleModal/AddShiftForm';
+import SaveAddedShiftBtn from '@/pages/Schedule/EditScheduleModal/SaveAddedShift';
 import getDaysArray from '@/utilities/getDateArray';
 
 export default function EditScheduleModal({
@@ -28,7 +29,7 @@ export default function EditScheduleModal({
     area: '',
     start_date: '',
     end_date: '',
-    is_active: true,
+    is_published: '',
     shifts: [],
   });
 
@@ -44,24 +45,45 @@ export default function EditScheduleModal({
 
   useEffect(() => {
     if (scheduleData) {
-      const shifts = scheduleData.shifts || [];
+      const apiShifts = scheduleData.shifts || [];
+
+      const transformedShifts = apiShifts.map((shift) => ({
+        ...shift,
+        contract_workers: shift.workers
+          ? shift.workers.map((w) => ({ id: w.id }))
+          : [],
+      }));
 
       setFormData({
         manager: scheduleData.manager_detail.id,
         area: scheduleData.area_detail.id,
         start_date: scheduleData.start_date ? scheduleData.start_date : '',
         end_date: scheduleData.end_date ? scheduleData.end_date : '',
-        is_active: true,
-        shifts: shifts,
+        is_published: scheduleData.is_published,
+        shifts: transformedShifts,
       });
+
+      const startDate = new Date(scheduleData.start_date);
+      const endDate = new Date(scheduleData.end_date);
+      const dateRange = {
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0],
+      };
+      setDateRange(dateRange);
     }
   }, [scheduleData]);
 
+  //   console.log('Original Shifts:', formData.shifts);
+
   const handleScheduleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+
+    console.log(newValue);
+
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: newValue,
     }));
   };
 
@@ -86,12 +108,87 @@ export default function EditScheduleModal({
     }));
   };
 
+  const handlePendingShiftInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const updatedPendingShifts = [...pendingNewShifts];
+
+    let processedValue = value;
+    if (name === 'workers_needed') {
+      processedValue = parseInt(value, 10);
+      if (isNaN(processedValue)) {
+        processedValue = 0;
+      }
+    }
+
+    updatedPendingShifts[index] = {
+      ...updatedPendingShifts[index],
+      [name]: processedValue,
+    };
+
+    setPendingNewShifts(updatedPendingShifts);
+  };
+
+  const handleSaveAddedShifts = (e) => {
+    e.preventDefault();
+    const validNewShifts = pendingNewShifts.filter(
+      (shift) => shift.date && shift.start_time && shift.end_time
+    );
+
+    if (validNewShifts.length === 0) {
+      setPendingNewShifts([]);
+      return;
+    }
+
+    setFormData((prevData) => {
+      const newFormData = {
+        ...prevData,
+        shifts: [...prevData.shifts, ...validNewShifts],
+      };
+      console.log('New formData state being queued:', newFormData.shifts);
+      return newFormData;
+    });
+    setPendingNewShifts([]);
+  };
+
+  const handleWorkerCheck = (shiftIndex, workerId, isChecked) => {
+    const numericWorkerId = Number(workerId);
+
+    setFormData((prevData) => {
+      const updatedShifts = [...prevData.shifts];
+      const targetShift = updatedShifts[shiftIndex];
+
+      if (isChecked) {
+        const workersArray = targetShift.contracto_workers || [];
+
+        const isAlreadyAdded = workersArray.some(
+          (workerObj) => workerObj.id === numericWorkerId
+        );
+
+        if (!isAlreadyAdded) {
+          targetShift.contract_workers = [
+            ...targetShift.contract_workers,
+            { id: numericWorkerId },
+          ];
+        }
+      } else {
+        targetShift.contract_workers = targetShift.contract_workers.filter(
+          (workerObj) => workerObj.id !== numericWorkerId
+        );
+      }
+
+      return {
+        ...prevData,
+        shifts: updatedShifts,
+      };
+    });
+  };
+
   const handleAddShift = (e) => {
     e.preventDefault();
-    setShifts([
-      ...shifts,
+    setPendingNewShifts((prevShifts) => [
+      ...prevShifts,
       {
-        id: Date.now(),
+        // id: Date.now(),
         date: '',
         start_time: '',
         end_time: '',
@@ -102,16 +199,21 @@ export default function EditScheduleModal({
   };
 
   const handleRemoveShift = (id) => {
-    setShifts(shifts.filter((shift) => shift.id !== id));
+    setPendingNewShifts((prevShifts) =>
+      prevShifts.filter((shift) => shift.id !== id)
+    );
   };
+
+  const handleActivateSchedule = () => {};
 
   const queryClient = useQueryClient();
   const editScheduleMutation = useMutation({
-    mutationFn: (payload) => sendData(payload),
-    onSuccess: () => {
+    mutationFn: (payload) =>
+      sendData(payload.formData, payload.endpoint, payload.method),
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] });
       queryClient.invalidateQueries({ queryKey: ['shifts'] });
-      queryClient.invalidateQueries({ queryKey: ['schedule', Id] });
+      await queryClient.invalidateQueries({ queryKey: ['schedule', Id] });
       queryClient.invalidateQueries({ queryKey: ['workers'] });
     },
     onError: (error) => {
@@ -122,21 +224,33 @@ export default function EditScheduleModal({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const endpoint = `/schedules/${Id}/`;
-    editScheduleMutation.mutate({ formData: formData, endpoint: endpoint });
+
+    console.log('Submitted Data:', formData);
+
+    const payload = {
+      formData: formData,
+      endpoint: `/schedules/${Id}/`,
+      method: 'PATCH',
+    };
+    editScheduleMutation.mutate(payload);
   };
 
   const ctxValue = {
     handleScheduleInputChange: handleScheduleInputChange,
     handleShiftInputChange: handleShiftInputChange,
+    handleWorkerCheck: handleWorkerCheck,
+    handlePendingShiftInputChange: handlePendingShiftInputChange,
+    handleActivateSchedule: handleActivateSchedule,
     scheduleData: scheduleData,
     scheduleIsPending: scheduleIsPending,
     scheduleError: scheduleError,
-    // dialogRef: dialogRef,        
+    shiftsData: scheduleData?.shifts || [],
     showEditScheduleModal: showEditScheduleModal,
     onClose: onClose,
     formData: formData,
     setFormData: setFormData,
+    pendingNewShifts: pendingNewShifts,
+    setPendingNewShifts: setPendingNewShifts,
   };
 
   return (
@@ -154,7 +268,7 @@ export default function EditScheduleModal({
         ></div>
         <dialog
           ref={dialogRef}
-          className={`text-white p-8 rounded-2xl shadow-xl max-w-6xl w-full max-h-7/8 transform transition-transform duration-300 relative overflow-auto ${
+          className={`text-white p-8 rounded-2xl shadow-xl max-w-7xl w-full max-h-9/10 transform transition-transform duration-300 relative overflow-auto ${
             showEditScheduleModal ? 'scale-100' : 'scale-95'
           }`}
           open={showEditScheduleModal}
@@ -167,7 +281,10 @@ export default function EditScheduleModal({
               </h3>
               <div className="border-b border-gray-300 mt-2 mb-4"></div>
             </div>
-            <button onClick={onClose} className="hover:text-gray-700">
+            <button
+              onClick={onClose}
+              className="mb-6 text-gray-700 hover:text-gray-300"
+            >
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -185,25 +302,24 @@ export default function EditScheduleModal({
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <ScheduleForm />
-            <ShiftForm />
-            <div
-              key={shifts.id}
-              className="mt-8 border border-gray-300 p-4 rounded-xl"
-            >
-              <h1 className="font-semibold text-gray-800 mb-2">Add Shifts</h1>
-              {shifts.map((shift) => (
-                <AddShiftForm
-                  shift={shift}
-                  handleInputChange={(e) =>
-                    handleInputChangeShifts(e, shift.id)
-                  }
-                  key={shift.id}
-                  removeShift={() => handleRemoveShift(shift.id)}
-                  dateRange={dateRange}
-                />
-              ))}
+            <div className="mt-8">
+              <h1 className="text-xl font-semibold text-gray-800 my-2">
+                Shifts
+              </h1>
+              <ShiftForm />
             </div>
             <AddShiftBtn onClick={handleAddShift} />
+            {pendingNewShifts.map((shift, index) => (
+              <AddShiftForm
+                index={index}
+                key={shift.id}
+                removeShift={() => handleRemoveShift(shift.id)}
+                dateRange={dateRange}
+              />
+            ))}
+            {pendingNewShifts.length > 0 && (
+              <SaveAddedShiftBtn onClick={handleSaveAddedShifts} />
+            )}
             <div className="mt-6 flex justify-end gap-3">
               <CancelBtn onClick={onClose} label="Cancel" />
               <SubmitBtn
@@ -214,7 +330,7 @@ export default function EditScheduleModal({
                     ? 'Save Changes'
                     : 'Add Schedule'
                 }
-                //   disabled={addWorkerMutation.isPending}
+                disabled={editScheduleMutation.isPending}
               />
             </div>
           </form>
