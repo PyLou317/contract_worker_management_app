@@ -1,5 +1,5 @@
 import Input from '@/components/Inputs/LabeledInput';
-import SelectInput from '@/components/Inputs/LabeledSelectInput';
+import SelectInput from '@/components/Inputs/FloatingSelectInput';
 
 export default function AddSkill({
   addSkillIsVisible,
@@ -7,8 +7,6 @@ export default function AddSkill({
   handleAddSkillInputChange,
   newSkillFormData,
   skillNames,
-  addSkillInputClasses,
-  inputLabelClasses,
 }) {
   return (
     <div
@@ -16,7 +14,7 @@ export default function AddSkill({
         addSkillIsVisible ? 'max-h-[400px]' : 'max-h-0'
       }`}
     >
-      <div className="p-4 rounded-xl shadow-sm border border-gray-700 bg-gray-100">
+      <div className="p-4 rounded-xl shadow-sm border border-blue-100 bg-blue-50">
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-gray-700">New Skill</h3>
         </div>
@@ -29,8 +27,6 @@ export default function AddSkill({
             value={newSkillFormData.skill_name}
             onChange={handleAddSkillInputChange}
             options={skillNames}
-            className={addSkillInputClasses}
-            labelClasses={inputLabelClasses}
             required
           />
           <Input
@@ -44,8 +40,6 @@ export default function AddSkill({
             value={newSkillFormData.level}
             onChange={handleAddSkillInputChange}
             required
-            className={addSkillInputClasses}
-            labelClasses={inputLabelClasses}
           />
           <Input
             label="Certification Date"
@@ -55,8 +49,6 @@ export default function AddSkill({
             value={newSkillFormData.certification_date}
             onChange={handleAddSkillInputChange}
             required
-            className={addSkillInputClasses}
-            labelClasses={inputLabelClasses}
           />
           <Input
             label="Expiration Date"
@@ -66,8 +58,6 @@ export default function AddSkill({
             value={newSkillFormData.expiration_date}
             onChange={handleAddSkillInputChange}
             required
-            className={addSkillInputClasses}
-            labelClasses={inputLabelClasses}
           />
         </div>
         <button
