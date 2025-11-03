@@ -5,6 +5,7 @@ import ScheduledWorkersList from './ScheduledWorkersList';
 import WorkerList from '@/pages/Schedule/EditScheduleModal/WorkerList';
 import Input from '@/components/Inputs/LabeledInput';
 import calcShiftDuration from '@/utilities/calculateShiftDuration';
+import RemoveShiftBtn from '../RemoveShiftBtn';
 
 export default function ScheduleForm() {
   const [addWorkersId, setAddWorkersId] = useState(false);
@@ -16,6 +17,8 @@ export default function ScheduleForm() {
     const isAlreadyOpen = addWorkersId === shiftId;
     setAddWorkersId(isAlreadyOpen ? null : shiftId);
   };
+    
+    const handleRemoveShift = () => { }
 
   if (!formData || !shifts || formData.shifts.length === 0) {
     return <p className="text-gray-500">No shifts to display.</p>;
@@ -104,12 +107,17 @@ export default function ScheduleForm() {
             </div>
           </div>
           <ScheduledWorkersList shiftId={shift.id} index={index} />
-          <WorkerList
-            shiftId={shift.id}
-            index={index}
-            handleAddWorkerClick={handleAddWorkerClick}
-            addWorkersId={addWorkersId}
-          />
+          <div className="flex justify-between items-center">
+            <WorkerList
+              shiftId={shift.id}
+              index={index}
+              handleAddWorkerClick={handleAddWorkerClick}
+              addWorkersId={addWorkersId}
+            />
+            <div className="ms-auto">
+              <RemoveShiftBtn onClick={handleRemoveShift} />
+            </div>
+          </div>
         </div>
       ))}
     </div>
