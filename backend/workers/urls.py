@@ -6,6 +6,7 @@ from .views import *
 urlpatterns = [
     path('workers/', WorkerListViewAPI.as_view()),
     path('skills/', SkillsListViewAPI.as_view()),
+    path('skills/<int:pk>/', SkillDetailUpdateViewAPI.as_view()),
     path('workers/<int:pk>/', WorkerDetailUpdateViewAPI.as_view()),
 ]
 

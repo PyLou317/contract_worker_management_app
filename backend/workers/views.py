@@ -42,6 +42,12 @@ class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = ContractWorker.objects.all()
     serializer_class = ContractWorkerSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class SkillDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+    permission_classes = [permissions.IsAuthenticated]
     
 
 class SkillsListViewAPI(generics.ListCreateAPIView):
