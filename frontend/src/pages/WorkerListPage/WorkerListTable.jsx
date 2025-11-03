@@ -135,13 +135,21 @@ export default function WorkerListTable({
         </div>
       )}
       <div className="overflow-x-auto">
-        <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
+        <table className="w-full max-h-screen table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
           <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
             <tr>
-              <th className="py-3 px-6 text-left border-r border-gray-300">Id</th>
-              <th className="py-3 px-6 text-left border-r border-gray-300">Name</th>
-              <th className="py-3 px-6 text-left border-r border-gray-300">Position</th>
-              <th className="py-3 px-6 text-left border-r border-gray-300">Agency</th>
+              <th className="py-3 px-6 text-left border-r border-gray-300">
+                Id
+              </th>
+              <th className="py-3 px-6 text-left border-r border-gray-300">
+                Name
+              </th>
+              <th className="py-3 px-6 text-left border-r border-gray-300">
+                Position
+              </th>
+              <th className="py-3 px-6 text-left border-r border-gray-300">
+                Agency
+              </th>
               <th className="py-3 px-6 text-left">
                 <div className="flex justify-between items-center">
                   Rating{' '}
@@ -177,12 +185,18 @@ export default function WorkerListTable({
                   key={worker.id}
                   className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200"
                 >
-                  <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">{worker.id}</td>
+                  <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
+                    {worker.id}
+                  </td>
                   <td className="py-3 px-6 text-left border-r border-gray-200">
                     {worker.first_name} {worker.last_name}
                   </td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.position}</td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">{worker.agency_details}</td>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">
+                    {worker.position}
+                  </td>
+                  <td className="py-3 px-6 text-left border-r border-gray-200">
+                    {worker.agency_details}
+                  </td>
                   <td
                     className="py-3 px-6 text-left border-r border-gray-200 relative"
                     onMouseEnter={() => setHoveredWorkerId(worker.id)}
@@ -190,12 +204,15 @@ export default function WorkerListTable({
                   >
                     {hoveredWorkerId === worker.id && (
                       <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
-                        {worker.rating ? worker.rating.average_rating : 'N/A'} out of 5
+                        {worker.rating ? worker.rating.average_rating : 'N/A'}{' '}
+                        out of 5
                       </div>
                     )}
                     <Rating
                       initialValue={
-                        worker.rating !== null && worker.rating.average_rating ? worker.rating.average_rating : 0
+                        worker.rating !== null && worker.rating.average_rating
+                          ? worker.rating.average_rating
+                          : 0
                       }
                       {...starRating}
                     />
@@ -206,12 +223,13 @@ export default function WorkerListTable({
                         worker.worker_skills?.map((skill, index) => (
                           <span
                             className={`text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-md transition-colors duration-200 tooltip ${
-                              skillColorClasses[skill.skill.base_color]?.[skill.level] ||
-                              'bg-gray-400 hover:bg-gray-500'
+                              skillColorClasses[skill.skill.base_color]?.[
+                                skill.level
+                              ] || 'bg-gray-400 hover:bg-gray-500'
                             }`}
                             key={index}
                           >
-                            {skill.skill.abreviation}LV{skill.level}
+                            {skill.skill.abreviation}-Lv{skill.level}
                             <div className="tooltip-content cursor-pointer">
                               {skill.skill.skill_name} level {skill.level}
                             </div>
@@ -227,19 +245,19 @@ export default function WorkerListTable({
                         aria-label="Edit worker"
                       >
                         <svg
-                        id="edit-schedule"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="size-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-                        />
+                          id="edit-schedule"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                          />
                         </svg>
                       </button>
                       <button
@@ -289,7 +307,11 @@ export default function WorkerListTable({
         updateUrl={updateUrl}
       />
 
-      <AddWorkerModal showModal={isModalOpen} onClose={handleCloseAddWorkerModal} onAddWorker={handleAddWorker} />
+      <AddWorkerModal
+        showModal={isModalOpen}
+        onClose={handleCloseAddWorkerModal}
+        onAddWorker={handleAddWorker}
+      />
       {editingWorker && (
         <EditWorkerModal
           showModal={editingWorker}
@@ -311,9 +333,15 @@ export default function WorkerListTable({
             }, 5000);
           }}
         >
-          <h1 className="text-3xl font-semibold mb-4 text-white">Delete Worker</h1>
-          <p className="text-lg font-semibold">Are you sure you want to delete this worker?</p>
-          <p className="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+          <h1 className="text-3xl font-semibold mb-4 text-white">
+            Delete Worker
+          </h1>
+          <p className="text-lg font-semibold">
+            Are you sure you want to delete this worker?
+          </p>
+          <p className="text-sm text-gray-400 mt-2">
+            This action cannot be undone.
+          </p>
         </DeleteWarningModal>
       )}
     </>
