@@ -1,72 +1,67 @@
 import { useContext } from 'react';
-import { ScheduleContext } from './schedule-page-context';
+import { ScheduleContext } from '@/pages/Schedule/schedule-page-context';
+import { EditScheduleContext } from '@/pages/Schedule/EditScheduleModal/edit-schedule-context';
 
 import Input from '@/components/Inputs/LabeledInput';
-import SelectInput from '@/components/Inputs/LabeledSelectInput';
-import RemoveShiftBtn from './RemoveShiftBtn';
-import getDaysArray from '../../utilities/getDateArray';
+import SelectInput from '@/components/Inputs/FloatingSelectInput';
+import RemoveShiftBtn from '@/pages/Schedule/RemoveShiftBtn';
+import getDaysArray from '@/utilities/getDateArray';
 
 export default function AddShiftForm({
   dateRange,
+  removeShift,
+  index,
   shift,
   handleInputChange,
-  removeShift,
 }) {
-  const { selectLabelClasses, InputLableClasses } = useContext(ScheduleContext);
   const days = getDaysArray(dateRange);
 
-  const inputClasses =
-    'flex flex-grow-1 border border-gray-300 text-gray-800 ounded-lg p-2 w-full h-[40px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500';
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:items-end mt-4">
-      <SelectInput
-        label="Date"
-        type="text"
-        id="date"
-        name="date"
-        options={days}
-        value={shift.date}
-        onChange={handleInputChange}
-        labelClasses={selectLabelClasses}
-        className={inputClasses}
-      />
-      <Input
-        label="Start Time"
-        labelClasses={InputLableClasses}
-        className={inputClasses}
-        type="time"
-        id="start_time"
-        name="start_time"
-        placeholder="08:00"
-        value={shift.startTime}
-        onChange={(e) => handleInputChange(e, shift.id)}
-        step="1800"
-      />
-      <Input
-        label="End Time"
-        labelClasses={InputLableClasses}
-        className={inputClasses}
-        type="time"
-        id="end_time"
-        name="end_time"
-        placeholder="16:30"
-        value={shift.endTime}
-        onChange={(e) => handleInputChange(e, shift.id)}
-        step="1800"
-      />
-      <Input
-        label="Workers Needed"
-        labelClasses={InputLableClasses}
-        className={inputClasses}
-        type="number"
-        id="workers_needed"
-        name="workers_needed"
-        placeholder="1"
-        value={shift.workersNeeded}
-        onChange={(e) => handleInputChange(e, shift.id)}
-      />
-      <RemoveShiftBtn onClick={removeShift} />
+    <div
+      key={shift ? shift.id : shift.id}
+      className="mt-4 p-4 shadow-sm bg-gray-50 rounded-xl"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-5 gap-4 md:items-end pt-4">
+        <SelectInput
+          label="Date"
+          type="text"
+          id="date"
+          name="date"
+          options={days}
+          value={shift ? shift.date : shift[index].date ?? ''}
+          onChange={(e) => handleInputChange(e, index)}
+        />
+        <Input
+          label="Start Time"
+          type="time"
+          id="start_time"
+          name="start_time"
+          placeholder="Start Time"
+          value={shift ? shift.start_time : shift[index].start_time ?? ''}
+          onChange={(e) => handleInputChange(e, index)}
+        />
+        <Input
+          label="End Time"
+          type="time"
+          id="end_time"
+          name="end_time"
+          placeholder="End Time"
+          value={shift ? shift.end_time : shift[index].end_time ?? ''}
+          onChange={(e) => handleInputChange(e, index)}
+        />
+        <Input
+          label="Workers Needed"
+          type="number"
+          id="workers_needed"
+          name="workers_needed"
+          placeholder="Workers Needed"
+          value={
+            shift ? shift.workers_needed : shift[index].workers_needed ?? ''
+          }
+          onChange={(e) => handleInputChange(e, index)}
+        />
+        <RemoveShiftBtn onClick={removeShift} />
+      </div>
     </div>
   );
 }
