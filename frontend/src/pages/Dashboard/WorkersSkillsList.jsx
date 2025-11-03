@@ -11,10 +11,6 @@ export default function WorkerSkillList({
   const tableHeaderClass = 'py-2 px-4 text-left';
   const tableRowClass = 'py-2 px-4 text-left whitespace-nowrap';
 
-  const workersWithSkills = workers.filter((worker) => {
-    return worker.worker_skills.length > 0;
-  });
-
   if (isFetching || isPending) {
     return (
       <div className="flex justify-center items-center h-[400px]">
@@ -34,8 +30,8 @@ export default function WorkerSkillList({
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {workersWithSkills ? (
-            workersWithSkills.map((worker) => (
+          {workers ? (
+            workers.map((worker) => (
               <tr
                 key={worker.id}
                 className="hover:bg-gray-100 transition-colors duration-200"
