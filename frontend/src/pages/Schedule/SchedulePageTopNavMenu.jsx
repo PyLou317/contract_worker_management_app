@@ -9,7 +9,7 @@ export default function NavTabs() {
   ];
 
   return (
-    <div className='ms-4'>
+    <div className='container ms-auto px-4'>
       <ul className="flex flex-row gap-1 justify-start">
         {tabItems.map((item, index) => (
           <TabMenuItem name={item.name} Icon={item.icon} key={index} />
