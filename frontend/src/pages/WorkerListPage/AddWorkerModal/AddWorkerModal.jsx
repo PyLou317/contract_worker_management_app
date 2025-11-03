@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CapitalizeFirstLetter from '@/utilities/capitalizeFirstLetter';
 
 import Input from '@/components/Inputs/LabeledInput';
-import SelectInput from '@/components/Inputs/LabeledSelectInput';
+import SelectInput from '@/components/Inputs/FloatingSelectInput';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 import Modal from '@/components/Modals/Modal';
@@ -30,7 +30,6 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
     last_name: '',
     email: '',
     phone_number: '',
-    // current_contract: '',
     agency: '',
   });
 
@@ -66,29 +65,11 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
     addWorkerMutation.mutate(formData);
   };
 
-  const inputFieldClasses =
-    'mt-1 p-2 block w-full rounded-md border bg-gray-800 border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500';
-  const inputLabelClasses = 'block text-sm font-medium text-gray-200';
-
   return (
-    //     <div
-    //     className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300 ${
-    //         showModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
-    //     }`}
-    //     >
-    //   <div className="bg-gray-800/75 absolute inset-0" onClick={onClose}></div>
-    //   <dialog
-    //     ref={dialogRef}
-    //     className={` bg-gray-900 text-white p-8 rounded-2xl shadow-xl max-w-lg w-full transform transition-transform duration-300 relative ${
-    //         showModal ? 'scale-100' : 'scale-95'
-    //     }`}
-    //     open={showModal}
-    //     onClose={onClose}
-    //   >
     <Modal show={showModal} onClose={onClose}>
       <div className="flex justify-between items-center pb-3">
-        <h3 className="text-2xl font-semibold text-white">Add New Worker</h3>
-        <button onClick={onClose} className="text-gray-200 hover:text-gray-700">
+        <h3 className="text-2xl font-semibold text-gray-800">Add New Worker</h3>
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
           <svg
             className="h-6 w-6"
             fill="none"
@@ -104,45 +85,47 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
           </svg>
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          type="text"
-          id="first_name"
-          name="first_name"
-          label="First Name"
-          value={CapitalizeFirstLetter(formData.first_name)}
-          onChange={handleInputChange}
-          className={inputFieldClasses}
-          labelClasses={inputLabelClasses}
-        />
-        <Input
-          type="text"
-          id="last_name"
-          name="last_name"
-          label="Last Name"
-          value={CapitalizeFirstLetter(formData.last_name)}
-          onChange={handleInputChange}
-          className={inputFieldClasses}
-          labelClasses={inputLabelClasses}
-        />
-        <Input
-          type="email"
-          id="email"
-          name="email"
-          label="Email"
-          value={formData.email}
-          onChange={handleInputChange}
-          className={inputFieldClasses}
-        />
-        <Input
-          type="text"
-          id="phone_number"
-          name="phone_number"
-          label="Phone Number"
-          value={formData.phone_number}
-          onChange={handleInputChange}
-          className={inputFieldClasses}
-        />
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 md:items-end">
+          <Input
+            type="text"
+            id="first_name"
+            name="first_name"
+            label="First Name"
+            placeholder="First Name"
+            value={CapitalizeFirstLetter(formData.first_name)}
+            onChange={handleInputChange}
+          />
+          <Input
+            type="text"
+            id="last_name"
+            name="last_name"
+            label="Last Name"
+            placeholder="Last Name"
+            value={CapitalizeFirstLetter(formData.last_name)}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 md:items-end">
+          <Input
+            type="email"
+            id="email"
+            name="email"
+            label="Email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+          <Input
+            type="text"
+            id="phone_number"
+            name="phone_number"
+            label="Phone Number"
+            placeholder="Phone Number"
+            value={formData.phone_number}
+            onChange={handleInputChange}
+          />
+        </div>
         {agencies && (
           <SelectInput
             label="Agency"
@@ -153,7 +136,6 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             onChange={handleInputChange}
             required
             options={agencyNames}
-            className={inputFieldClasses}
           ></SelectInput>
         )}
         <div className="mt-6 flex justify-end gap-3">
@@ -176,9 +158,4 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
       </form>
     </Modal>
   );
-}
-
-{
-  /* </dialog>
-</div> */
 }
