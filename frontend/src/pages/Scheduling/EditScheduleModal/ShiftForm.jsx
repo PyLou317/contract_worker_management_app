@@ -125,6 +125,7 @@ export default function ScheduleForm() {
           />
           <ScheduledWorkersList
             shiftId={shift.id}
+            index={index}
             scheduledWorkersId={scheduledWorkersId}
           />
         </div>
