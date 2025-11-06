@@ -12,7 +12,7 @@ export default function Comments({ formData, handleInputChange }) {
         <textarea
           id="comment"
           name="comment"
-          rows={3}
+          rows={2}
           value={comment}
           placeholder="Add a comment..."
           onChange={handleInputChange}
