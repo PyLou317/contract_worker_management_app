@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { NavLink } from 'react-router';
 
 import Brand from '../Brand';
 import mainItems from './main-items-list';
@@ -49,24 +50,26 @@ export default function SideNavBar({
         </div>
         <ul className="w-full flex-1">
           {mainItems.map((item, index) => (
-            <li
-              key={index}
-              className={`flex my-2 p-4 hover:bg-gray-700 gap-4 ${
-                activeLink === item.name ? 'bg-gray-700' : 'hover:bg-gray-700'
-              } cursor-pointer rounded-lg`}
-              onClick={() => onLinkClick(item.name)}
-            >
-              <span
-                className={`${
-                  activeLink === item.name
-                    ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
-                    : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
-                }`}
+            <NavLink to={item.path} end>
+              <li
+                key={index}
+                className={`flex my-2 p-4 hover:bg-gray-700 gap-4 ${
+                  activeLink === item.name ? 'bg-gray-700' : 'hover:bg-gray-700'
+                } cursor-pointer rounded-lg`}
+                onClick={() => onLinkClick(item.name)}
               >
-                {item.icon}
-              </span>
-              {sidebarOpen && <span>{item.name}</span>}
-            </li>
+                <span
+                  className={`${
+                    activeLink === item.name
+                      ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
+                      : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
+                  }`}
+                >
+                  {item.icon}{' '}
+                </span>
+                {sidebarOpen && <span>{item.name}</span>}
+              </li>
+            </NavLink>
           ))}
         </ul>
 
