@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import WorkerListTable from './WorkerListTable';
 import Header from './WorkerTableHeader';
+import SectionHeader from './EditWorkerModal/SectionHeader';
 
 export default function Workers() {
   const searchParams = new URLSearchParams(window.location.search);
@@ -21,7 +22,7 @@ export default function Workers() {
 
   return (
     <div className="container mx-auto p-8 bg-white shadow-xl rounded-2xl">
-      <h2 className="text-2xl font-bold mb-8 text-gray-800">Employee Roster</h2>
+      <SectionHeader title="Employee Roster" />
       <Header
         handleSearch={handleSearch}
         handleOpenAddWorkerModal={handleOpenAddWorkerModal}
