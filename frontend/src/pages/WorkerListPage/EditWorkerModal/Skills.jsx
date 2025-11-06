@@ -40,7 +40,7 @@ export default function Skills({
               <h3 className="font-semibold text-gray-800 mb-2">
                 {workerSkill.skill.skill_name}
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 mt-8">
                 <Input
                   label="Level"
                   type="number"
