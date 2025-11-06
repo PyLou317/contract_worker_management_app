@@ -12,7 +12,7 @@ export default function WorkerDetails({
     <Section>
       <SectionHeader title="Work Details" />
       <div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-x-4 mt-8">
           <SelectInput
             label="Agency"
             type="text"
