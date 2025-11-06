@@ -6,6 +6,7 @@ import ColorSelector from './ColorSelector';
 import addSkill from '@/hooks/addSkill';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
 import getAcronym from '@/utilities/getAcronym';
+import SectionHeader from '../WorkerListPage/EditWorkerModal/SectionHeader';
 
 export default function AddSkillForm() {
   const [formData, setFormData] = useState({
@@ -63,9 +64,7 @@ export default function AddSkillForm() {
         </div>
       )}
       <div className="container mx-auto p-8 bg-white shadow-xl rounded-2xl lg:w-3/4 w-full mb-16">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-4">
-          Add New Skill
-        </h1>
+        <SectionHeader title="Add New Skill" />
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4">
             <Input
@@ -88,15 +87,6 @@ export default function AddSkillForm() {
               value={formData.abreviation}
               required
             />
-            {/* <Input
-          label="Description"
-          type="text"
-          id="description"
-          name="description"
-          placeholder="Description"
-          onChange={handleInputChange}
-          value={formData.description}
-          /> */}
             <ColorSelector
               onColorChange={(color) =>
                 setFormData({ ...formData, base_color: color })
