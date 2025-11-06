@@ -65,7 +65,7 @@ export default function ViewCreatedSchedules({}) {
   });
 
   return (
-    <div className="container mx-auto p-8 bg-white shadow-md rounded-2xl">
+    <>
       <SectionHeader title="Created Schedules" />
       <div className="border-b border-gray-300 mb-6"></div>
       <ScheduleList
@@ -89,6 +89,6 @@ export default function ViewCreatedSchedules({}) {
         scheduleIsFetching={scheduleIsFetching}
         scheduleError={scheduleError}
       />
-    </div>
+    </>
   );
 }
