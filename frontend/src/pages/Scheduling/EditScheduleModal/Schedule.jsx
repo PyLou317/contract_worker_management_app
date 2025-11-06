@@ -5,7 +5,7 @@ export default function Schedule() {
   const { scheduleId } = useParams();
 
   return (
-    <div className="schedule-detail-page">
+    <div id="schedule-detail-page">
       <EditSchedule scheduleId={scheduleId} />
     </div>
   );
