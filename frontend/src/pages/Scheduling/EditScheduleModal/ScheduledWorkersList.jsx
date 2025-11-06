@@ -197,7 +197,7 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
-                {targetShiftWorkers && targetShiftWorkers.length > 0 ? (
+                {displayWorkers && displayWorkers.length > 0 ? (
                   displayWorkers.map((worker, index) => (
                     <tr
                       key={worker.id}
@@ -209,10 +209,10 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
                           id={`contract_workers_${worker.id}`}
                           name="contract_workers"
                           value={worker.id}
-                          //   checked={''}
+                          checked={selectedWorkerIds.includes(worker.id)}
                           onChange={(e) =>
                             handleWorkerCheck(
-                              index,
+                              shiftIndex,
                               e.target.value,
                               e.target.checked
                             )
