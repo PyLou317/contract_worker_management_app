@@ -33,7 +33,7 @@ export default function Ratings({ workerData, formData, handleInputChange }) {
           {roundedAverageRating} <span className="text-sm">average rating</span>
         </p>
       </div>
-      <div className="grid grid-cols-4 gap-4 mt-4">
+      <div className="grid grid-cols-4 gap-x-4 mt-6">
         <Input
           step="0.25"
           min="0"
