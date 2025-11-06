@@ -6,7 +6,7 @@ export default function PersonalDetails({ formData, handleInputChange }) {
   return (
     <Section>
       <SectionHeader title="Personal Details" />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-10 mt-8">
         <Input
           label="First Name"
           type="text"
