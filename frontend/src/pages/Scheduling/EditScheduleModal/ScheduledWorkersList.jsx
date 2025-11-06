@@ -59,16 +59,12 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
         ? worker.agency_details.toLowerCase()
         : '';
       const position = worker.position ? worker.position.toLowerCase() : '';
-      // const skills = worker.worker_skills[0].skill?.skill_name ? worker.worker_skills[0].skill?.skill_name.toLowerCase() : '';
-      console.log('worker', worker);
-      console.log('Skills', skills);
 
       return (
         firstName.includes(lowerCaseTerm) ||
         lastName.includes(lowerCaseTerm) ||
         agency.includes(lowerCaseTerm) ||
         position.includes(lowerCaseTerm)
-        // skills.includes(lowerCaseTerm)
       );
     });
     setDisplayWorkers(filteredWorkers);
