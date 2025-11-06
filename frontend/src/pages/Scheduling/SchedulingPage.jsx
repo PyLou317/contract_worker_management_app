@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ScheduleContext } from './schedule-page-context';
 import { apiFetch } from '@/utilities/apiClient';
 
-import ScheduleListComponent from './ViewSchedules/ScheduleListComponent';
+import SchedulingPage from './ViewSchedules/SchedulingPage';
 import CalendarComponent from './Calendar/Calendar';
 import CreateScheduleComponent from '@/pages/Scheduling/CreateSchedule/CreateScheduleForm';
 import NavTabs from './SchedulePageTopNavMenu';
@@ -88,7 +88,7 @@ export default function Schedule() {
     <ScheduleContext.Provider value={ctxValue}>
       <NavTabs />
       {isActive === 'Create Schedule' && <CreateScheduleComponent />}
-      {isActive === 'View Schedules' && <ScheduleListComponent />}
+      {isActive === 'View Schedules' && <SchedulingPage />}
       {isActive === 'Calendar' && <CalendarComponent />}
     </ScheduleContext.Provider>
   );
