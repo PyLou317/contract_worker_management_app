@@ -20,8 +20,6 @@ export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
   const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const [displayWorkers, setDisplayWorkers] = useState([]);
   const [openSMSModal, setOpenSMSModal] = useState(false);
 
   const { shiftsData, isPending, isFetching, error, handleWorkerCheck } =
