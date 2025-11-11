@@ -92,8 +92,11 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
     setOpenSMSModal((prevOpenSMSModal) => !prevOpenSMSModal);
   };
 
-  const { mutate: sendSMSMutation, isPending: isSendingSMS } =
-    useSendSMSMutation({ setFormData });
+  const {
+    mutate: sendSMSMutation,
+    isPending: isSendingSMS,
+    error: smsError,
+  } = useSendSMSMutation({ setShowSuccess, setMessageSentCount });
 
   const sendSMS = (e) => {
     e.preventDefault();
