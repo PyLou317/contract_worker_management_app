@@ -178,9 +178,10 @@ export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
                   <th className="py-1 px-6 text-left border-r border-gray-300">
                     <input
                       type="checkbox"
-                      id="schedule_worker"
-                      name="schedule_worker"
+                    id="select_all_workers"
+                    name="select_all_workers"
                       value="yes"
+                    onChange={handleSelectAllWorkers}
                     />
                   </th>
                   <th className="py-1 px-6 text-left border-r border-gray-300">
