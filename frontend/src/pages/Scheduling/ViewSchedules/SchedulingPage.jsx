@@ -4,8 +4,6 @@ import ScheduleListComponent from '@/pages/Scheduling/ViewSchedules/ScheduleList
 
 export default function SchedulingPage() {
     const { scheduleId } = useParams();
-    console.log(scheduleId);
-
 
   return (
     <div className="container mx-auto p-8 bg-white shadow-md rounded-2xl">
