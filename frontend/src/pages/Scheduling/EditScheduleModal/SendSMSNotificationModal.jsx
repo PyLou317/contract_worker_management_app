@@ -19,8 +19,8 @@ export default function SMSNotificationModal({
             workers
             <br />
             notifying them of their schedule.
-            <p className="mt-4">Are you sure you want to continue?</p>
           </p>
+          <p className="mt-4">Are you sure you want to continue?</p>
         </div>
         <div className="gap-2 flex justify-center items-center mb-4">
           <button
