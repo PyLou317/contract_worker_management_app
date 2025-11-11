@@ -24,24 +24,6 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
   const { shiftsData, isPending, isFetching, error, handleWorkerCheck } =
     useContext(EditScheduleContext);
 
-  const setFormData = () => {};
-
-  const targetShift = shiftsData.find((shift) => shift.id === shiftId);
-  const targetShiftWorkers = targetShift?.workers || [];
-
-  useEffect(() => {
-    setDisplayWorkers(targetShiftWorkers);
-    setSearchTerm('');
-  }, [targetShiftWorkers]);
-
-  const starRating = {
-    size: 20,
-    allowFraction: true,
-    readonly: true,
-    allowHover: false,
-    fillColor: '#ffd700',
-  };
-
   const handleSearch = (term) => {
     setSearchTerm(term);
     setPage(1);
