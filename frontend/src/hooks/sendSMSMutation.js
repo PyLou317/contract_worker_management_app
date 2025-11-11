@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import sendData from '@/hooks/sendData';
 
-export function useSendSMSMutation({ setFormData }) {
+export function useSendSMSMutation({ setShowSuccess, setMessageSentCount }) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, error } = useMutation({
@@ -10,11 +10,9 @@ export function useSendSMSMutation({ setFormData }) {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['message'] });
-      setFormData({
-        receipient_name: '',
-        to_number: '',
-        message_body: '',
-      });
+      setMessageSentCount((prevMessageSentCount) => prevMessageSentCount + 1);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
     },
     onError: (error) => {
       console.error('Error sending sms:', error);
