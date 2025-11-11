@@ -21,6 +21,8 @@ export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [openSMSModal, setOpenSMSModal] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [messageSentCount, setMessageSentCount] = useState(0);
 
   const { shiftsData, isPending, isFetching, error, handleWorkerCheck } =
     useContext(EditScheduleContext);
