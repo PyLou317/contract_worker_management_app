@@ -43,7 +43,7 @@ export default function UnscheduledWorkerList({ shiftId, addWorkersId }) {
   };
 
   const { isPending, error, data, isFetching } = useQuery({
-    queryKey: ['workers', searchTerm, page, ordering],
+    queryKey: ['workers', searchTerm, page, ordering, shiftId],
     queryFn: () => {
       const params = new URLSearchParams();
       if (page > 1) {
@@ -55,8 +55,13 @@ export default function UnscheduledWorkerList({ shiftId, addWorkersId }) {
       if (ordering) {
         params.set('ordering', ordering);
       }
+
+      params.set('shift_id', shiftId);
+
       const queryString = params.toString();
-      const endpoint = `/workers/${queryString ? `?${queryString}` : ''}`;
+      const endpoint = `/unscheduled-workers/${
+        queryString ? `?${queryString}` : ''
+      }`;
       return apiFetch(endpoint);
     },
     keepPreviousData: true,
