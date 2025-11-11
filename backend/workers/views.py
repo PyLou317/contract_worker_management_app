@@ -2,9 +2,13 @@ from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import filters
 from django.db.models import Avg
+
 from .models import *
+from scheduling.models import Schedule, Shift
+
 from .serializers import *
 from rest_framework.exceptions import ValidationError 
+
 
 class WorkerListViewAPI(generics.ListCreateAPIView):
     queryset = ContractWorker.objects.all()
@@ -36,6 +40,79 @@ class WorkerListViewAPI(generics.ListCreateAPIView):
             raise ValidationError({'detail': 'You must be associated with a Warehouse Business to create a worker.'})
         
         serializer.save(current_contract=user_organization) 
+
+
+
+class ShiftScheduledWorkerListViewAPI(generics.ListCreateAPIView):
+    queryset = ContractWorker.objects.all()
+    serializer_class = ContractWorkerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['first_name', 'last_name', 'agency__name', 'position']
+    ordering_fields = ['first_name', 'last_name', 'avg_rating']
+    ordering = ['rating']
+    
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return ContractWorker.objects.none()
+        
+        user_organization = user.organization
+        if not user_organization:
+            return ContractWorker.objects.none()
+        
+        shift_id = self.request.query_params.get('shift_id')
+        if not shift_id:
+            return ContractWorker.objects.none()
+        
+        scheduled_workers_ids = Shift.objects.filter(
+            id=shift_id
+        ).values_list('contract_workers__id', flat=True)
+        
+        queryset = super().get_queryset().filter(
+            current_contract=user_organization
+            ).filter(id__in=scheduled_workers_ids)
+        
+        return queryset.annotate(
+            avg_rating=Avg('rating__performance_score')
+        )
+    
+
+
+class ShiftUnscheduledWorkerListViewAPI(generics.ListCreateAPIView):
+    queryset = ContractWorker.objects.all()
+    serializer_class = ContractWorkerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['first_name', 'last_name', 'agency__name', 'position']
+    ordering_fields = ['first_name', 'last_name', 'avg_rating']
+    ordering = ['rating']
+    
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return ContractWorker.objects.none()
+        
+        user_organization = user.organization
+        if not user_organization:
+            return ContractWorker.objects.none()
+        
+        shift_id = self.request.query_params.get('shift_id')
+        if not shift_id:
+            return ContractWorker.objects.none()
+        
+        scheduled_workers_ids = Shift.objects.filter(
+            id=shift_id
+        ).values_list('contract_workers__id', flat=True)
+        
+        queryset = super().get_queryset().filter(
+            current_contract=user_organization
+            ).exclude(id__in=scheduled_workers_ids)
+        
+        return queryset
+    
         
         
 class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
