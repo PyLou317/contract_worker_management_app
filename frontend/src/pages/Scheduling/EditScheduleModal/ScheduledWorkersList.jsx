@@ -87,6 +87,43 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
     window.history.pushState(null, '', `?${params.toString()}`);
   };
 
+  const { isPending, error, data, isFetching } = useQuery({
+    queryKey: ['workers', searchTerm, page, ordering, shiftId],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (page > 1) {
+        params.set('page', page);
+      }
+      if (searchTerm) {
+        params.set('search', searchTerm);
+      }
+      if (ordering) {
+        params.set('ordering', ordering);
+      }
+
+      params.set('shift_id', shiftId);
+
+      const queryString = params.toString();
+      const endpoint = `/scheduled-workers/${
+        queryString ? `?${queryString}` : ''
+      }`;
+      return apiFetch(endpoint);
+    },
+    keepPreviousData: true,
+  });
+
+  const workers = data?.results || [];
+  const nextUrl = data?.next;
+  const prevUrl = data?.previous;
+
+  const shiftIndex = formData.shifts.findIndex((shift) => shift.id === shiftId);
+  const currentShiftWorkers =
+    formData.shifts[shiftIndex]?.contract_workers || [];
+
+  const selectedWorkerIds = currentShiftWorkers.map(
+    (workerObj) => workerObj.id
+  );
+
   const handleOpenSendSMSModal = (e) => {
     e.preventDefault();
     setOpenSMSModal((prevOpenSMSModal) => !prevOpenSMSModal);
