@@ -44,32 +44,7 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
 
   const handleSearch = (term) => {
     setSearchTerm(term);
-
-    const lowerCaseTerm = term.toLowerCase();
-
-    if (!lowerCaseTerm.trim()) {
-      setDisplayWorkers(targetShiftWorkers);
-      return;
-    }
-
-    const filteredWorkers = targetShiftWorkers.filter((worker) => {
-      const firstName = worker.first_name
-        ? worker.first_name.toLowerCase()
-        : '';
-      const lastName = worker.last_name ? worker.last_name.toLowerCase() : '';
-      const agency = worker.agency_details
-        ? worker.agency_details.toLowerCase()
-        : '';
-      const position = worker.position ? worker.position.toLowerCase() : '';
-
-      return (
-        firstName.includes(lowerCaseTerm) ||
-        lastName.includes(lowerCaseTerm) ||
-        agency.includes(lowerCaseTerm) ||
-        position.includes(lowerCaseTerm)
-      );
-    });
-    setDisplayWorkers(filteredWorkers);
+    setPage(1);
   };
 
   const handleRatingSort = () => {
