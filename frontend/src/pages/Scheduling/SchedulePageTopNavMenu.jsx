@@ -1,7 +1,7 @@
 import TabMenuItem from './TopNavTabItem';
-import calendarIcon from './Icons/CalendarIcon';
-import scheduleIcon from './Icons/ScheduleIcon';
-import scheduleListIcon from './Icons/ScheduleListIcon';
+import calendarIcon from '@/Icons/CalendarIcon';
+import scheduleIcon from '@/Icons/ScheduleIcon';
+import scheduleListIcon from '@/Icons/ScheduleListIcon';
 
 
 export default function NavTabs() {
