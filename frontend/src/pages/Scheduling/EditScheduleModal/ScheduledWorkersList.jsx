@@ -12,6 +12,7 @@ import Pagination from '@/components/Pagination';
 import Search from '@/components/Search';
 import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
 import LoadingSpinner from '@/components/Loader';
+import SortIcon from '@/Icons/SortIcon';
 import SMSNotificationModal from '@/pages/Scheduling/EditScheduleModal/SendSMSNotificationModal';
 
 export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
