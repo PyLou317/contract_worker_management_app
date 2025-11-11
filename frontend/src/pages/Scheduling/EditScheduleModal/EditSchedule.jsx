@@ -7,6 +7,7 @@ import { Link, useParams } from 'react-router';
 
 import sendData from '@/hooks/sendData';
 
+import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
 import ScheduleForm from './ScheduleForm';
 import ShiftForm from './ShiftForm';
 import CancelBtn from '@/components/Buttons/CancelBtn';
@@ -258,21 +259,21 @@ export default function EditSchedule({
   return (
     <EditScheduleContext.Provider value={ctxValue}>
       <div className="text-white rounded-2xl w-full">
-        <div className="flex justify-between items-center pb-3 text-gray-800">
-          <h3 className="text-2xl font-semibold">Edit Schedule</h3>
+        <div className="flex justify-between items-center text-gray-800">
+          <SectionHeader title="Edit Schedule" />
           <Link to="/scheduling">
             <button className="flex items-center gap-2 cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
-                class="size-6"
+                className="size-6"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
                 />
               </svg>
@@ -304,11 +305,7 @@ export default function EditSchedule({
           <CancelBtn onClick={onClose} label="Cancel" />
           <SubmitBtn
             label={
-              editScheduleMutation.isPending
-                ? 'Adding...'
-                : editingSchedule
-                ? 'Save Changes'
-                : 'Add Schedule'
+              editScheduleMutation.isPending ? 'Saving...' : 'Save Changes'
             }
             disabled={editScheduleMutation.isPending}
           />
