@@ -1,8 +1,8 @@
-import { useContext, useRef, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { EditScheduleContext } from './edit-schedule-context';
 
 import ScheduledWorkersList from './ScheduledWorkersList';
-import WorkerList from '@/pages/Scheduling/EditScheduleModal/WorkerList';
+import UnscheduledWorkerList from '@/pages/Scheduling/EditScheduleModal/UnscheduledWorkerList';
 import Input from '@/components/Inputs/LabeledInput';
 import calcShiftDuration from '@/utilities/calculateShiftDuration';
 import RemoveShiftBtn from '@/pages/Scheduling/RemoveShiftBtn';
@@ -30,7 +30,7 @@ export default function ScheduleForm() {
 
   const handleRemoveShift = () => {};
 
-  if (!formData || !shifts || formData.shifts.length === 0) {
+  if (!formData || !shifts || formData.shifts?.length === 0) {
     return <p className="text-gray-500">No shifts to display.</p>;
   }
 
@@ -118,7 +118,7 @@ export default function ScheduleForm() {
             />
             <RemoveShiftBtn onClick={handleRemoveShift} />
           </div>
-          <WorkerList
+          <UnscheduledWorkerList
             shiftId={shift.id}
             index={index}
             addWorkersId={addWorkersId}
