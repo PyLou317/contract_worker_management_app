@@ -118,16 +118,20 @@ export default function ScheduleForm() {
             />
             <RemoveShiftBtn onClick={handleRemoveShift} />
           </div>
-          <UnscheduledWorkerList
-            shiftId={shift.id}
-            index={index}
-            addWorkersId={addWorkersId}
-          />
-          <ScheduledWorkersList
-            shiftId={shift.id}
-            index={index}
-            scheduledWorkersId={scheduledWorkersId}
-          />
+          {addWorkersId === shift.id && (
+            <UnscheduledWorkerList
+              shiftId={shift.id}
+              index={index}
+              addWorkersId={addWorkersId}
+            />
+          )}
+          {scheduledWorkersId === shift.id && (
+            <ScheduledWorkersList
+              shiftId={shift.id}
+              index={index}
+              scheduledWorkersId={scheduledWorkersId}
+            />
+          )}
         </div>
       ))}
     </div>

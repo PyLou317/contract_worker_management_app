@@ -142,9 +142,19 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
 
   return (
     <>
-      {scheduledWorkersId === shiftId && (
-        <>
-          <div className="flex justify-between align-center items-center mt-4 mb-2">
+      {showSuccess && (
+        <div
+          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md relative my-4"
+          role="alert"
+        >
+          <span className="block sm:inline">
+            {messageSentCount} Workers notified successfully!
+          </span>
+        </div>
+      )}
+
+      <div className="mt-4">
+        <div className="flex justify-between align-center items-center mb-2">
             <Search onSearch={handleSearch} searchTerm={searchTerm} />
             <button
               className="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-white font-medium cursor-pointer"

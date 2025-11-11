@@ -121,9 +121,8 @@ export default function UnscheduledWorkerList({ shiftId, addWorkersId }) {
     );
   }
 
+  console.log('Workers', workers);
   return (
-    <>
-      {addWorkersId === shiftId && (
         <>
           <div className="mt-4">
             <Search onSearch={handleSearch} searchTerm={searchTerm} />
