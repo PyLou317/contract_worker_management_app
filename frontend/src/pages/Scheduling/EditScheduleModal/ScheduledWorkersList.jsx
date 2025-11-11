@@ -5,6 +5,8 @@ import { useSendSMSMutation } from '@/hooks/sendSMSMutation';
 
 import '@/utilities/toolTipStyles.css';
 
+import starRating from '@/utilities/starRatingConfig';
+import Pagination from '@/components/Pagination';
 import Search from '@/components/Search';
 import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
 import LoadingSpinner from '@/components/Loader';
