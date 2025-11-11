@@ -116,6 +116,20 @@ export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
     setOpenSMSModal(false);
   };
 
+  const handleSelectAllWorkers = (event) => {
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      workers.forEach((worker) => {
+        handleWorkerCheck(shiftIndex, worker.id, isChecked);
+      });
+    } else {
+      workers.forEach((worker) => {
+        handleWorkerCheck(shiftIndex, worker.id, isChecked);
+      });
+    }
+  };
+
   if (isFetching || isPending) {
     return (
       <div className="flex justify-center items-center h-[100px] my-8">
