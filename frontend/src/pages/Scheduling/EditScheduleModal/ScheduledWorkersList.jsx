@@ -132,7 +132,7 @@ export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
 
   if (isFetching || isPending) {
     return (
-      <div className="flex justify-center items-center h-[100px] my-8">
+      <div className="flex justify-center items-center h-[400px]">
         <LoadingSpinner size="10" />
       </div>
     );
