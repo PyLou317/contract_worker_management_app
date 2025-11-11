@@ -2,6 +2,8 @@ import { useState, useContext, useEffect } from 'react';
 import { Rating } from 'react-simple-star-rating';
 import { EditScheduleContext } from './edit-schedule-context';
 import { useSendSMSMutation } from '@/hooks/sendSMSMutation';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/utilities/apiClient';
 
 import '@/utilities/toolTipStyles.css';
 
