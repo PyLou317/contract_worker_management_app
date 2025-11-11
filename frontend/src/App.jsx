@@ -12,7 +12,6 @@ const queryClient = new QueryClient();
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isActive, setIsActive] = useState('Dashboard');
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -22,10 +21,6 @@ function App() {
     }
   }, []);
 
-  const handleSideLinkClick = (name) => {
-    setIsActive(name);
-  };
-
   if (isLoggedIn === false) {
     return <Login />;
   } else {
@@ -33,8 +28,6 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className="flex w-full min-h-screen bg-gray-100/75">
           <SideNavBar
-            activeLink={isActive}
-            onLinkClick={handleSideLinkClick}
             showModal={showModal}
             setShowModal={setShowModal}
             onLogoutClick={() => {
