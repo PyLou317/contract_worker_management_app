@@ -12,7 +12,7 @@ import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
 import LoadingSpinner from '@/components/Loader';
 import SMSNotificationModal from '@/pages/Scheduling/EditScheduleModal/SendSMSNotificationModal';
 
-export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
+export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
   const [ordering, setOrdering] = useState('');
   const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
   const [page, setPage] = useState(1);
@@ -94,10 +94,9 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
 
   const sendSMS = (e) => {
     e.preventDefault();
-
     const messagesToSend = [];
 
-    targetShiftWorkers.forEach((element) => {
+    workers.forEach((element) => {
       const workerName = `${element.first_name} ${element.last_name}`;
       const message_body = `Hi ${workerName}, a new work schedule has been sent to your email.`;
       const phone_number = element.phone_number;
@@ -206,8 +205,8 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
-                {displayWorkers && displayWorkers.length > 0 ? (
-                  displayWorkers.map((worker, index) => (
+              {workers && workers.length > 0 ? (
+                workers.map((worker) => (
                     <tr
                       key={worker.id}
                       className="border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200"
@@ -301,7 +300,7 @@ export default function ScheduledWorkersList({ shiftId, scheduledWorkersId }) {
       <SMSNotificationModal
         show={openSMSModal}
         onClose={handleOpenSendSMSModal}
-        workerCount={targetShiftWorkers.length}
+          workerCount={workers.length}
         sendSMS={sendSMS}
       />
     </>
