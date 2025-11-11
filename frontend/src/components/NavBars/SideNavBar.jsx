@@ -8,13 +8,7 @@ import Modal from '@/components/Modals/Modal';
 import LogoutModal from '@/components/Modals/Logout';
 import SidebarToggleBtn from './ToggleSidebarBtn';
 
-export default function SideNavBar({
-  activeLink,
-  onLinkClick,
-  onLogoutClick,
-  showModal,
-  setShowModal,
-}) {
+export default function SideNavBar({ onLogoutClick, showModal, setShowModal }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -50,20 +44,24 @@ export default function SideNavBar({
         </div>
         <ul className="w-full flex-1">
           {mainItems.map((item, index) => (
-            <NavLink to={item.path} end>
-              <li
-                key={index}
-                className={`flex my-2 p-4 hover:bg-gray-700 gap-4 ${
-                  activeLink === item.name ? 'bg-gray-700' : 'hover:bg-gray-700'
-                } cursor-pointer rounded-lg`}
-                onClick={() => onLinkClick(item.name)}
-              >
+            <NavLink
+              to={item.path}
+              end
+              className={({ isActive }) =>
+                `w-full block my-2 p-4 rounded-lg ${
+                  isActive ? 'bg-gray-700' : 'hover:bg-gray-700'
+                }`
+              }
+            >
+              <li key={index}>
                 <span
-                  className={`${
-                    activeLink === item.name
-                      ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
-                      : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
-                  }`}
+                  className={({ isActive }) =>
+                    `${
+                      isActive
+                        ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
+                        : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
+                    }`
+                  }
                 >
                   {item.icon}{' '}
                 </span>
@@ -77,9 +75,11 @@ export default function SideNavBar({
           {settingItems.map((item, index) => (
             <li
               key={item.name}
-              className={`flex my-2 p-4 gap-4 ${
-                activeLink === item.name ? 'bg-gray-700' : 'hover:bg-gray-700'
-              } cursor-pointer rounded-lg`}
+              className={({ isActive }) =>
+                `flex my-2 p-4 gap-4 ${
+                  isActive ? 'bg-gray-700' : 'hover:bg-gray-700'
+                } cursor-pointer rounded-lg`
+              }
               onClick={() => {
                 onLinkClick(item.name);
                 {
@@ -92,11 +92,13 @@ export default function SideNavBar({
               }}
             >
               <span
-                className={`${
-                  activeLink === item.name
-                    ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
-                    : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
-                }`}
+                className={({ isActive }) =>
+                  `${
+                    isActive === item.name
+                      ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
+                      : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
+                  }`
+                }
               >
                 {item.icon}
               </span>
