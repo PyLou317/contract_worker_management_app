@@ -246,17 +246,14 @@ export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
                       >
                         {hoveredWorkerId === worker.id && (
                           <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
-                            {worker.rating
-                              ? worker.rating.average_rating
-                              : 'N/A'}{' '}
+                          {worker.rating ? worker.rating.average_rating : 'N/A'}{' '}
                             out of 5
                           </div>
                         )}
                         <Rating
                           initialValue={
-                            worker.rating !== null &&
-                            worker.rating?.average_rating
-                              ? worker.rating?.average_rating
+                          worker.rating !== null && worker.rating.average_rating
+                            ? worker.rating.average_rating
                               : 0
                           }
                           {...starRating}
@@ -298,14 +295,21 @@ export default function ScheduledWorkerList({ shiftId, scheduledWorkersId }) {
               </tbody>
             </table>
           </div>
-        </>
-      )}
       <SMSNotificationModal
         show={openSMSModal}
         onClose={handleOpenSendSMSModal}
           workerCount={workers.length}
         sendSMS={sendSMS}
       />
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={data.count}
+          nextUrl={nextUrl}
+          prevUrl={prevUrl}
+          updateUrl={updateUrl}
+        />
+      </div>
     </>
   );
 }
