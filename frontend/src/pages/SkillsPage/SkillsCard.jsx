@@ -9,7 +9,7 @@ export default function SkillsCard({ skill, handleEditSkillClick }) {
 
   return (
     <div
-      className="flex items-center mb-2 p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:scale-101 transition-transform duration-200"
+      className="flex items-center mb-2 p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:scale-101 transition-transform duration-200 cursor-pointer"
       onClick={(event) => handleEditSkillClick(event)}
     >
       <div
