@@ -1,13 +1,14 @@
 import { Outlet, useParams } from 'react-router';
+import PageContainer from '@/components/PageContainer';
 
 import ScheduleListComponent from '@/pages/Scheduling/ViewSchedules/ScheduleListComponent';
 
 export default function SchedulingPage() {
-    const { scheduleId } = useParams();
+  const { scheduleId } = useParams();
 
   return (
-    <div className="container mx-auto p-8 bg-white shadow-md rounded-2xl">
+    <PageContainer>
       {scheduleId ? <Outlet /> : <ScheduleListComponent />}
-    </div>
+    </PageContainer>
   );
 }
