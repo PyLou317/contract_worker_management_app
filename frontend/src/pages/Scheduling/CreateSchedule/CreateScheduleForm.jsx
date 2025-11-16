@@ -3,6 +3,7 @@ import { ScheduleContext } from '@/pages/Scheduling/schedule-page-context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import addSchedule from '@/hooks/addSchedule';
 
+import PageContainer from '@/components/PageContainer';
 import SelectInput from '@/components/Inputs/FloatingSelectInput';
 import Input from '@/components/Inputs/LabeledInput';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
@@ -166,9 +167,8 @@ export default function CreateScheduleForm() {
           <span className="block sm:inline">{validationError}</span>
         </div>
       )}
-      <div className="container mx-auto p-8 bg-white shadow-md rounded-2xl">
+      <PageContainer>
         <SectionHeader title="Create New Schedule" />
-        <div className="border-b border-gray-300"></div>
         <div className="mt-12">
           <form>
             <div className="flex flex-col px-4">
@@ -239,7 +239,7 @@ export default function CreateScheduleForm() {
             />
           </form>
         </div>
-      </div>
+      </PageContainer>
     </>
   );
 }
