@@ -2,9 +2,11 @@ import React from 'react';
 import { useState } from 'react';
 import { useSendSMSMutation } from '@/hooks/sendSMSMutation';
 
+import PageContainer from '@/components/PageContainer';
 import Input from '@/components/Inputs/LabeledInput';
 import sendData from '@/hooks/sendData';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
+import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
 
 export default function SendSMSMessage() {
   const [formData, setFormData] = useState({
@@ -39,58 +41,55 @@ export default function SendSMSMessage() {
     console.log(formData);
   };
 
-  const inputFieldClasses =
-    'mt-1 p-2 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500';
-  const inputLabelClasses = 'block text-sm font-medium text-gray-800';
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="w-2xl grid grid-cols-2 gap-4">
-        <Input
-          label="To:"
-          type="text"
-          id="receipient_name"
-          name="receipient_name"
-          value={formData.receipient_name}
-          onChange={handleInputChange}
-          className={inputFieldClasses}
-          labelClasses={inputLabelClasses}
-        />
-        <Input
-          label="Phone Number:"
-          type="text"
-          id="to_number"
-          name="to_number"
-          value={formData.to_number}
-          onChange={handleInputChange}
-          className={inputFieldClasses}
-          labelClasses={inputLabelClasses}
-        />
-      </div>
+    <PageContainer>
+      <SectionHeader title="Send Message" />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4 mt-10">
+          <Input
+            label="Receipient Name"
+            type="text"
+            id="receipient_name"
+            name="receipient_name"
+            placeholder="To:"
+            value={formData.receipient_name}
+            onChange={handleInputChange}
+          />
+          <Input
+            label="Phone Number"
+            type="text"
+            id="to_number"
+            name="to_number"
+            placeholder="Phone Number"
+            value={formData.to_number}
+            onChange={handleInputChange}
+          />
+        </div>
 
-      <div className="w-2xl mt-3">
-        <div>
-          <label
-            htmlFor="message_body"
-            className="block text-sm font-medium text-gray-800"
-          >
-            Message:
-          </label>
+        <div className="relative mt-12 mb-8">
           <textarea
             id="message_body"
             name="message_body"
-            rows="3"
+            placeholder="Message"
+            rows={2}
             value={formData.message_body}
             onChange={handleInputChange}
-            className={inputFieldClasses}
-            labelClasses={inputLabelClasses}
-          />
+            className="peer p-2 block w-full placeholder-transparent bg-white rounded-t-lg caret-gray-800 text-gray-800 border-b-2 border-b-gray-600 focus:border-yellow-500 focus:outline-none mt-8"
+          ></textarea>
+          <label
+            htmlFor="message_body"
+            className="peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-placeholder-shown:left-2 absolute text-gray-400 left-0 -top-5.5 text-sm transition-all cursor-text"
+          >
+            Message
+          </label>
         </div>
-      </div>
-      <SubmitBtn
-        label={isPending ? 'Sending...' : 'Send SMS'}
-        disabled={isPending}
-      />
-      {error && <p className="text-red-500 mt-2">Error: {error.message}</p>}
-    </form>
+
+        <SubmitBtn
+          label={isPending ? 'Sending...' : 'Send SMS'}
+          disabled={isPending}
+        />
+        {error && <p className="text-red-500 mt-2">Error: {error.message}</p>}
+      </form>
+    </PageContainer>
   );
 }
