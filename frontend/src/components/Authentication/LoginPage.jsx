@@ -36,7 +36,7 @@ export default function Login() {
         console.log('Login successful! Tokens saved:', data.access);
         
       // Navigation to the next page
-      window.location.href = '/dashboard';
+      window.location.href = '/';
     } catch (err) {
       console.error(err);
       setError(err.message);
