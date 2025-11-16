@@ -136,7 +136,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             onChange={handleInputChange}
             required
             options={agencyNames}
-          ></SelectInput>
+          />
         )}
         <div className="mt-6 flex justify-end gap-3">
           <CancelBtn
