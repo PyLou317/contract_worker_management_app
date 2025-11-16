@@ -1,7 +1,7 @@
 const mainItems = [
   {
     name: 'Dashboard',
-    path: '/dashboard',
+    path: '/',
     icon: <i className="fa-solid fa-chart-line"></i>,
   },
   {
@@ -11,7 +11,7 @@ const mainItems = [
   },
   {
     name: 'Scheduling',
-    path: '/scheduling',
+    path: '/scheduling/create-schedule',
     icon: <i className="fa-solid fa-calendar"></i>,
   },
   {
@@ -21,7 +21,7 @@ const mainItems = [
   },
   {
     name: 'Messaging',
-    path: '/messaging',
+    path: '/messaging/request-workers',
     icon: <i className="fa-solid fa-message"></i>,
   },
 ];
