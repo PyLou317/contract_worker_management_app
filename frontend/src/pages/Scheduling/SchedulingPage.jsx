@@ -4,10 +4,9 @@ import { useState } from 'react';
 import { ScheduleContext } from './schedule-page-context';
 import { apiFetch } from '@/utilities/apiClient';
 
-import SchedulingPage from './ViewSchedules/SchedulingPage';
-import CalendarComponent from './Calendar/Calendar';
-import CreateScheduleComponent from '@/pages/Scheduling/CreateSchedule/CreateScheduleForm';
-import NavTabs from './SchedulePageTopNavMenu';
+import tabItems from '@/pages/scheduling/tab-menu-items';
+import NavTabs from '@/components/NavBars/PageTopNavMenu';
+import { Outlet } from 'react-router';
 
 export default function Schedule() {
   const [isActive, setIsActive] = useState('Create Schedule');
@@ -86,10 +85,8 @@ export default function Schedule() {
 
   return (
     <ScheduleContext.Provider value={ctxValue}>
-      <NavTabs />
-      {isActive === 'Create Schedule' && <CreateScheduleComponent />}
-      {isActive === 'View Schedules' && <SchedulingPage />}
-      {isActive === 'Calendar' && <CalendarComponent />}
+      <NavTabs tabItems={tabItems} />
+      <Outlet />
     </ScheduleContext.Provider>
   );
 }
