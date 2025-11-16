@@ -3,6 +3,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import PageContainer from '@/components/PageContainer';
 
 import { useContext } from 'react';
 import { ScheduleContext } from '../schedule-page-context';
@@ -62,7 +63,7 @@ export default function Calendar() {
   };
 
   return (
-    <div className="container mx-auto shadow-lg rounded-2xl p-6">
+    <PageContainer>
       <FullCalendar
         plugins={[
           dayGridPlugin,
@@ -84,7 +85,7 @@ export default function Calendar() {
         select={handleDateSelect}
         schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
       />
-    </div>
+    </PageContainer>
   );
 }
 
