@@ -53,58 +53,73 @@ export default function SideNavBar({ onLogoutClick, showModal, setShowModal }) {
                 }`
               }
             >
-              <li key={index}>
-                <span
-                  className={({ isActive }) =>
-                    `${
+              {({ isActive }) => (
+                <li key={index} className="flex items-center space-x-3">
+                  <span
+                    className={
                       isActive
                         ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
                         : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
-                    }`
-                  }
-                >
-                  {item.icon}{' '}
-                </span>
-                {sidebarOpen && <span>{item.name}</span>}
-              </li>
+                    }
+                  >
+                    {item.icon}{' '}
+                  </span>
+                  {sidebarOpen && <span>{item.name}</span>}
+                </li>
+              )}
             </NavLink>
           ))}
         </ul>
 
+        {/* // --- SETTING ITEMS --- */}
         <ul className="w-full mt-auto">
-          {settingItems.map((item, index) => (
-            <li
-              key={item.name}
-              className={({ isActive }) =>
-                `flex my-2 p-4 gap-4 ${
-                  isActive ? 'bg-gray-700' : 'hover:bg-gray-700'
-                } cursor-pointer rounded-lg`
-              }
-              onClick={() => {
-                onLinkClick(item.name);
-                {
-                  if (item.name === 'Logout') {
-                    {
-                      onLogoutClick();
-                    }
-                  }
-                }
-              }}
-            >
-              <span
+          {settingItems.map((item, index) => {
+
+            if (item.name === 'Logout') {
+
+              return (
+                <li
+                  key={index}
+                  className={`w-full block my-2 p-4 rounded-lg hover:bg-gray-700 cursor-pointer items-center space-x-3`}
+                  onClick={onLogoutClick}
+                >
+                  {/* Use standard inactive text styling */}
+                  <span className="text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent">
+                    {item.icon}
+                  </span>
+                  {sidebarOpen && <span>{item.name}</span>}
+                </li>
+              );
+            }
+
+            return (
+              <NavLink
+                key={index}
+                to={item.path}
+                end
                 className={({ isActive }) =>
-                  `${
-                    isActive === item.name
-                      ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
-                      : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
+                  `w-full block my-2 p-4 rounded-lg ${
+                    isActive ? 'bg-gray-700' : 'hover:bg-gray-700'
                   }`
                 }
               >
-                {item.icon}
-              </span>
-              {sidebarOpen && <span>{item.name}</span>}
-            </li>
-          ))}
+                {({ isActive }) => (
+                  <li className="flex items-center space-x-3">
+                    <span
+                      className={
+                        isActive
+                          ? 'bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent'
+                          : 'text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'
+                      }
+                    >
+                      {item.icon}
+                    </span>
+                    {sidebarOpen && <span>{item.name}</span>}
+                  </li>
+                )}
+              </NavLink>
+            );
+          })}
         </ul>
       </nav>
       <Modal
