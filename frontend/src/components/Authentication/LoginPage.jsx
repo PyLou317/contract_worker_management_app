@@ -26,15 +26,17 @@ export default function Login() {
       if (!response.ok) {
         // If the server response is not ok, throw an error with the status
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed. Please check your credentials.');
+        throw new Error(
+          errorData.detail || 'Login failed. Please check your credentials.'
+        );
       }
 
       const data = await response.json();
       // Store the access token in localStorage for later use
       localStorage.setItem('authToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
-        console.log('Login successful! Tokens saved:', data.access);
-        
+      console.log('Login successful! Tokens saved:', data.access);
+
       // Navigation to the next page
       window.location.href = '/';
     } catch (err) {
@@ -48,14 +50,26 @@ export default function Login() {
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
-        <Brand className={'text-4xl text-white font-bold'} />
-        <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-xl mt-16">
+        <h1 className="text-3xl font-bold text-yellow-100">
+          <span>
+            <i className="fa-solid fa-hexagon"></i>
+          </span>{' '}
+          <span>the HIVE</span>
+        </h1>
+        <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-xl mt-12">
           <h2 className="text-3xl font-bold text-center text-white">Login</h2>
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             {/* Display an error message if one exists */}
-            {error && <div className="p-3 text-sm text-red-100 bg-red-600 rounded-md">{error}</div>}
+            {error && (
+              <div className="p-3 text-sm text-red-100 bg-red-600 rounded-md">
+                {error}
+              </div>
+            )}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Email
               </label>
               <input
@@ -71,7 +85,10 @@ export default function Login() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-200">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-200"
+              >
                 Password
               </label>
               <input
@@ -94,12 +111,18 @@ export default function Login() {
                   type="checkbox"
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="remember-me" className="block ml-2 text-sm text-gray-200">
+                <label
+                  htmlFor="remember-me"
+                  className="block ml-2 text-sm text-gray-200"
+                >
                   Remember me
                 </label>
               </div>
               <div className="text-sm">
-                <a href="#" className="font-medium text-blue-400 hover:text-blue-300">
+                <a
+                  href="#"
+                  className="font-medium text-blue-400 hover:text-blue-300"
+                >
                   Forgot your password?
                 </a>
               </div>
