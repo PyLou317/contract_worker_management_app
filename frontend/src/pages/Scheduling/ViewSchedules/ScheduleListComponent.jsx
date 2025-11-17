@@ -67,7 +67,6 @@ export default function ViewCreatedSchedules({}) {
   return (
     <>
       <SectionHeader title="Created Schedules" />
-      <div className="border-b border-gray-300 mb-6"></div>
       <ScheduleList
         title="Current Week Schedules"
         schedules={currentSchedules}
