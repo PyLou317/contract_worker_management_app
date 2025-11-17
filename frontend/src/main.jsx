@@ -46,6 +46,7 @@ createRoot(document.getElementById('root')).render(
             </Route>
             <Route path="messaging" element={<MessagingPage />}>
               <Route path="request-workers" element={<RequestWorkers />} />
+              <Route path="send-sms" element={<SendMessage />} />
             </Route>
             <Route path="settings" element={<SettingsPage />}>
               <Route path="account" element={<AccountPage />} />
