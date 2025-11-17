@@ -33,12 +33,18 @@ export default function SendSMSMessage() {
 
     const dataToSend = {
       ...formData,
-      to_number: cleanedNumber.startsWith('+')
+      to_number: cleanedNumber.startsWith('+1')
         ? cleanedNumber
-        : '+' + cleanedNumber,
+        : '+1' + cleanedNumber,
     };
     sendSMSMutation(dataToSend);
     console.log(formData);
+
+    setFormData({
+      receipient_name: '',
+      to_number: '',
+      message_body: '',
+    });
   };
 
   return (
