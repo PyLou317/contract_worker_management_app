@@ -235,7 +235,7 @@ export default function CreateScheduleForm() {
               type="submit"
               label="Create Schedule"
               handleSubmit={handleSumbit}
-              className="px-4 py-2 mt-8 w-full bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors"
+              className="px-4 py-2 mt-8 w-full bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors cursor-pointer"
             />
           </form>
         </div>
