@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function SearchBar({ onSearch, searchTerm }) {
+export default function SearchBar({ onSearch, searchTerm, extraClasses }) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
   const handleChange = (event) => {
@@ -25,13 +25,13 @@ export default function SearchBar({ onSearch, searchTerm }) {
   return (
     <div
       onSubmit={handleSubmit}
-      className="relative items-center align-middle flex gap-1 mb-2"
+      className={`relative items-center align-middle flex gap-1`}
     >
       <input
         id="search"
         type="text"
         placeholder="Search..."
-        className="w-full md:w-100 p-2 border border-gray-300 rounded-md focus:outline-none text-black"
+        className={`w-full md:w-100 p-2 border border-gray-300 rounded-md focus:outline-none text-black ${extraClasses}`}
         value={localSearchTerm}
         onChange={handleChange}
         autoFocus={true}
