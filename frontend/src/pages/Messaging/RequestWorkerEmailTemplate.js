@@ -1,4 +1,9 @@
-export default function WORKER_REQUEST_TEMPLATE({ agencyName }) {
+export default function WORKER_REQUEST_TEMPLATE({
+  agencyName,
+  userName,
+  userTitle,
+  userEmail,
+}) {
   return `Dear ${agencyName},
     
     We are submitting an urgent request for staff to cover shifts at our facility.
@@ -28,7 +33,7 @@ export default function WORKER_REQUEST_TEMPLATE({ agencyName }) {
     
     Sincerely,
     
-    [Your Name]
-    [Your Title/Role]
-    [Your Direct Phone Number]`;
+    ${userName}
+    ${userTitle}
+    ${userEmail}`;
 }
