@@ -5,7 +5,7 @@ import { apiFetch } from '@/utilities/apiClient';
 
 import EditSkillModal from './EditSkillModal';
 import SkillCard from './SkillsCard';
-import ActionMenu from './ActionMenu';
+import ActionMenu from '../../components/ActionMenu';
 import LoadingSpinner from '@/components/Loader';
 
 export default function SkillsList() {
