@@ -7,7 +7,6 @@ import Input from '@/components/Inputs/LabeledInput';
 import SelectInput from '@/components/Inputs/FloatingSelectInput';
 import CancelBtn from '@/components/Buttons/CancelBtn';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
-import ColorSelector from './ColorSelector';
 import skillColorClasses from './SkillColorClasses';
 
 const colors = Object.keys(skillColorClasses);
