@@ -6,6 +6,7 @@ import { Rating } from 'react-simple-star-rating';
 
 import '@/components/StarRatingStyles.css';
 import '@/utilities/toolTipStyles.css';
+
 import Pagination from '@/components/Pagination';
 import AddWorkerModal from './AddWorkerModal/AddWorkerModal';
 import EditWorkerModal from './EditWorkerModal/EditWorkerModal';
