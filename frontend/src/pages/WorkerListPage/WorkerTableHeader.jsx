@@ -6,7 +6,7 @@ export default function WorkerTableHeader({
   searchTerm,
 }) {
   return (
-    <div className="flex justify-between items-center gap-3">
+    <div className="flex justify-between items-center gap-3 mb-3">
       <SearchBar onSearch={handleSearch} searchTerm={searchTerm} />
       <button
         onClick={handleOpenAddWorkerModal}
