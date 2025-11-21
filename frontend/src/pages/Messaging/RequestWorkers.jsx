@@ -5,10 +5,10 @@ import { NavLink } from 'react-router';
 import PageContainer from '@/components/PageContainer';
 import Input from '@/components/Inputs/LabeledInput';
 import Select from '@/components/Inputs/FloatingSelectInput';
-import sendData from '@/hooks/sendData';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
 
+import capitalizeFirstLetter from '@/utilities/capitalizeFirstLetter'
 import { apiFetch } from '@/utilities/apiClient';
 import { useQuery } from '@tanstack/react-query';
 
@@ -20,8 +20,6 @@ const INITIAL_AGENCY_PLACEHOLDER = '[Agency Name/Contact]';
 
 export default function RequestWorkers() {
   const successRef = useRef();
-  const containerRef = useRef(null);
-
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     agency_name: '',
@@ -31,6 +29,37 @@ export default function RequestWorkers() {
       agencyName: INITIAL_AGENCY_PLACEHOLDER,
     }),
   });
+
+  const {
+    isPending: userDataIsPending,
+    error: userDataError,
+    data: userData,
+    isFetching: userDataIsFetching,
+  } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => apiFetch(`/user`),
+    keepPreviousData: true,
+  });
+
+  useEffect(() => {
+    if (userData) {
+      const userName = capitalizeFirstLetter(userData.username);
+      const userRole = capitalizeFirstLetter(userData.role);
+      const userEmail = userData.email;
+
+      setFormData({
+        agency_name: '',
+        to_email: '',
+        subject_line: SUBJECT_LINE({ TodaysDate }),
+        message_body: WORKER_REQUEST_TEMPLATE({
+          agencyName: INITIAL_AGENCY_PLACEHOLDER,
+          userName: userName || '',
+          userTitle: userRole || '',
+          userEmail: userEmail || '',
+        }),
+      });
+    }
+  }, [userData]);
 
   const {
     isPending: agenciesIsPending,
@@ -117,6 +146,9 @@ export default function RequestWorkers() {
       subject_line: SUBJECT_LINE({ TodaysDate }),
       message_body: WORKER_REQUEST_TEMPLATE({
         agencyName: INITIAL_AGENCY_PLACEHOLDER,
+        userName: userName,
+        userTitle: userRole,
+        userEmail: userEmail,
       }),
     });
   };
