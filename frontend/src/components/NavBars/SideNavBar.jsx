@@ -83,7 +83,6 @@ export default function SideNavBar({ onLogoutClick, showModal, setShowModal }) {
                   className={`w-full block my-2 p-4 rounded-lg hover:bg-gray-700 cursor-pointer items-center space-x-3`}
                   onClick={onLogoutClick}
                 >
-                  {/* Use standard inactive text styling */}
                   <span className="text-white group-hover:bg-gradient-to-b group-hover:from-blue-300 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent">
                     {item.icon}
                   </span>
