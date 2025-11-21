@@ -70,12 +70,14 @@ export default function AddSkillForm() {
       )}
       <div className="container mx-auto p-8 bg-white shadow-xl rounded-2xl lg:w-3/4 w-full mb-16 hover:scale-101">
         <div
-          className="flex justify-between cursor-pointer hover:text-yellow-400"
+          className={`flex justify-between items-center cursor-pointer hover:text-yellow-400 ${
+            toggleAddSkill ? 'mb-4' : null
+          }`}
           onClick={handleToggleAddSkill}
         >
           <SectionHeader
             title="Add New Skill"
-            addClasses="hover:text-yellow-400"
+            addClasses={`hover:text-yellow-400`}
           />
           {toggleAddSkill ? (
             <svg
