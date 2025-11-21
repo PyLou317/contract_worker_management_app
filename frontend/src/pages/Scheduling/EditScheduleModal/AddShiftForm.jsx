@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { ScheduleContext } from '../schedule-page-context';
 import { EditScheduleContext } from '@/pages/Scheduling/EditScheduleModal/edit-schedule-context';
 
 import Input from '@/components/Inputs/LabeledInput';
