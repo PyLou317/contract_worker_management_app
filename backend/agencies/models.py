@@ -1,14 +1,10 @@
 from django.db import models
 
-# AGENCY_NAME = [
-#     ('aerotek', 'Aerotek'),
-#     ('randstad', 'Randstad'),
-#     ('employment_express', 'Employment Express')
-# ]
-
 # Create your models here.
 class StaffingAgency(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    contact_first_name = models.CharField(max_length=150, null=True, blank=True)
+    contact_last_name = models.CharField(max_length=150, null=True, blank=True)
     contact_email = models.EmailField(max_length=255, unique=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
