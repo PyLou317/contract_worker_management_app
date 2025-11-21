@@ -38,16 +38,13 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // This effect runs when isPending or isFetching changes
     if (!workerIsPending && !workerIsFetching) {
-      // Data fetching is complete. Now, start the timer for the minimum spinner duration.
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 500); // Minimum display time of 500ms
+      }, 500);
 
       return () => clearTimeout(timer);
     } else {
-      // Data is pending or fetching, so set isLoading to true
       setIsLoading(true);
     }
   }, [workerIsPending, workerIsFetching]);
