@@ -229,8 +229,6 @@ export default function EditSchedule({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log('Submitted Data:', formData);
-
     const payload = {
       formData: formData,
       endpoint: `/schedules/${Id}/`,
