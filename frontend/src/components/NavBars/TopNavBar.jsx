@@ -1,3 +1,11 @@
+import { useEffect, useState } from 'react';
+import { apiFetch } from '@/utilities/apiClient';
+import { useQuery } from '@tanstack/react-query';
+
+import capitalizeFirstLetter from '@/utilities/capitalizeFirstLetter';
+import LoadingSpinner from '@/components/Loader';
+import SearchBar from '@/components/Search';
+
 export default function TopNavBar() {
   const [userName, setUserName] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
