@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { useSendSMSMutation } from '@/hooks/sendSMSMutation';
 import { NavLink } from 'react-router';
+import { AppContext } from '@/app-context';
 
 import PageContainer from '@/components/PageContainer';
 import Input from '@/components/Inputs/LabeledInput';
@@ -8,7 +9,7 @@ import Select from '@/components/Inputs/FloatingSelectInput';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
 import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
 
-import capitalizeFirstLetter from '@/utilities/capitalizeFirstLetter'
+import capitalizeFirstLetter from '@/utilities/capitalizeFirstLetter';
 import { apiFetch } from '@/utilities/apiClient';
 import { useQuery } from '@tanstack/react-query';
 
@@ -30,16 +31,8 @@ export default function RequestWorkers() {
     }),
   });
 
-  const {
-    isPending: userDataIsPending,
-    error: userDataError,
-    data: userData,
-    isFetching: userDataIsFetching,
-  } = useQuery({
-    queryKey: ['user'],
-    queryFn: () => apiFetch(`/user`),
-    keepPreviousData: true,
-  });
+  const { userData, userDataIsPending, userDataIsFetching, userDataError } =
+    useContext(AppContext);
 
   useEffect(() => {
     if (userData) {
