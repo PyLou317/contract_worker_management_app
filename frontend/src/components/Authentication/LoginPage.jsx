@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import Brand from '../Brand';
+import Input from '@/components/Inputs/LabeledInput';
+import SubmitBtn from '@/components/Buttons/SubmitBtn';
 
-// A simple login component to authenticate and store a JWT token
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isPending, setIsPending] = useState(false);
 
-  // Function to handle form submission and log the user in
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -24,7 +23,6 @@ export default function Login() {
       });
 
       if (!response.ok) {
-        // If the server response is not ok, throw an error with the status
         const errorData = await response.json();
         throw new Error(
           errorData.detail || 'Login failed. Please check your credentials.'
@@ -32,12 +30,10 @@ export default function Login() {
       }
 
       const data = await response.json();
-      // Store the access token in localStorage for later use
       localStorage.setItem('authToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
       console.log('Login successful! Tokens saved:', data.access);
 
-      // Navigation to the next page
       window.location.href = '/';
     } catch (err) {
       console.error(err);
@@ -46,6 +42,9 @@ export default function Login() {
       setIsPending(false);
     }
   };
+
+  const extraClasses =
+    'text-gray-200 caret-gray-200 placeholder:text-gray-200 mt-10';
 
   return (
     <>
@@ -57,53 +56,40 @@ export default function Login() {
           <span>the HIVE</span>
         </h1>
         <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-xl mt-12">
-          <h2 className="text-3xl font-bold text-center text-white">Login</h2>
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            {/* Display an error message if one exists */}
+          <h2 className="text-3xl font-bold text-center text-gray-100">
+            Login
+          </h2>
+          <form className="mt-8 space-y-6">
             {error && (
               <div className="p-3 text-sm text-red-100 bg-red-600 rounded-md">
                 {error}
               </div>
             )}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-200"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="relative block w-full px-3 py-2 mt-1 text-white placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-200"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="relative block w-full px-3 py-2 mt-1 text-white placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-md appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-            <div className="flex items-center justify-between">
+            <Input
+              label="Email"
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={extraClasses}
+            />
+            <Input
+              label="Password"
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={extraClasses}
+            />
+            <div className="flex items-center justify-between mt-8">
               <div className="flex items-center">
                 <input
                   id="remember-me"
@@ -128,13 +114,13 @@ export default function Login() {
               </div>
             </div>
             <div>
-              <button
+              <SubmitBtn
+                label={isPending ? 'Logging In...' : 'Sign In'}
                 type="submit"
                 disabled={isPending}
-                className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-300 ease-in-out bg-blue-600 border border-transparent rounded-md group hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                {isPending ? 'Logging In...' : 'Sign In'}
-              </button>
+                extraClasses="w-full"
+                handleSubmit={handleSubmit}
+              ></SubmitBtn>
             </div>
           </form>
         </div>
