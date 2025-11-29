@@ -36,6 +36,10 @@ class CustomUserManager(BaseUserManager):
     
 # Create your models here.
 class User(AbstractUser):
+    first_name=models.CharField(max_length=150)
+    last_name=models.CharField(max_length=150)
+    phone_number=models.CharField(max_length=15, default='0000000000')
+    
     ROLES_CHOICES = (
         ('admin', 'Admin'),
         ('manager', 'Manager'),
