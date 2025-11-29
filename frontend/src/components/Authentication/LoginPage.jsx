@@ -44,7 +44,7 @@ export default function Login() {
   };
 
   const extraClasses =
-    'text-gray-200 caret-gray-200 placeholder:text-gray-200 mt-10';
+    'text-gray-200 caret-gray-200 placeholder:text-gray-200 mt-12';
 
   return (
     <>
@@ -59,7 +59,7 @@ export default function Login() {
           <h2 className="text-3xl font-bold text-center text-gray-100">
             Login
           </h2>
-          <form className="mt-8 space-y-6">
+          <form className="mt-18 space-y-6">
             {error && (
               <div className="p-3 text-sm text-red-100 bg-red-600 rounded-md">
                 {error}
@@ -89,7 +89,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className={extraClasses}
             />
-            <div className="flex items-center justify-between mt-8">
+            <div className="flex items-center justify-between mt-12">
               <div className="flex items-center">
                 <input
                   id="remember-me"
