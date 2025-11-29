@@ -19,6 +19,7 @@ import SettingsPage from '@/pages/Settings/SettingsPage.jsx';
 import AccountPage from '@/pages/Settings/Account/AccountPage.jsx';
 import AgenciesPage from '@/pages/Settings/Agencies/AgenciesPage.jsx';
 import ManagersPage from '@/pages/Settings/Managers/ManagersPage.jsx';
+import AreasPage from '@/pages/Settings/Areas/AreasPage.jsx';
 
 import './index.css';
 import App from './App.jsx';
@@ -52,6 +53,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="account" element={<AccountPage />} />
               <Route path="agencies" element={<AgenciesPage />} />
               <Route path="managers" element={<ManagersPage />} />
+              <Route path="areas" element={<AreasPage />} />
             </Route>
           </Route>
           <Route path="login" element={<LoginPage />} />
