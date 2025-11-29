@@ -10,3 +10,9 @@ class AgencyListViewAPI(generics.ListCreateAPIView):
     queryset = StaffingAgency.objects.all()
     serializer_class = StaffingAgencySerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class AgencyDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StaffingAgency.objects.all()
+    serializer_class = StaffingAgencySerializer
+    permission_classes = [permissions.IsAuthenticated]
