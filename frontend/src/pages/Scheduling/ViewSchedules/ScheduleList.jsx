@@ -131,7 +131,11 @@ export default function ScheduleList({
             </button>
           </div>
         </div>
-        {isOpen && (
+        <div
+          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+            isOpen ? 'max-h-[1000px]' : 'max-h-0'
+          }`}
+        >
           <table className="w-full table-auto border-collapse overflow-hidden">
             <thead className="bg-gray-100 text-gray-700 uppercase text-xs text-center leading-normal">
               <tr>
@@ -285,14 +289,8 @@ export default function ScheduleList({
               )}
             </tbody>
           </table>
-        )}
+        </div>
       </div>
-      {/* <EditScheduleModal
-        showEditScheduleModal={editingSchedule}
-        onClose={() => setEditingSchedule(false)}
-        Id={editingScheduleId}
-        editingSchedule={editingSchedule}
-      /> */}
     </>
   );
 }
