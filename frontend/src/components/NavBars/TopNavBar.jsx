@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import { apiFetch } from '@/utilities/apiClient';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState, useContext } from 'react';
+import { AppContext } from '@/app-context';
 
 import capitalizeFirstLetter from '@/utilities/capitalizeFirstLetter';
 import LoadingSpinner from '@/components/Loader';
@@ -10,20 +9,17 @@ export default function TopNavBar() {
   const [userName, setUserName] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const {
-    isPending: userDataIsPending,
-    error: userDataError,
-    data: userData,
-    isFetching: userDataIsFetching,
-  } = useQuery({
-    queryKey: ['user'],
-    queryFn: () => apiFetch(`/user`),
-    keepPreviousData: true,
-  });
+  const { userData, userDataIsPending, userDataIsFetching, userDataError } =
+    useContext(AppContext);
 
   useEffect(() => {
+    let tempUserName = '';
     if (userData) {
-      const tempUserName = capitalizeFirstLetter(userData.username);
+      if (userData.first_name) {
+        tempUserName = capitalizeFirstLetter(userData.first_name);
+      } else if (userData.userName) {
+        tempUserName = capitalizeFirstLetter(userData.username);
+      }
       setUserName(tempUserName);
     }
   }, [userData]);
@@ -43,7 +39,7 @@ export default function TopNavBar() {
   let content = '';
   if (isLoading) {
     content = <LoadingSpinner size="10" />;
-  } else if (userData && userData.username) {
+  } else if (userName.length > 0) {
     content = `Welcome, ${userName}!`;
   } else {
     content = `Welcome, Guest!`;
