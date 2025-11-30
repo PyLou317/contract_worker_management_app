@@ -1,21 +1,26 @@
+import userIcon from '@/Icons/UserIcon';
+import agencyIcon from '@/Icons/AgencyIcon';
 import calendarIcon from '@/Icons/CalendarIcon';
-import scheduleIcon from '@/Icons/ScheduleIcon';
-import scheduleListIcon from '@/Icons/ScheduleListIcon';
 
 const tabItems = [
   {
     name: 'Account',
     path: '/settings/account',
-    icon: scheduleIcon,
+    icon: userIcon,
   },
   {
     name: 'Agencies',
     path: '/settings/agencies',
-    icon: scheduleListIcon,
+    icon: agencyIcon,
   },
   {
     name: 'Managers',
     path: '/settings/managers',
+    icon: calendarIcon,
+  },
+  {
+    name: 'Divisions',
+    path: '/settings/areas',
     icon: calendarIcon,
   },
 ];
