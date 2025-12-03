@@ -6,7 +6,7 @@ import ColorSelector from './ColorSelector';
 import addSkill from '@/hooks/addSkill';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
 import getAcronym from '@/utilities/getAcronym';
-import SectionHeader from '../WorkerListPage/EditWorkerModal/SectionHeader';
+import SectionHeader from '@/components/SectionHeader';
 
 export default function AddSkillForm() {
   const [toggleAddSkill, setToggleAddSkill] = useState(false);
@@ -112,7 +112,11 @@ export default function AddSkillForm() {
           )}
         </div>
 
-        {toggleAddSkill && (
+        <div
+          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+            toggleAddSkill ? 'max-h-[1000px]' : 'max-h-0'
+          }`}
+        >
           <form onSubmit={handleSubmit} className="mt-4">
             <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4">
               <Input
@@ -165,7 +169,7 @@ export default function AddSkillForm() {
               className="px-4 py-2 mt-8 w-full bg-yellow-400 font-medium rounded-lg hover:bg-yellow-300 transition-colors"
             />
           </form>
-        )}
+        </div>
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import Section from './Section';
 import SelectInput from '@/components/Inputs/FloatingSelectInput';
-import SectionHeader from './SectionHeader';
+import SectionHeader from '../../../../components/SectionHeader';
 
 export default function WorkerDetails({
   formData,

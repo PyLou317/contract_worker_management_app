@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import WorkerListTable from './WorkerListTable';
 import Header from './WorkerTableHeader';
-import SectionHeader from './EditWorkerModal/SectionHeader';
+import SectionHeader from '../../../components/SectionHeader';
 
 export default function Workers() {
   const searchParams = new URLSearchParams(window.location.search);

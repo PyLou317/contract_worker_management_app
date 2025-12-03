@@ -1,7 +1,7 @@
 import Section from './Section';
 import Input from '@/components/Inputs/LabeledInput';
 import AddSkill from './AddSkill';
-import SectionHeader from './SectionHeader';
+import SectionHeader from '../../../../components/SectionHeader';
 
 export default function Skills({
   addSkillIsVisible,
@@ -13,7 +13,6 @@ export default function Skills({
   formData,
   handleWorkerSkillChange,
 }) {
-
   return (
     <Section>
       <div className="flex justify-between items-center align-baseline">

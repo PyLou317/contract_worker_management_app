@@ -1,6 +1,7 @@
 import Section from './Section';
-import SectionHeader from './SectionHeader';
+import SectionHeader from '../../../../components/SectionHeader';
 import Input from '@/components/Inputs/LabeledInput';
+import formatPhoneNumber from '@/utilities/formatPhoneNumber';
 
 export default function PersonalDetails({ formData, handleInputChange }) {
   return (
@@ -43,7 +44,7 @@ export default function PersonalDetails({ formData, handleInputChange }) {
           id="phone_number"
           name="phone_number"
           placeholder="Phone Number"
-          value={formData.phone_number}
+          value={formatPhoneNumber(formData.phone_number)}
           onChange={handleInputChange}
           required
         />

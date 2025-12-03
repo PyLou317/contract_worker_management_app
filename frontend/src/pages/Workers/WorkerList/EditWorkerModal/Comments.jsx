@@ -1,5 +1,5 @@
 import Section from './Section';
-import SectionHeader from './SectionHeader';
+import SectionHeader from '../../../../components/SectionHeader';
 
 export default function Comments({ formData, handleInputChange }) {
   const ratings = formData?.rating;
@@ -8,7 +8,7 @@ export default function Comments({ formData, handleInputChange }) {
   return (
     <Section>
       <SectionHeader title="Comments" />
-      <div className='relative'>
+      <div className="relative">
         <textarea
           id="comment"
           name="comment"

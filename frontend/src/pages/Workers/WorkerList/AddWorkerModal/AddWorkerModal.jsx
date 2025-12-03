@@ -86,7 +86,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
         </button>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 md:items-end">
+        <div className="grid grid-cols-1 md:grid-cols-2 mt-8 md:gap-4 md:items-end">
           <Input
             type="text"
             id="first_name"
@@ -106,7 +106,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             onChange={handleInputChange}
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 md:items-end">
+        <div className="grid grid-cols-1 md:grid-cols-2 mt-10 md:gap-4 md:items-end">
           <Input
             type="email"
             id="email"
@@ -126,18 +126,20 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             onChange={handleInputChange}
           />
         </div>
-        {agencies && (
-          <SelectInput
-            label="Agency"
-            type="text"
-            id="agency"
-            name="agency"
-            value={formData.agency}
-            onChange={handleInputChange}
-            required
-            options={agencyNames}
-          />
-        )}
+        <div className='my-10'>
+          {agencies && (
+            <SelectInput
+              label="Agency"
+              type="text"
+              id="agency"
+              name="agency"
+              value={formData.agency}
+              onChange={handleInputChange}
+              required
+              options={agencyNames}
+            />
+          )}
+        </div>
         <div className="mt-6 flex justify-end gap-3">
           <CancelBtn
             onClick={onClose}

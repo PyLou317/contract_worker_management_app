@@ -92,7 +92,6 @@ export default function EditWorkerModal({
       const skills = workerData.worker_skills || [];
 
       const skillsArray = Array.isArray(skills) ? skills : [skills];
-      console.log(workerData);
       setFormData({
         first_name: workerData.first_name || '',
         last_name: workerData.last_name || '',

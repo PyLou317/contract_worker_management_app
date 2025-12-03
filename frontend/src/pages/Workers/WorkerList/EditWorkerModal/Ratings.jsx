@@ -1,6 +1,6 @@
 import Section from './Section';
 import Input from '@/components/Inputs/LabeledInput';
-import SectionHeader from './SectionHeader';
+import SectionHeader from '../../../../components/SectionHeader';
 
 export default function Ratings({ workerData, formData, handleInputChange }) {
   const averageRating =
