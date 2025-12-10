@@ -11,6 +11,8 @@ class AgencyNameField(serializers.CharField):
         return value.name
     
 class SkillSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    
     class Meta:
         model = Skill
         fields = ('id',
@@ -20,11 +22,12 @@ class SkillSerializer(serializers.ModelSerializer):
                   'description',
                   'organization',
                   )
-        read_only_fields = ['id', 'organization']
+        read_only_fields = ['organization']
         
 
 class WorkerSkillSerializer(serializers.ModelSerializer):
     skill = SkillSerializer()
+    id = serializers.IntegerField(required=False)
     
     class Meta:
         model = WorkerSkill
