@@ -20,7 +20,7 @@ class Rating(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='given_ratings',
+        related_name='given_rating',
         verbose_name=_('manager')
     )
     
