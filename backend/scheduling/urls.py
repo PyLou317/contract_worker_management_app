@@ -6,8 +6,13 @@ from .views import *
 urlpatterns = [
     path('schedules/', SchedulingListViewAPI.as_view()),
     path('shifts/', ShiftListViewAPI.as_view()),
+    
     path('areas/', AreaListViewAPI.as_view()),
+    path('areas/<int:pk>/', AreaDetailUpdateViewAPI.as_view()),
+    
     path('managers/', ManagerListViewAPI.as_view()),
+    path('managers/<int:pk>/', ManagerDetailUpdateViewAPI.as_view()),
+    
     path('schedule/create/', CreateScheduleView.as_view(), name='create-schedule'),
     path('schedules/<int:pk>/', ScheduleDetailUpdateViewAPI.as_view()),
 ]
