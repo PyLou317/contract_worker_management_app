@@ -9,7 +9,7 @@ class WorkerSkillInline(admin.TabularInline):
     
 @admin.register(ContractWorker)
 class ContractWorkerAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'current_contract', 'agency', 'position')
+    list_display = ('first_name', 'last_name', 'current_contract', 'agency', 'email', 'position')
     list_display_links = ('first_name', 'last_name')
     search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'current_contract__name', 'agency__name', 'position')
     list_filter = ('agency', 'position')
