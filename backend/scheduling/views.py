@@ -4,7 +4,6 @@ from .models import *
 from .serializers import *
 from rest_framework.exceptions import PermissionDenied
 
-# Create your views here.
 class SchedulingListViewAPI(generics.ListCreateAPIView):
     queryset = Schedule.objects.all()
     serializer_class = SchedulingSerializer
@@ -57,6 +56,34 @@ class AreaListViewAPI(generics.ListCreateAPIView):
 
         queryset = super().get_queryset().filter(organization=user_organization).distinct()
         return queryset
+
+
+class AreaDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Area.objects.all()
+    serializer_class = AreaSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return Area.objects.none()
+
+        user_organization = user.organization
+        if not user_organization:
+            return Area.objects.none()
+
+        queryset = super().get_queryset().filter(organization=user_organization)
+        return queryset
+    
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        user = self.request.user
+        user_organization = getattr(user, 'organization', None)
+        
+        if instance.organization != user_organization:
+            raise PermissionDenied("You do not have permission to update this department.")
+        
+        serializer.save()
     
 
 class ManagerListViewAPI(generics.ListCreateAPIView):
@@ -75,6 +102,44 @@ class ManagerListViewAPI(generics.ListCreateAPIView):
 
         queryset = super().get_queryset().filter(organization=user_organization).distinct()
         return queryset
+    
+
+class ManagerDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Manager.objects.all()
+    serializer_class = ManagerSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return Manager.objects.none()
+
+        user_organization = user.organization
+        if not user_organization:
+            return Manager.objects.none()
+
+        queryset = super().get_queryset().filter(organization=user_organization)
+        return queryset
+    
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        user = self.request.user
+        user_organization = getattr(user, 'organization', None)
+        
+        if instance.organization != user_organization:
+            raise PermissionDenied("You do not have permission to update this manager.")
+        
+        serializer.save()
+    
+    def delete(self, serializer):
+        instance = self.get_object()
+        user = self.request.user
+        user_organization = getattr(user, 'organization', None)
+        
+        if instance.organization != user_organization:
+            raise PermissionDenied("You do not have permission to delete this manager.")
+        
+        serializer.save()
     
 
 class CreateScheduleView(generics.CreateAPIView):
