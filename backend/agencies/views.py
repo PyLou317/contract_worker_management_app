@@ -4,7 +4,6 @@ from rest_framework import permissions
 from .models import StaffingAgency
 from .serializers import StaffingAgencySerializer
 
-# Create your views here.
 
 class AgencyListViewAPI(generics.ListCreateAPIView):
     queryset = StaffingAgency.objects.all()
