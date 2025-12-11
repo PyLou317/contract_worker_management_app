@@ -1,6 +1,7 @@
 from django.db import models
+# from organizations.models import WarehouseBusiness
 
-# Create your models here.
+
 class StaffingAgency(models.Model):
     name = models.CharField(max_length=255, unique=True)
     contact_first_name = models.CharField(max_length=150, null=True, blank=True)
@@ -12,6 +13,14 @@ class StaffingAgency(models.Model):
     province = models.CharField(max_length=100, blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
+    
+    organization = models.ForeignKey(
+        'organizations.WarehouseBusiness', 
+        on_delete=models.CASCADE, 
+        related_name='agencies',
+        null=False, 
+        blank=False
+    )
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.organization}"
