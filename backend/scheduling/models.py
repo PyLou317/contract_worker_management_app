@@ -29,6 +29,14 @@ class Area(models.Model):
 class Manager(models.Model):
     name = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
+    area = models.ForeignKey(
+        Area,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='managers',
+        verbose_name=_('area')
+    )
     organization = models.ForeignKey(
         'organizations.WarehouseBusiness', 
         on_delete=models.CASCADE, 
