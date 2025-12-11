@@ -3,6 +3,11 @@ from rest_framework import permissions
 from .models import *
 from .serializers import *
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ValidationError 
+from scheduling.models import *
+from scheduling.serializers import *
+
+
 
 class SchedulingListViewAPI(generics.ListCreateAPIView):
     queryset = Schedule.objects.all()
@@ -56,6 +61,14 @@ class AreaListViewAPI(generics.ListCreateAPIView):
 
         queryset = super().get_queryset().filter(organization=user_organization).distinct()
         return queryset
+    
+    def perform_create(self, serializer):
+        user_organization = self.request.user.organization
+        
+        if not user_organization:
+            raise ValidationError({'detail': 'You must be associated with a Warehouse Business to create an area.'})
+        
+        serializer.save(current_contract=user_organization) 
 
 
 class AreaDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
