@@ -1,12 +1,12 @@
 import AddBtn from '@/pages/SEttings/SettingsAddBtn';
 import capitalizeFirstLetter from '@/utilities/capitalizeFirstLetter';
 
-export default function PageHeader({ label, count }) {
+export default function PageHeader({ heading, label, count }) {
   return (
     <div className="flex justify-between items-start">
       <div className="mb-4">
         <h1 className="text-2xl font-bold text-gray-800">
-          Active {capitalizeFirstLetter(label)}
+          Active {capitalizeFirstLetter(heading)}
         </h1>
         <small>
           Active {label} count: {count}
