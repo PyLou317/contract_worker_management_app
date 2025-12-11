@@ -19,7 +19,7 @@ const tabItems = [
     icon: calendarIcon,
   },
   {
-    name: 'Divisions',
+    name: 'Departments',
     path: '/settings/areas',
     icon: calendarIcon,
   },
