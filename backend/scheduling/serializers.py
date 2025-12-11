@@ -15,6 +15,22 @@ class ManagerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manager
         fields = '__all__'
+        read_only_fields = ('organization',)
+        
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        
+        if not request:
+            raise serializers.ValidationError({'detail': 'Request context missing for organization assignment.'})
+        
+        organization = request.user.organization
+        
+        if not organization:
+            raise serializers.ValidationError({'detail': 'You must be associated with an organization to create a manager.'})
+        
+        validated_data['organization'] = organization
+        manager = super().create(validated_data)
+        return manager
         
 
 class WorkerSerializer(serializers.ModelSerializer):
