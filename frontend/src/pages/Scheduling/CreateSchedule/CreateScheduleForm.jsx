@@ -9,7 +9,7 @@ import Input from '@/components/Inputs/LabeledInput';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
 import CreateShiftForm from '@/pages/Scheduling/CreateSchedule/CreateShiftForm';
 import AddShiftBtn from '@/pages/Scheduling/AddShiftBtn';
-import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
+import SectionHeader from '@/components/SectionHeader';
 
 export default function CreateScheduleForm() {
   const queryClient = useQueryClient();
