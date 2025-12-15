@@ -10,7 +10,7 @@ export default function WorkerTableHeader({
       <SearchBar onSearch={handleSearch} searchTerm={searchTerm} />
       <button
         onClick={handleOpenAddWorkerModal}
-        className="flex gap-1 text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
+        className="flex gap-1 text-lg text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer items-center"
         aria-label="Add worker"
       >
         <span>Add Worker</span>
