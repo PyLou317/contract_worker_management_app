@@ -1,4 +1,4 @@
-import LoadingSpinner from '../../components/Loader';
+import LoadingSpinner from '@/components/Loader';
 
 export default function StatCard({ icon, title, value, className, loading }) {
   return (
