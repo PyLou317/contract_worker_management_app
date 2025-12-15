@@ -1,6 +1,4 @@
 import '@/utilities/toolTipStyles.css';
-import skillColorClasses from '@/pages/SkillsPage/SkillColorClasses';
-import LoadingSpinner from '@/components/Loader';
 
 export default function WorkerSkillList({
   className,
