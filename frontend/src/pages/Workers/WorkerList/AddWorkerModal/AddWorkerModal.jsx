@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import CapitalizeFirstLetter from '@/utilities/capitalizeFirstLetter';
@@ -10,11 +10,12 @@ import SubmitBtn from '@/components/Buttons/SubmitBtn';
 import Modal from '@/components/Modals/Modal';
 
 import { apiFetch } from '@/utilities/apiClient';
-import addWorker from '@/hooks/addWorker';
+import sendData from '@/hooks/sendData';
 
 export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
   const queryClient = useQueryClient();
-  const dialogRef = useRef(null);
+  const [formErrors, setFormErrors] = useState({});
+  const [generalError, setGeneralError] = useState(null);
 
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['agencies'],
@@ -23,7 +24,12 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
   });
 
   const agencies = data?.results || [];
-  const agencyNames = agencies.map((agency) => agency.name);
+  const agencyNames = agencies.map((agency) => {
+    return {
+      label: agency.name,
+      value: agency.id,
+    };
+  });
 
   const [formData, setFormData] = useState({
     first_name: '',
@@ -34,7 +40,8 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
   });
 
   const addWorkerMutation = useMutation({
-    mutationFn: addWorker,
+    mutationFn: (payload) =>
+      sendData(payload.formData, payload.endpoint, payload.method),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       setFormData({
@@ -47,8 +54,22 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
       onClose();
     },
     onError: (error) => {
-      console.error('Error adding worker:', error);
-      alert('Failed to add worker. Please try again. ' + error.message);
+      const errorData = error.data;
+
+      setFormErrors({});
+      setGeneralError(null);
+
+      if (errorData) {
+        if (errorData.email || errorData.first_name || errorData.last_name) {
+          setFormErrors(errorData);
+        }
+        if (errorData.detail) {
+          setGeneralError(errorData.detail);
+        }
+      } else {
+        setGeneralError('An unexpected error occurred. Please try again.');
+        console.error('Unhandled Mutation Error:', error);
+      }
     },
   });
 
@@ -62,7 +83,14 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addWorkerMutation.mutate(formData);
+
+    const payload = {
+      formData: formData,
+      endpoint: `/workers/`,
+      method: 'POST',
+    };
+
+    addWorkerMutation.mutate(payload);
   };
 
   return (
@@ -86,6 +114,9 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
         </button>
       </div>
       <form onSubmit={handleSubmit}>
+        {formErrors.email && (
+          <p className="text-red-600 text-xs mt-1">{formErrors.email}</p>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 mt-8 md:gap-4 md:items-end">
           <Input
             type="text"
@@ -107,15 +138,17 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 mt-10 md:gap-4 md:items-end">
-          <Input
-            type="email"
-            id="email"
-            name="email"
-            label="Email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
+          <div>
+            <Input
+              type="email"
+              id="email"
+              name="email"
+              label="Email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+          </div>
           <Input
             type="text"
             id="phone_number"
@@ -126,7 +159,7 @@ export default function AddWorkerModal({ showModal, onClose, editingWorker }) {
             onChange={handleInputChange}
           />
         </div>
-        <div className='my-10'>
+        <div className="my-10">
           {agencies && (
             <SelectInput
               label="Agency"
