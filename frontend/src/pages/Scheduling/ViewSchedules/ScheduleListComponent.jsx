@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { ScheduleContext } from '../schedule-page-context';
 
 import ScheduleList from './ScheduleList';
-import SectionHeader from '../../WorkerListPage/EditWorkerModal/SectionHeader';
+import SectionHeader from '@/components/SectionHeader';
 
 export default function ViewCreatedSchedules({}) {
   const { schedules, scheduleIsPending, scheduleError, scheduleIsFetching } =
