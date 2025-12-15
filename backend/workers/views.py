@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import filters
 from django.db.models import Avg
+from django.db import IntegrityError
 
 from .models import *
 from scheduling.models import Schedule, Shift
@@ -36,11 +37,24 @@ class WorkerListViewAPI(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         user_organization = self.request.user.organization
+        
         if not user_organization:
             raise ValidationError({'detail': 'You must be associated with a Warehouse Business to create a worker.'})
         
-        serializer.save(current_contract=user_organization) 
-
+        try:
+            serializer.save(current_contract=user_organization) 
+        except IntegrityError as e:
+            error_message = str(e)
+            
+            if 'UNIQUE constraint failed: workers_contractworker.email, workers_contractworker.current_contract_id' in error_message:
+                
+                raise ValidationError({
+                    "email": [f"A worker with this email address is already registered under your organization."],
+                    "detail": "Worker email must be unique within the current contract."
+                })
+            
+            raise ValidationError(e)
+        
 
 
 class ShiftScheduledWorkerListViewAPI(generics.ListCreateAPIView):
@@ -108,8 +122,8 @@ class ShiftUnscheduledWorkerListViewAPI(generics.ListCreateAPIView):
         ).values_list('contract_workers__id', flat=True)
         
         queryset = super().get_queryset().filter(
-            current_contract=user_organization
-            ).exclude(id__in=scheduled_workers_ids)
+            current_contract=user_organization)
+        # .exclude(id__in=scheduled_workers_ids)
         
         return queryset
     
@@ -119,6 +133,9 @@ class WorkerDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = ContractWorker.objects.all()
     serializer_class = ContractWorkerSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 
 class SkillDetailUpdateViewAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -147,7 +164,7 @@ class SkillsListViewAPI(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         user_organiztion = user.organization
-        
+        print(user_organiztion)
         if not user_organiztion:
             raise ValidationError({'detail': 'You must be associated with an organization to create a skill.'})
         
