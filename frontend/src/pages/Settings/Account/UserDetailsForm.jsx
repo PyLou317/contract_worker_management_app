@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AppContext } from '@/app-context';
 import sendData from '@/hooks/sendData';
 
+import SuccessNotification from '@/components/SuccessNotification';
 import formatPhoneNumber from '@/utilities/formatPhoneNumber';
 
 export default function UserDetailForm() {
@@ -70,18 +71,28 @@ export default function UserDetailForm() {
     mutationFn: (payload) =>
       sendData(payload.formData, payload.endpoint, payload.method),
     onSuccess: (data, variables) => {
-        queryClient.invalidateQueries({ queryKey: ['users'] });
-        
-      setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 3000);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
 
-        setInitialData(variables.formData)
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+
+      setInitialData(variables.formData);
     },
     onError: (error) => {
       console.error('Error saving user details:', error);
       alert('Failed to save user details. Please try again. ' + error.message);
     },
   });
+
+  useEffect(() => {
+    if (showSuccess) {
+      const timeoutId = setTimeout(() => {
+        handleScrollToTop();
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [showSuccess]);
 
   const handleSaveUserDetails = (e) => {
     e.preventDefault();
@@ -105,16 +116,12 @@ export default function UserDetailForm() {
   return (
     <>
       {showSuccess && (
-        <div
-          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md relative mb-4"
-          role="alert"
-          ref={successRef}
-        >
-          <span className="block sm:inline">
-            Account information updated successfully!
-          </span>
-        </div>
+        <SuccessNotification
+          successRef={successRef}
+          message="Account information updated successfully!"
+        />
       )}
+
       <div className="max-w-4xl">
         <div className="grid grid-cols-2 gap-x-4 gap-y-10 mt-12">
           <Input
