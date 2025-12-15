@@ -100,46 +100,11 @@ export default function AddSkillForm() {
           <span className="block sm:inline">Agency added successfully!</span>
         </div>
       )}
-      <div className="container mx-auto p-8 bg-white shadow-xl rounded-2xl lg:w-3/4 w-full mb-16 hover:scale-101">
-        <div
-          className={`flex justify-between items-center cursor-pointer ${toggleAddAgency ? 'mb-4' : null}`}
-          onClick={handleToggleAddAgency}
-        >
-          <SectionHeader title="Add New Agency" />
-          {toggleAddAgency ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-              />
-            </svg>
-          )}
-        </div>
-
-        {toggleAddAgency && (
+      <div
+        className={`container mx-auto bg-white w-full md:w-7/8  transition-all duration-500 ease-in-out overflow-hidden ${
+          toggleAddAgency ? 'max-h-[1000px] p-4 mb-16' : 'max-h-0'
+        }`}
+      >
           <form onSubmit={handleSubmit} className="mt-4">
             <div className="grid grid-cols-1 md:gap-4">
               <Input
