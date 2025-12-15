@@ -86,10 +86,6 @@ export default function AddSkillForm() {
     addAgencyMutation.mutate(payload);
   };
 
-  const handleToggleAddAgency = () => {
-    setToggleAddAgency(!toggleAddAgency);
-  };
-
   return (
     <>
       {showSuccess && (
