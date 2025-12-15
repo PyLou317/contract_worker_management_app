@@ -25,8 +25,12 @@ const attemptFetch = async (token, formData, apiEndpoint, method = 'PATCH') => {
       errorData.message ||
       'Failed to send data to the server.';
     const validationError = new Error(errorMessage);
-    validationError.data = errorData; // Attach error data for external handlers
+    validationError.data = errorData;
     throw validationError;
+  }
+
+  if (response.status === 204) {
+    return { success: true, status: 204 };
   }
 
   return await response.json();
@@ -34,8 +38,7 @@ const attemptFetch = async (token, formData, apiEndpoint, method = 'PATCH') => {
 
 const sendData = async (formData, endpoint, method) => {
   const authToken = localStorage.getItem('authToken');
-    const apiEndpoint = url + endpoint;
-    console.log(apiEndpoint)
+  const apiEndpoint = url + endpoint;
 
   if (!authToken) {
     throw new Error('Authentication token not found. Please log in.');
