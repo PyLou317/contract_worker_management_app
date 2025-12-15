@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
 import sendData from '@/hooks/sendData';
+
+import { AgencyPageContext } from './agency-page-context';
 
 import Input from '@/components/Inputs/LabeledInput';
 import SubmitButton from '@/components/Buttons/SubmitBtn';
-import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
 
-export default function AddSkillForm() {
-  const [toggleAddAgency, setToggleAddAgency] = useState(false);
+export default function AddAgencyForm() {
   const [formData, setFormData] = useState({
     address: '',
     city: '',
@@ -22,6 +21,7 @@ export default function AddSkillForm() {
     website: '',
   });
 
+  const { toggleAddAgency, setToggleAddAgency } = useContext(AgencyPageContext);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleInputChange = (e) => {
@@ -67,6 +67,7 @@ export default function AddSkillForm() {
         website: '',
       });
       setShowSuccess(true);
+      setToggleAddAgency(false);
       setTimeout(() => setShowSuccess(false), 3000);
     },
     onError: (error) => {
