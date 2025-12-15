@@ -44,7 +44,7 @@ export default function FloatingSelectInput(props) {
         {validOptions.map((option) => (
           <option
             key={option.value ? option.value : option}
-            value={option.label ? option.label : option}
+            value={option.value ? option.value : option}
           >
             {option.label
               ? CapitalizeFirstLetter(option.label)
