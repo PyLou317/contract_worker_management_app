@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { EditScheduleContext } from '@/pages/Scheduling/EditScheduleModal/edit-schedule-context';
 import { apiFetch } from '@/utilities/apiClient';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link, useParams } from 'react-router';
+import { Link } from 'react-router';
 
 import sendData from '@/hooks/sendData';
 
-import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
+import SectionHeader from '@/components/SectionHeader';
 import ScheduleForm from './ScheduleForm';
 import ShiftForm from './ShiftForm';
 import CancelBtn from '@/components/Buttons/CancelBtn';
@@ -15,7 +15,6 @@ import SubmitBtn from '@/components/Buttons/SubmitBtn';
 import AddShiftBtn from '@/pages/Scheduling/AddShiftBtn';
 import AddShiftForm from '@/pages/Scheduling/EditScheduleModal/AddShiftForm';
 import SaveAddedShiftBtn from '@/pages/Scheduling/EditScheduleModal/SaveAddedShift';
-import getDaysArray from '@/utilities/getDateArray';
 
 export default function EditSchedule({
   showEditScheduleModal,
@@ -46,6 +45,7 @@ export default function EditSchedule({
     queryFn: () => apiFetch(`/schedules/${Id}`),
     enabled: !!Id,
   });
+
 
   useEffect(() => {
     if (scheduleData) {
@@ -260,7 +260,7 @@ export default function EditSchedule({
         <div className="flex justify-between items-center text-gray-800">
           <SectionHeader title="Edit Schedule" />
           <Link to="/scheduling">
-            <button className="flex items-center gap-2 cursor-pointer">
+            <button className="flex items-center gap-2 cursor-pointer hover:scale-101">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
