@@ -1,5 +1,11 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/utilities/apiClient';
+
+import { AgencyPageContext } from './agency-page-context';
+
 import PageContainer from '@/components/PageContainer';
-import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
+import PageHeader from '@/pages/Settings/PageHeader';
 import AddAgencyForm from '@/pages/Settings/Agencies/AddAgencyForm';
 import AgenciesList from '@/pages/settings/Agencies/AgenciesList';
 
@@ -30,11 +36,22 @@ export default function AgenciesPage() {
   };
 
   return (
+    <AgencyPageContext.Provider value={ctxValue}>
     <PageContainer>
-      <SectionHeader title="Agencies Settings" />
+        <PageHeader heading="agencies" label="agency" count={agencies.length} />
+        {showSuccess && (
+          <div
+            className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md relative mb-4"
+            role="alert"
+          >
+            <span className="block sm:inline">
+              Agency updated successfully!
+            </span>
+          </div>
+        )}
       <AddAgencyForm />
-      <div className="mt-8 w-full border-t border-gray-200"></div>
       <AgenciesList />
     </PageContainer>
+    </AgencyPageContext.Provider>
   );
 }
