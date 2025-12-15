@@ -6,7 +6,7 @@ import PageContainer from '@/components/PageContainer';
 import Input from '@/components/Inputs/LabeledInput';
 import sendData from '@/hooks/sendData';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
-import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
+import SectionHeader from '@/components/SectionHeader';
 
 export default function SendSMSMessage() {
   const [formData, setFormData] = useState({
