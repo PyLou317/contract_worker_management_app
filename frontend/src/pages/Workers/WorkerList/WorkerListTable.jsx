@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import { NavLink } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/utilities/apiClient';
 import { Rating } from 'react-simple-star-rating';
@@ -24,7 +25,7 @@ export default function WorkerListTable({
   const [ordering, setOrdering] = useState('');
   const [editingWorker, setEditingWorker] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [hoveredWorkerId, setHoveredWorkerId] = useState(null);
+  const [hoveredRatingId, setHoveredRatingId] = useState(null);
   const [editingWorkerId, setEditingWorkerId] = useState(null);
   const [deletingWorkerId, setDeletingWorkerId] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -189,9 +190,12 @@ export default function WorkerListTable({
                   <td className="py-3 px-6 text-left whitespace-nowrap border-r border-gray-200">
                     {worker.id}
                   </td>
-                  <td className="py-3 px-6 text-left border-r border-gray-200">
-                    {worker.first_name} {worker.last_name}
+                  <td className="py-3 px-6 text-left border-r border-gray-200 text-blue-500 hover:text-blue-400 relative">
+                    <NavLink to={`/workers/${worker.id}`} end>
+                      {worker.first_name} {worker.last_name}
+                    </NavLink>
                   </td>
+
                   <td className="py-3 px-6 text-left border-r border-gray-200">
                     {worker.position}
                   </td>
@@ -200,10 +204,10 @@ export default function WorkerListTable({
                   </td>
                   <td
                     className="py-3 px-6 text-left border-r border-gray-200 relative"
-                    onMouseEnter={() => setHoveredWorkerId(worker.id)}
-                    onMouseLeave={() => setHoveredWorkerId(null)}
+                    onMouseEnter={() => setHoveredRatingId(worker.id)}
+                    onMouseLeave={() => setHoveredRatingId(null)}
                   >
-                    {hoveredWorkerId === worker.id && (
+                    {hoveredRatingId === worker.id && (
                       <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 mb-2 bg-white border border-gray-300 p-2 rounded shadow-lg text-sm z-10 whitespace-nowrap">
                         {worker.rating ? worker.rating.average_rating : 'N/A'}{' '}
                         out of 5
@@ -211,7 +215,7 @@ export default function WorkerListTable({
                     )}
                     <Rating
                       initialValue={
-                        worker.rating !== null && worker.rating.average_rating
+                        worker.rating !== null
                           ? worker.rating.average_rating
                           : 0
                       }
