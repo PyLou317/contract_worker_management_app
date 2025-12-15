@@ -4,7 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router';
 
 import Dashboard from '@/pages/Dashboard/DashboardPage';
-import Workers from '@/pages/WorkerListPage/WorkersPage';
+import Workers from '@/pages/Workers/WorkerList/WorkersListPage';
+import WorkerDetailPage from '@/pages/Workers/WorkerDetail/WorkerDetailPage';
 import Skills from '@/pages/SkillsPage/SkillsPage';
 import Scheduling from '@/pages/Scheduling/SchedulingPage';
 import Schedule from '@/pages/Scheduling/EditScheduleModal/Schedule';
@@ -19,7 +20,7 @@ import SettingsPage from '@/pages/Settings/SettingsPage.jsx';
 import AccountPage from '@/pages/Settings/Account/AccountPage.jsx';
 import AgenciesPage from '@/pages/Settings/Agencies/AgenciesPage.jsx';
 import ManagersPage from '@/pages/Settings/Managers/ManagersPage.jsx';
-import AreasPage from '@/pages/Settings/Areas/AreasPage.jsx';
+import AreasPage from '@/pages/Settings/Departments/DepartmentsPage.jsx';
 
 import './index.css';
 import App from './App.jsx';
@@ -33,7 +34,9 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
-            <Route path="workers" element={<Workers />} />
+            <Route path="workers" element={<Workers />}>
+              <Route path=":workerId" element={<WorkerDetailPage />} />
+            </Route>
             <Route path="skills" element={<Skills />} />
             <Route path="scheduling" element={<Scheduling />}>
               <Route
