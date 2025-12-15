@@ -37,7 +37,7 @@ export default function AgenciesPage() {
 
   return (
     <AgencyPageContext.Provider value={ctxValue}>
-    <PageContainer>
+      <PageContainer>
         <PageHeader heading="agencies" label="agency" count={agencies.length} />
         {showSuccess && (
           <div
@@ -49,9 +49,9 @@ export default function AgenciesPage() {
             </span>
           </div>
         )}
-      <AddAgencyForm />
-      <AgenciesList />
-    </PageContainer>
+        <AddAgencyForm />
+        <AgenciesList />
+      </PageContainer>
     </AgencyPageContext.Provider>
   );
 }
