@@ -1,0 +1,11 @@
+export default function SectionHeader({ title, children, addClasses }) {
+  return (
+    <>
+      <div className={addClasses}>
+        <h3 className="text-2xl font-semibold">{title}</h3>
+        {children}
+      </div>
+      <div className="border-b border-gray-200 mt-6 mb-10"></div>
+    </>
+  );
+}
