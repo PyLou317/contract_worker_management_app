@@ -1,5 +1,5 @@
 import PageContainer from '@/components/PageContainer';
-import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
+import SectionHeader from '@/components/SectionHeader';
 import UserDetailForm from './UserDetailsForm';
 
 export default function AccountPage() {
