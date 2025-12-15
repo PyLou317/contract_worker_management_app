@@ -60,7 +60,12 @@ export default function EditWorkerModal({
     keepPreviousData: true,
   });
   const agencies = agenciesData?.results || [];
-  const agencyNames = agencies.map((agency) => agency.name);
+  const agencyNames = agencies.map((agency) => {
+    return {
+      label: agency.name,
+      value: agency.id,
+    };
+  });
 
   const {
     data: managersData,
@@ -97,7 +102,7 @@ export default function EditWorkerModal({
         last_name: workerData.last_name || '',
         email: workerData.email || '',
         phone_number: workerData.phone_number || '',
-        agency: workerData.agency_details || '',
+        agency: workerData.agency || '',
         manager: workerData?.rating?.manager || '',
         rating: {
           id: rating.id || null,
@@ -141,9 +146,23 @@ export default function EditWorkerModal({
   const handleWorkerSkillChange = (index, field, value) => {
     setFormData((prevData) => {
       const newSkills = [...prevData.worker_skills];
+      let newSkillValue = value;
+
+      if (field === 'skill') {
+        const selectedSkill = skills.find(
+          (skill) => skill.skill_name === value
+        );
+        if (selectedSkill) {
+          newSkillValue = selectedSkill;
+        } else {
+          console.error(`Skill not found for name: ${value}`);
+          return prevData;
+        }
+      }
+
       newSkills[index] = {
         ...newSkills[index],
-        [field]: value,
+        [field]: newSkillValue,
       };
       return { ...prevData, worker_skills: newSkills };
     });
@@ -215,17 +234,16 @@ export default function EditWorkerModal({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const ratingsId = workerData.rating?.[0]?.id || null;
-
-    const ratingPayload = {
-      ...formData.rating, // Spread all properties from the state first
-      id: ratingsId, // Then, explicitly set the 'id' to the correct value
-    };
-
     const skillsPayload = formData.worker_skills.map((workerSkill) => {
+      const skillDetails = {
+        id: workerSkill.skill.id,
+        skill_name: workerSkill.skill.skill_name,
+      };
       return {
-        id: workerSkill.id,
-        skill: workerSkill.skill,
+        ...(workerSkill.id && { id: workerSkill.id }),
+
+        skill: skillDetails,
+
         level: workerSkill.level,
         certification_date: workerSkill.certification_date,
         expiration_date: workerSkill.expiration_date,
@@ -241,6 +259,7 @@ export default function EditWorkerModal({
       rating: formData.rating,
       worker_skills: skillsPayload,
     };
+    console.log('Final Payload: ', finalPayload);
     editWorkerMutation.mutate({ formData: finalPayload, id });
     onClose();
   };
