@@ -67,6 +67,7 @@ export default function UnscheduledWorkerList({ shiftId, addWorkersId }) {
     keepPreviousData: true,
   });
 
+
   const targetShift = shiftsData?.find((shift) => shift.id === shiftId);
   const targetShiftScheduledWorkers = targetShift?.workers || [];
 
@@ -85,6 +86,8 @@ export default function UnscheduledWorkerList({ shiftId, addWorkersId }) {
     workers,
     targetShiftScheduledWorkers
   );
+
+  console.log('unscheduledWorkers', unscheduledWorkers);
 
   const shiftIndex = formData.shifts.findIndex((shift) => shift.id === shiftId);
   const currentShiftWorkers =
@@ -129,9 +132,9 @@ export default function UnscheduledWorkerList({ shiftId, addWorkersId }) {
   console.log('Workers', workers);
   return (
     <>
-      <div className="mt-4">
+      <div className="mt-8">
         <Search onSearch={handleSearch} searchTerm={searchTerm} />
-        <div className="overflow-x-auto border border-gray-300 rounded-lg mb-8">
+        <div className="overflow-x-auto border border-gray-300 rounded-lg mb-8 mt-4">
           <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
             <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
               <tr>
