@@ -7,7 +7,7 @@ import PageContainer from '@/components/PageContainer';
 import Input from '@/components/Inputs/LabeledInput';
 import Select from '@/components/Inputs/FloatingSelectInput';
 import SubmitBtn from '@/components/Buttons/SubmitBtn';
-import SectionHeader from '@/pages/WorkerListPage/EditWorkerModal/SectionHeader';
+import SectionHeader from '@/components/SectionHeader';
 
 import capitalizeFirstLetter from '@/utilities/capitalizeFirstLetter';
 import { apiFetch } from '@/utilities/apiClient';
@@ -80,13 +80,11 @@ export default function RequestWorkers() {
 
   const handleScrollToTop = function () {
     if (successRef.current) {
-      console.log('Scroll to Success Message Executed.');
       successRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
     } else {
-      console.log('Scroll to Window Executed (Fallback).');
       window.scrollTo({
         top: 0,
         left: 0,
