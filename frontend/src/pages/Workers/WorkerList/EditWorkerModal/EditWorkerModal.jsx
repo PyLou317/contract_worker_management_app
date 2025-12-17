@@ -19,6 +19,7 @@ export default function EditWorkerModal({
   onClose,
   editingWorker,
   id,
+  onEditSuccess,
 }) {
   const [addSkillIsVisible, setAddSkillIsVisible] = useState(false);
   const [newSkillFormData, setNewSkillFormData] = useState({
@@ -128,6 +129,8 @@ export default function EditWorkerModal({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['worker'] });
       queryClient.invalidateQueries({ queryKey: ['workers'] });
+      onEditSuccess();
+      onClose();
     },
     onError: (error) => {
       console.error('Error editing worker:', error);
