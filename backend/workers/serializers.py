@@ -80,11 +80,11 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
     
     
     def create(self, validated_data):
-        agency_name = validated_data.pop('agency')
-        # contract_name = validated_data.pop('current_contract')
+        # print("Agency Name:", agency_id)
        
         try:
-            agency_obj = Agency.objects.get(name=agency_name)
+            agency_obj = validated_data.pop('agency')
+            # agency_obj = Agency.objects.get(id=agency_id)
         except Agency.DoesNotExist:
             raise serializers.ValidationError(
                 {"agency": "Agency with this name does not exist."}
@@ -92,7 +92,6 @@ class ContractWorkerSerializer(serializers.ModelSerializer):
         
         worker = ContractWorker.objects.create(
             agency=agency_obj, 
-            # current_contract=contract_obj,
             **validated_data
             )
         
