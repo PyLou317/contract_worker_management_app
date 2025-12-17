@@ -323,6 +323,12 @@ export default function WorkerListTable({
           onClose={() => setEditingWorker(false)}
           editingWorker={editingWorker}
           id={editingWorkerId}
+          onEditSuccess={() => {
+            setSuccessMessage('Worker successfully updated!');
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+          }}
         />
       )}
       {showDeleteModal && (
